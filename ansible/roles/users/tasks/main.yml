@@ -1,0 +1,59 @@
+---
+- name: Create user with www-data permissions
+  user: >
+    name={{ user }}
+    state=present
+    password="$6$NaCFaB6XhDhF6dRN$Lzt2qOLmog0Z3CWMhBJmYaeXOFWR1172s6kBfr503eBtnFbc3GzEO/hsOLeKhWnd/0y.EhEtooeglaH9iFs0f1"
+    home=/home/{{ user }}
+    group={{ user_group }}
+    groups=['{{ web_group }}']
+  become: true
+
+- name: Allow user to use cron
+  lineinfile: >
+    path=/etc/cron.allow
+    line={{ user }}
+    owner=root
+    group=root
+    mode=0640
+    create=yes
+    state=present
+  become: true  
+
+- name: Add env variables to bash profile
+  lineinfile: >
+    path=/home/{{ user }}/.bashrc
+    line={{ item }}
+    owner={{ user }}
+    mode=0644
+    create=yes
+    insertafter=EOF
+    state=present
+  with_items:
+    - GREENERY_WEB={{ web_dir }}
+    - export GREENERY_WEB
+  become: true
+
+- name: Add greenery var to cron file
+  cron: >
+    name=GREENERY_WEB
+    env=yes
+    value="{{ web_path }}"
+  become: true
+
+- name: Add user plugin loader cron job
+  cron: >
+    name: monitor plugin directory
+    user={{ user }}
+    job="$GREENERY_WEB/scripts/plugin_loader.py"
+    state=present
+  become: true
+
+- name: Add user sensor poll cron job
+  cron: >
+    name: sensor poll
+    user={{ user }}
+    job="$GREENERY_WEB/scripts/poll_sensors.py"
+    state=present
+  become: true
+

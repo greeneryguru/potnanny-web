@@ -1,0 +1,1 @@
+[{"model": "measurement.retentionperiod", "pk": 1, "fields": {"value": 60}}, {"model": "measurement.tempdisplay", "pk": 1, "fields": {"value": 1}}]

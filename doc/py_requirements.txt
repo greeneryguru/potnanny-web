@@ -1,0 +1,4 @@
+required python libs from pip
+    - yapsy
+    - Django
+

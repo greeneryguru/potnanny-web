@@ -1,0 +1,11 @@
+[Core]
+Name = Adafruit DHT
+Module = adadht
+
+[Documentation]
+Description = Poll humidity and temp from Adafruit DHT11, DHT22, and AM2302.
+Author = Jeff Leary
+Version = 0.1
+Website = http://greenery.guru
+
+

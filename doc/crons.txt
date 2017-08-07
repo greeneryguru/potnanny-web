@@ -1,0 +1,7 @@
+CRON JOBS for unix account 'green'
+
+# check for new plugins
+* * * * * bash -c 'source $HOME/.profile; ${GREENERY_WEB}/scripts/plugin_loader.py'
+
+# sensor polling 
+* * * * * bash -c 'source $HOME/.profile; ${GREENERY_WEB}/scripts/polling.py'
