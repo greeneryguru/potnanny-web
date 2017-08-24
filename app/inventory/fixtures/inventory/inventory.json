@@ -1,1 +1,0 @@
-[{"model": "inventory.sensor", "pk": 1, "fields": {"name": "Room Temp Sensor", "sensor_type": "temphumid", "device": "DHT22", "gpio": 1, "active": true, "notes": ""}}, {"model": "inventory.relay", "pk": 1, "fields": {"name": "Fan 1 Power", "gpio": 6, "active": true, "notes": ""}}, {"model": "inventory.pollinterval", "pk": 1, "fields": {"value": 10}}]

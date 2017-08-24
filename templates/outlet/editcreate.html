@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+{% if title %}
+    <h2>{{ title }}</h2>
+{% endif %}
+    {{ form.hidden_tag() }}
+    <form action="" method="post" name="outlet">
+        {{ form.hidden_tag() }}
+        <p>
+        {{ form.name.label }} {{ form.name(size=24) }}<br>
+        {% for err in form.name.errors %}
+            <span style="color: red;">[{{ err }}]</span>
+        {% endfor %}<br>  
+        </p>
+        <p><input type="submit" value="Submit"></p>
+    </form>
+{% endblock %}

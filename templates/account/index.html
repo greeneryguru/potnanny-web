@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if title %}
+    <h2>{{ title }}</h2>
+{% endif %}
+{% if users %}
+    <table>
+    {% for u in users %}
+        <tr>
+        <td>{{ u.login }}</td>
+        <td>{{ u.name }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+{% else %}
+    No data available
+{% endif %}
+{% endblock %}
