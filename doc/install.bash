@@ -9,6 +9,7 @@
 # base installs
 sudo apt-get update
 sudo apt-get -y install build-essential
+sudo apt-get -y install python-dev
 sudo apt-get -y install python-cryptography
 sudo apt-get -y install sqlite3
 sudo apt-get -y install python-pip
