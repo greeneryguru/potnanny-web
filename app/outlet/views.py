@@ -24,17 +24,16 @@ def outlet_create(pk=None):
         obj = Outlet.query.get_or_404(int(pk))
         
     form = OutletForm(obj=obj)  
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            if action == 'Add':
-                o = Outlet(name=form.name.data)
-                db.session.add(o)
-            else:
-                o = Outlet.query.get_or_404(int(form.id.data))
-                o.name = form.name.data
-                
-            db.session.commit()
-            return redirect('/outlets')
+    if request.method == 'POST' and form.validate_on_submit():
+        if action == 'Add':
+            o = Outlet(name=form.name.data, channel=int(form.channel.data))
+            db.session.add(o)
+        else:
+            o = Outlet.query.get_or_404(int(form.id.data))
+            o.name = form.name.data
+            
+        db.session.commit()
+        return redirect('/outlets')
 
     return render_template('outlet/editcreate.html', 
         form=form,

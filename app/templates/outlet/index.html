@@ -38,6 +38,7 @@
     {% for o in outlets %}
         <tr>
         <td>{{ o.name }}</td>
+        <td>channel {{ o.channel }}</td>
         <td>
         {% if o.state == 1 %}
         <input type="checkbox" id="outlet-{{ o.id }}" checked>

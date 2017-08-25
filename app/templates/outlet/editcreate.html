@@ -10,7 +10,13 @@
         {{ form.name.label }} {{ form.name(size=24) }}<br>
         {% for err in form.name.errors %}
             <span style="color: red;">[{{ err }}]</span>
-        {% endfor %}<br>  
+        {% endfor %}<br>
+        </p>
+        <p>
+        {{ form.channel.label }} {{ form.channel }}
+        {% for err in form.channel.errors %}
+            <span style="color: red;">[{{ err }}]</span>
+        {% endfor %}<br>
         </p>
         <p><input type="submit" value="Submit"></p>
     </form>
