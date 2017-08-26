@@ -51,11 +51,14 @@ def outlet_delete(pk):
          
 @app.route('/outlets/<pk>/toggle', methods=['POST'])
 def outlet_toggle(pk):
+    exe = "/var/www/greenery/bin/rfoutlet"
     try:
         o = Outlet.query.get(int(pk))
         if o.state:
             o.state = 0
+            os.system("%s %d off" % (exe, o.channel))
         else:
+            os.system("%s %d on" % (exe, o.channel))
             o.state = 1
             
         db.session.commit()
