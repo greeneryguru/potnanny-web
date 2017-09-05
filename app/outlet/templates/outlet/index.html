@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block headers %}
+    <script>
+    $(document).ready(function() {
+        $("input:checkbox").change(function(){
+            var pk = this.id.split("-")[1];
+            var self = this;
+            $.post("/outlet/" + pk + "/toggle", 
+                {'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                function(data){
+                    $(self).prop("checked", data.state);
+			    }, 'json');
+			return false;
+        });
+        $("button.greenery").click(function(){
+            var [mode, pk] = this.id.split('-',2);
+            if (mode == 'edit') {
+                location.href = "/outlet/" + pk + "/edit";
+            }
+			return false;
+        });
+    });
+    </script>
+{% endblock headers %}
+
+{% block content %}
+{% if payload %}
+    <p>
+    <b>
+    {% if title %}
+    {{ title }}
+    {% else %}
+    Outlets
+    {% endif %}
+    </b>
+    <a href="/outlet/create"><span class="glyphicon glyphicon-plus"></span></a>
+    </p>
+    <div class="table-responsive">
+        <table class="table">
+        <tr>
+        <th>Outlet Name</th>
+        <th>On/Off</th>
+        <th>Actions</th>
+        </tr>
+        {% for o in payload %}
+        <tr>
+        <td>{{ o.name }}</td>
+        {% if o.state == 1 %}
+        <td><input type="checkbox" id="outlet-{{ o.id }}" checked data-toggle="toggle" data-size="small"></td>
+        {% else %}
+        <td><input type="checkbox" id="outlet-{{ o.id }}" data-toggle="toggle" data-size="small"></td>
+        {% endif %}
+        <td><button type="button" class="btn btn-primary btn-sm greenery" id="edit-{{ o.id }}">edit</button></td>
+        </tr>
+    {% endfor %}
+        </table>
+    </div>   
+{% else %}
+    <p>
+    No Data Available
+    </p>
+{% endif %}
+{% endblock content %}
+
+

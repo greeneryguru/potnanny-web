@@ -1,22 +1,28 @@
-from app import db
-import json
+from __future__ import unicode_literals
+from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
+from django.core.validators import MaxValueValidator, MinValueValidator
 
-class Outlet(db.Model):
-    __tablename__ = 'outlets'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(24), nullable=False, server_default='', unique=True)
-    channel = db.Column(db.Integer, nullable=False, server_default='1', unique=True)
-    state = db.Column(db.Boolean(), nullable=False, server_default='0')
-    
-    def __init__(self, name, channel):
-        self.name = name
-        self.channel = channel
-        
-    def __repr__(self):
-        return json.dumps(self.simplified())
+@python_2_unicode_compatible
+class Outlet(models.Model):
+    name = models.CharField(
+                        max_length=24, 
+                        unique=True, 
+                        blank=False, 
+                        null=False,
+                        help_text='Name of this outlet. Must be unique. 24 characters')
+    channel = models.IntegerField(
+                        default=1,
+                        null=False,
+                        blank=False,
+                        unique=True,
+                        validators=[MaxValueValidator(15), MinValueValidator(2)],
+                        help_text='Channel number (2-15)')
+    state = models.BooleanField(
+                        default=False, 
+                        null=False, 
+                        blank=False,
+                        help_text='Device state. On(True) or Off(False)')
 
-    def simplified(self):
-        return {'id': self.id, 
-                'name': self.name, 
-                'channel': self.channel, 
-                'state': self.state}
+    def __str__(self):
+        return self.name

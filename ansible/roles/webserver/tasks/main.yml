@@ -1,0 +1,8 @@
+---
+- name: Install NGINX webserver
+  apt:
+    name=nginx
+    state=present
+  become: true
+
+

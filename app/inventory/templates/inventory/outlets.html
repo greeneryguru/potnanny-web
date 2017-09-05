@@ -1,0 +1,14 @@
+<h2>{{ title }}</h2>
+{% if payload %}
+    <table>
+    {% for o in payload %}
+        <tr>
+        <td>{{ o.name }}</td>
+        <td><input type="button" value="On" id="onoff" onclick="onoff();"></td>
+        <td><input type="button" value="Off" id="onoff" onclick="onoff();"></td>
+        </tr>
+    {% endfor %}
+    </table>
+{% else %}
+    <p>No outlets defined</p>
+{% endif %}

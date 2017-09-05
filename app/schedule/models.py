@@ -1,28 +1,46 @@
-from app import db
-import json
+from __future__ import unicode_literals
+from django.db import models
+from django.core.validators import MaxValueValidator, MinValueValidator
+from app.inventory.models import Relay
 
-(min=None, max=None, message=None)
+# Create your models here.
+@python_2_unicode_compatible
+class Schedule(models.Model):
+    name = models.CharField(
+                        max_length=24, 
+                        unique=True, 
+                        blank=False, 
+                        null=False,
+                        default='My Schedule',
+                        help_text='The name you refer to this schedule as. Must be unique. 24 characters')
+    relay = models.ForeignKey(Relay)
+    on_hour = models.IntegerField(
+                        default=0,
+                        blank=False,
+                        null=False,
+                        validators=[MaxValueValidator(0), 
+                                    MinValueValidator(23)],
+                        help_text='Hour to turn ON (0 to 23)'))
+    on_min = models.IntegerField(
+                        default=0,
+                        blank=False,
+                        null=False,
+                        validators=[MaxValueValidator(0), 
+                                    MinValueValidator(59)],
+                        help_text='Minute to turn ON (0 to 59)'))
+    off_hour = models.IntegerField(
+                        default=0,
+                        blank=False,
+                        null=False,
+                        validators=[MaxValueValidator(0), 
+                                    MinValueValidator(23)],
+                        help_text='Hour to turn OFF  (0 to 23)'))
+    off_min = models.IntegerField(
+                        default=0,
+                        blank=False,
+                        null=False,
+                        validators=[MaxValueValidator(0), 
+                                    MinValueValidator(59)],
+                        help_text='Minute to turn OFF  (0 to 59)'))
 
-class Schedule(db.Model):
-    __tablename__ = 'schedules'
-    id = db.Column(db.Integer, primary_key=True)
-    outlet_id = db.Column(db.Integer, db.ForeignKey('outlets.id'))
-    hour = db.Column(db.Integer, nullable=False, server_default='0')
-    minute = db.Column(db.Integer, nullable=False, server_default='0')
-    outlet_state = db.Column(db.Boolean(), nullable=False, server_default='0')
-    
-    # is_active turns a schedule on or off
-    is_active = db.Column(db.Boolean(), nullable=False, server_default='1')
-    
-    def __repr__(self):
-        return json.dumps(self.simplified())
 
-    def simplified(self):
-        return {'id': self.id, 
-                'outlet_id': self.outlet_id, 
-                'hour': self.hour,
-                'minute': self.minute,
-                'outlet_state': self.outlet_state,
-                'is_active', self.is_active,
-                }
-    

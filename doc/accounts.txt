@@ -1,0 +1,13 @@
+Pre-Built Django Accounts:
+
+    SUPER-USER
+        login:      admin
+        password:   guru2017
+
+    NORMAL-USER
+        login:      greenery
+        password:   guru2017
+
+    IMPORTANT!
+    Be sure to change these passwords immediately!
+    From a 
