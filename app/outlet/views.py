@@ -63,7 +63,7 @@ def toggle(request, pk):
     if request.method != 'POST':
         raise Http404("Invalid request method")            
 
-    cmd = '/var/www/greenery/bin/codesend'
+    cmd = '/var/www/greenery/bin/send'
     code = 12066304
 
     try:
@@ -75,7 +75,7 @@ def toggle(request, pk):
             o.state = 1
             code = code + 1
 
-        os.system("sudo %s %d" % (cmd, code))
+        os.system("%s %d" % (cmd, code))
         o.save()
         return JsonResponse(o.simplified())
     except:
