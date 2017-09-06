@@ -65,20 +65,18 @@ def toggle(request, pk):
 
     cmd = '/var/www/greenery/bin/codesend'
     code = 12066304
+
     try:
         o = get_object_or_404(Outlet, id=int(pk))
         code = code + (int(o.channel) << 1)
-        print "code before adding on/off state: %d" % code
         if o.state == 1 or o.state is True:
             o.state = 0
         else:
-            print "code should be set to true!"
             o.state = 1
             code = code + 1
 
         print "sending code: %d" % code
-
-        os.system("%s %d" % (cmd, code))
+        os.system("sudo %s %d" % (cmd, code))
         o.save()
         return JsonResponse(o.simplified())
     except:

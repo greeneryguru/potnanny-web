@@ -26,3 +26,8 @@ class Outlet(models.Model):
 
     def __str__(self):
         return self.name
+
+
+    def simplified(self):
+        return {'id': self.id, 'name': self.name, 'channel': self.channel,
+                'state': self.state}
