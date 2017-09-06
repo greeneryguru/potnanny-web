@@ -1,10 +1,9 @@
-import os
 from __future__ import unicode_literals
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404, JsonResponse
 from .models import Outlet
 from .forms import OutletForm
-
+import subprocess
 
 def index(request):
     context = { 'title': 'Wireless Outlets' }
@@ -78,7 +77,7 @@ def toggle(request, pk):
         code = code + newstate
         o.state = newstate
         # issue command to 433mhz transmitter
-        os.system("%s %d" % (cmd, code))
+        subprocess.call("%s %d" % (cmd, code), shell=True)
         o.save()
         return JsonResponse(o.simplified())
     except:
