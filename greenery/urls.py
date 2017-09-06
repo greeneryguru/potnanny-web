@@ -19,4 +19,5 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^outlet/', include('app.outlet.urls')),
+    url(r'^schedule/', include('app.schedule.urls')),    
 ]

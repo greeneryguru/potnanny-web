@@ -47,7 +47,7 @@ def edit(request, pk):
     else:
         form = OutletForm(instance=o)
         
-    return render(request, 'outlet/form.html', {'form': form})
+    return render(request, 'outlet/form.html', {'form': form, 'pk': pk})
 
 
 def delete(request, pk):
@@ -65,20 +65,23 @@ def toggle(request, pk):
 
     cmd = '/var/www/greenery/bin/send'
     code = 12066304
-    newstate = None
+
     try:
         o = get_object_or_404(Outlet, id=int(pk))
-        code = code + (int(o.channel) << 1)
+        code += (int(o.channel) << 1)
         if o.state == 1 or o.state is True:
-            newstate = 0
+            o.state = 0
         else:
-            newstate = 1
+            o.state = 1
             
-        code = code + newstate
-        o.state = newstate
-        # issue command to 433mhz transmitter
-        subprocess.call("%s %d" % (cmd, code), shell=True)
-        o.save()
+        code += o.state
+        child = subprocess.Popen((cmd, str(code)),
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE )
+        output, errors = child.communicate()
+        if not child.returncode:
+            o.save()
+
         return JsonResponse(o.simplified())
     except:
         return JsonResponse({})

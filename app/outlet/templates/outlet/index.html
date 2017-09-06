@@ -38,19 +38,17 @@
     <div class="table-responsive">
         <table class="table">
         <tr>
-        <th>Outlet Name</th>
+        <th>Outlet</th>
         <th>On/Off</th>
-        <th>Actions</th>
         </tr>
         {% for o in payload %}
         <tr>
-        <td>{{ o.name }}</td>
+        <td><button type="button" class="btn btn-primary btn-sm greenery" id="edit-{{ o.id }}" style="width: 120px;">{{ o.name }}</button></td>
         {% if o.state == 1 %}
         <td><input type="checkbox" id="outlet-{{ o.id }}" checked data-toggle="toggle" data-size="small"></td>
         {% else %}
         <td><input type="checkbox" id="outlet-{{ o.id }}" data-toggle="toggle" data-size="small"></td>
         {% endif %}
-        <td><button type="button" class="btn btn-primary btn-sm greenery" id="edit-{{ o.id }}">edit</button></td>
         </tr>
     {% endfor %}
         </table>

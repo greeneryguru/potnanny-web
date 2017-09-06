@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block headers %}
+    <script>
+    $(document).ready(function() {
+        $("input:checkbox").each(function(){
+  		    var self = this;
+            var a = parseInt($("#days").val());
+            var b = parseInt($(self).val());
+    	    if (a & b) {
+      	        $(self).prop("checked", true);
+    	    } else {
+      	        $(self).prop("checked", false);
+            }
+        });    
+        $("input:checkbox").change(function(){
+            var self = this;
+            var n = 0;
+            if ($(self).prop("checked")) {
+                n = parseInt($("#days").val()) + parseInt($(self).val());
+            } else {
+                n = parseInt($("#days").val()) - parseInt($(self).val());
+            }
+            $("#days").val(n);
+        });
+    });
+    </script>
+{% endblock headers %}
+{% block content %}
+    <form action="" method="post" name="schedule">
+    {% csrf_token %}
+    {% for h in form.hidden_fields %}
+        {{ h }}
+    {% endfor %}
+
+    {{ form.as_p }}
+
+    <div class="form-check-inline">
+    {% for d in dow %}
+        <label class="form-check-label">{{ d.0 }}
+        <input class="form-control" type="checkbox" id="cb-{{ d.0 }}" value="{{ d.1 }}">
+        </label>
+
+    {% endfor %}
+    </div>
+
+    <button type="submit" class="save btn btn-primary btn-sm">Submit</button>
+    {% if pk %}<button type="button" class="btn btn-primary btn-sm greenery" id="delete-{{ pk }}">Delete</button>{% endif %}
+    </form>
+
+{% endblock content %}
+

@@ -17,7 +17,7 @@ class Outlet(models.Model):
                         blank=False,
                         unique=True,
                         validators=[MaxValueValidator(15), MinValueValidator(2)],
-                        help_text='Channel number (2-15)')
+                        help_text='Channel number')
     state = models.BooleanField(
                         default=False, 
                         null=False, 
