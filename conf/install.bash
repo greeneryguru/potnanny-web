@@ -45,6 +45,9 @@ fi
 sudo ln -s /etc/uwsgi/apps-available/uwsgi.ini /etc/uwsgi/apps-enabled/uwsgi.ini
 
 
+# give www-data user permissions to run as root the codesend binary
+
+
 # restart services
 sudo service uwsgi restart
 sudo service nginx restart

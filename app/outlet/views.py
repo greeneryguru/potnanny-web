@@ -75,7 +75,6 @@ def toggle(request, pk):
             o.state = 1
             code = code + 1
 
-        print "sending code: %d" % code
         os.system("sudo %s %d" % (cmd, code))
         o.save()
         return JsonResponse(o.simplified())
