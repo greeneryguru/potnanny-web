@@ -1,3 +1,4 @@
+import os
 from __future__ import unicode_literals
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404, JsonResponse
@@ -65,16 +66,18 @@ def toggle(request, pk):
 
     cmd = '/var/www/greenery/bin/send'
     code = 12066304
-
+    newstate = None
     try:
         o = get_object_or_404(Outlet, id=int(pk))
         code = code + (int(o.channel) << 1)
         if o.state == 1 or o.state is True:
-            o.state = 0
+            newstate = 0
         else:
-            o.state = 1
+            newstate = 1
             
-        code = code + int(o.state)
+        code = code + newstate
+        o.state = newstate
+        # issue command to 433mhz transmitter
         os.system("%s %d" % (cmd, code))
         o.save()
         return JsonResponse(o.simplified())
