@@ -25,6 +25,7 @@ sudo pip install Django==1.10.8
 
 # download greenery app
 sudo git clone https://github.com/jeffleary00/greenery.git /var/www/greenery
+sudo cp /var/www/greenery/db.sqlite3 /var/www/greenery/greenery.db
 
 
 # configure web app
@@ -45,7 +46,8 @@ fi
 sudo ln -s /etc/uwsgi/apps-available/uwsgi.ini /etc/uwsgi/apps-enabled/uwsgi.ini
 
 
-# give www-data user permissions to run as root the codesend binary
+# give www-data user permissions gpio stuff
+sudo usermod -a -G gpio www-data
 
 
 # restart services

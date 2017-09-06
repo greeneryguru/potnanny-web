@@ -73,8 +73,8 @@ def toggle(request, pk):
             o.state = 0
         else:
             o.state = 1
-            code = code + 1
-
+            
+        code = code + int(o.state)
         os.system("%s %d" % (cmd, code))
         o.save()
         return JsonResponse(o.simplified())
