@@ -72,8 +72,7 @@ def toggle(request, pk):
             o.state = 0
         else:
             o.state = 1
-
-        code += o.state
+            code += 1
 
         print "sending code: %d" % code
 
