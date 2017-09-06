@@ -68,7 +68,8 @@ def toggle(request, pk):
     try:
         o = get_object_or_404(Outlet, id=int(pk))
         code = code + (int(o.channel) << 1)
-        if o.state:
+        print "code before adding on/off state: %d" % code
+        if o.state == 1 or o.state is True:
             o.state = 0
         else:
             o.state = 1
