@@ -4,35 +4,22 @@ from .models import Schedule
 class ScheduleForm(forms.ModelForm):
     class Meta:
         model = Schedule
-        fields = ['days', 'outlet', 'on_hour', 'on_min', 'off_hour', 'off_min']
+        fields = ['outlet', 'on_time', 'off_time', 'days']
         widgets = {
-            'days': forms.HiddenInput(),
-            'on_hour': forms.NumberInput(attrs={
+            'on_time': forms.TextInput(attrs={
                                             'required': True,
-                                            'min': 0, 
-                                            'max': 23,
                                             'class': 'form-control'}),
-            'on_min': forms.NumberInput(attrs={
+            'off_time': forms.TextInput(attrs={
                                             'required': True,
-                                            'min': 0, 
-                                            'max': 59,
                                             'class': 'form-control'}),
-            'off_hour': forms.NumberInput(attrs={
+            'days': forms.NumberInput(attrs={
                                             'required': True,
-                                            'min': 0, 
-                                            'max': 23,
-                                            'class': 'form-control'}),
-            'off_min': forms.NumberInput(attrs={
-                                            'required': True,
-                                            'min': 0, 
-                                            'max': 59,
                                             'class': 'form-control'}),
         }
         help_texts = {
-            'on_hour': None,
-            'on_min': None,
-            'off_hour': None,
-            'off_min': None,
+            # 'on_time': None,
+            # 'off_time': None,
+            'days': None,
         }
         
    

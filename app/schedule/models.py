@@ -9,43 +9,51 @@ from app.outlet.models import Outlet
 @python_2_unicode_compatible
 class Schedule(models.Model):
     outlet = models.ForeignKey(Outlet)
-    on_hour = models.IntegerField(
-                        default=0,
+    on_time = models.TextField(
+                        default="7:00 AM",
                         blank=False,
                         null=False,
-                        validators=[MaxValueValidator(23), 
-                                    MinValueValidator(0)],
-                        help_text='Hour to turn ON (0 to 23)')
-    on_min = models.IntegerField(
-                        default=0,
+                        help_text='Like "7:30 AM"')
+    off_time = models.TextField(
+                        default="7:00 PM",
                         blank=False,
                         null=False,
-                        validators=[MaxValueValidator(59), 
-                                    MinValueValidator(0)],
-                        help_text='Minute to turn ON (0 to 59)')
-    off_hour = models.IntegerField(
-                        default=0,
-                        blank=False,
-                        null=False,
-                        validators=[MaxValueValidator(23), 
-                                    MinValueValidator(0)],
-                        help_text='Hour to turn OFF  (0 to 23)')
-    off_min = models.IntegerField(
-                        default=0,
-                        blank=False,
-                        null=False,
-                        validators=[MaxValueValidator(59), 
-                                    MinValueValidator(0)],
-                        help_text='Minute to turn OFF  (0 to 59)')
+                        help_text='Like "12:00 PM"')
     days = models.IntegerField(
-                        default=0,
+                        default=127,
                         blank=False,
                         null=False,
                         help_text='Days to run. Binary encoded')
 
 
     def __str__(self):
-        return "%s ON=%02d:%02d OFF=%02d:%02d" % (self.outlet, self.on_hour,
-                    self.on_min, self.off_hour, self.off_min)
+        d = ",".join(self.run_days())
+        return "%s %s/%s (%s)" % (self.outlet, self.on_time,
+                    self.off_time, d)
+
+
+    def run_days(self):
+        results = [];
+        dow = [
+            ('Su', 64),
+            ('Mo', 32),
+            ('Tu', 16),
+            ('We', 8),
+            ('Th', 4),
+            ('Fr', 2),
+            ('Sa', 1),
+        ]
+        if self.days == 127:
+            results.append('Every Day')
+        else:
+            for item in dow:
+                if (self.days & item[1]):
+                    results.append(item[0])
+
+        return results
+    
+
+
+
 
 

@@ -1,0 +1,11 @@
+TODO:
+    9/6/2017
+    - Move all page javascript functions to separate .js file
+    - Create python class/module to wrap rf "send" command and make it more
+        modular.
+    - Django ModelForm is not correctly updating the Schedule "days" field
+        when the field is defined as a HiddenInput in forms.py, so currently
+        I have it built as a regular visible NumberInput, but this is a hack.
+        Must find a better way to deal with that form.
+    - Build scheduler cron/daemon to deal with Schedules.
+

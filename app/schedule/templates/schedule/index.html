@@ -3,24 +3,23 @@
 {% endblock headers %}
 
 {% block content %}
-{% if title %}
-    {{ title }}
-{% else %}
-    Schedules
-{% endif %}
 <a href="/schedule/create"><span class="glyphicon glyphicon-plus"></span></a>
 
 {% if payload %}
     <div class="table-responsive">
         <table class="table">
     {% for s in payload %}
-        <tr><td>{{ s }}</td></tr>
+        <tr><td><a href="/schedule/{{ s.id }}/edit" class="btn btn-primary" role="button"  style="width: 380px;">{{ s }}</a></td></tr>
     {% endfor %}
         </table>
     </div>
 {% else %}
+    <hr>
     <p>
-    No Data Available
+    No Schedules defined. 
+    </p>
+    <p>
+    Press "+" symbol above to add a new schedule.
     </p>
 {% endif %}
 {% endblock content %}

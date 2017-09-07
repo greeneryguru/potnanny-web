@@ -18,14 +18,21 @@ sudo apt-get -y install python-pip
 sudo apt-get -y install nginx
 sudo apt-get -y install uwsgi
 sudo apt-get -y install uwsgi-plugin-python
-
-# flask requirements
 sudo pip install Django==1.10.8
+
+
+# give www-data user permissions gpio stuff
+sudo usermod -a -G gpio www-data
 
 
 # download greenery app
 sudo git clone https://github.com/jeffleary00/greenery.git /var/www/greenery
+
+# copy initial database to production
 sudo cp /var/www/greenery/db.sqlite3 /var/www/greenery/greenery.db
+
+
+# download and install Jquery, Bootstrap, Bootstrap-Toggle
 
 
 # configure web app
@@ -44,10 +51,6 @@ if [ -f /etc/uwsgi/apps-enabled/uwsgi.ini ]; then
    sudo rm /etc/uwsgi/apps-enabled/uwsgi.ini
 fi
 sudo ln -s /etc/uwsgi/apps-available/uwsgi.ini /etc/uwsgi/apps-enabled/uwsgi.ini
-
-
-# give www-data user permissions gpio stuff
-sudo usermod -a -G gpio www-data
 
 
 # restart services

@@ -22,40 +22,33 @@
     });
     </script>
 {% endblock headers %}
-
 {% block content %}
+    <div class="row">
+    <div class="col-md-1"><a href="/outlet/create"><span class="glyphicon glyphicon-plus"></span></a></div>
+    </div>
 {% if payload %}
-    <p>
-    <b>
-    {% if title %}
-    {{ title }}
-    {% else %}
-    Outlets
-    {% endif %}
-    </b>
-    <a href="/outlet/create"><span class="glyphicon glyphicon-plus"></span></a>
-    </p>
     <div class="table-responsive">
         <table class="table">
-        <tr>
-        <th>Outlet</th>
-        <th>On/Off</th>
-        </tr>
         {% for o in payload %}
         <tr>
-        <td><button type="button" class="btn btn-primary btn-sm greenery" id="edit-{{ o.id }}" style="width: 120px;">{{ o.name }}</button></td>
+        <td><button type="button" class="btn btn-primary greenery" id="edit-{{ o.id }}" style="width: 160px;">{{ o.name }}</button></td>
         {% if o.state == 1 %}
-        <td><input type="checkbox" id="outlet-{{ o.id }}" checked data-toggle="toggle" data-size="small"></td>
+        <td><input type="checkbox" id="outlet-{{ o.id }}" checked data-toggle="toggle" data-size="normal"></td>
         {% else %}
-        <td><input type="checkbox" id="outlet-{{ o.id }}" data-toggle="toggle" data-size="small"></td>
+        <td><input type="checkbox" id="outlet-{{ o.id }}" data-toggle="toggle" data-size="normal"></td>
         {% endif %}
         </tr>
     {% endfor %}
         </table>
-    </div>   
+    </div>
+    
 {% else %}
+    <hr>
     <p>
-    No Data Available
+    No Wireless Outlets defined. 
+    </p>
+    <p>
+    Press "+" symbol above to add a new outlet.
     </p>
 {% endif %}
 {% endblock content %}

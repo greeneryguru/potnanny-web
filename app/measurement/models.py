@@ -33,37 +33,6 @@ class SensorData(models.Model):
 
 
 @python_2_unicode_compatible
-class RelayState(models.Model):
-    relay = models.ForeignKey(Relay)
-    value = models.IntegerField(null=True, 
-                        blank=True)
-    datetime = models.DateTimeField(default=django.utils.timezone.now,
-                        blank=True,
-                        null=True) 
-                            
-    def __str__(self):
-        return ",".join((str(self.relay), 
-                        "%d" % self.value, 
-                        str(self.datetime)))
-
-"""
-@python_2_unicode_compatible
-class OutletState(models.Model):
-    outlet = models.ForeignKey(WirelessOutlet)
-    value = models.IntegerField(null=True, 
-                        blank=True)
-    datetime = models.DateTimeField(default=django.utils.timezone.now,
-                        blank=True,
-                        null=True) 
-                            
-    def __str__(self):
-        return ",".join((str(self.outlet), 
-                        "%d" % self.value, 
-                        str(self.datetime)))
-
-"""
-
-@python_2_unicode_compatible
 class RetentionPeriod(models.Model):
     CHOICES = (
         (30,    '30 days'),

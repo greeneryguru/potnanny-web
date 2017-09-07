@@ -3,7 +3,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404, JsonResponse
 from .models import Outlet
 from .forms import OutletForm
-import subprocess
+from app.schedule.models import Schedule
+from lib.rfutils import TXChannelControl
 
 def index(request):
     context = { 'title': 'Wireless Outlets' }
@@ -35,8 +36,9 @@ def create(request):
 
 def edit(request, pk):
     o = get_object_or_404(Outlet, id=int(pk))
+    scheds = Schedule.objects.filter(outlet=o)
     form = None
-
+    
     if request.method == 'POST':
         form = OutletForm(request.POST, instance=o)
         if form.is_valid():
@@ -47,7 +49,8 @@ def edit(request, pk):
     else:
         form = OutletForm(instance=o)
         
-    return render(request, 'outlet/form.html', {'form': form, 'pk': pk})
+    return render(request, 'outlet/form.html', 
+                            {'form': form, 'pk': pk, 'schedules': scheds})
 
 
 def delete(request, pk):
@@ -63,28 +66,20 @@ def toggle(request, pk):
     if request.method != 'POST':
         raise Http404("Invalid request method")            
 
-    cmd = '/var/www/greenery/bin/send'
-    code = 12066304
+    o = get_object_or_404(Outlet, id=int(pk))
+    tcc = TXChannelControl(send_command='/var/www/greenery/bin/send')
 
-    try:
-        o = get_object_or_404(Outlet, id=int(pk))
-        code += (int(o.channel) << 1)
-        if o.state == 1 or o.state is True:
-            o.state = 0
-        else:
-            o.state = 1
-            
-        code += o.state
-        child = subprocess.Popen((cmd, str(code)),
-                                    stdout=subprocess.PIPE,
-                                    stderr=subprocess.PIPE )
-        output, errors = child.communicate()
-        if not child.returncode:
-            o.save()
+    if o.state == 1 or o.state is True:
+        newstate = 0
+    else:
+        newstate = 1
+        
+    rval, msg = tcc.send_control(o.channel, newstate)
+    if not rval:
+        o.state = newstate
+        o.save()
 
-        return JsonResponse(o.simplified())
-    except:
-        return JsonResponse({})
+    return JsonResponse(o.simplified())
 
 
 

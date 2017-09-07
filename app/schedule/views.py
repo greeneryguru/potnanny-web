@@ -4,6 +4,16 @@ from django.http import Http404, JsonResponse
 from .models import Schedule
 from .forms import ScheduleForm
 
+DOWS = [
+    ('Su', 64),
+    ('Mo', 32),
+    ('Tu', 16),
+    ('We', 8),
+    ('Th', 4),
+    ('Fr', 2),
+    ('Sa', 1),
+]
+
 def index(request):
     context = { 'title': 'Schedules' }
 
@@ -16,28 +26,42 @@ def index(request):
 
 
 def create(request):
-    form = None
-    dow = [
-        ('Sun', 64),
-        ('Mon', 32),
-        ('Tue', 16),
-        ('Wed', 8),
-        ('Thu', 4),
-        ('Fri', 2),
-        ('Sat', 1),
-    ]
     if request.method == 'POST':
-        print request.POST
         form = ScheduleForm(request.POST)
+
         if form.is_valid():
             sched = form.save()
             sched.save()
             return redirect('/schedule')
-        else:
-            return render(request, 'schedule/form.html', {'form': form, 'dow': dow})
+
     else:
         form = ScheduleForm()
+
+    return render(request, 'schedule/form.html', 
+                                    {'form': form, 'dow': DOWS})
+
+
+def edit(request, pk):
+    o = get_object_or_404(Schedule, id=int(pk))
+    form = ScheduleForm(instance=o)
+
+    if request.method == 'POST':
+        form = ScheduleForm(request.POST, instance=o)
+        if form.is_valid():
+            sched = form.save()
+            sched.save()
+            return redirect('/schedule')
         
-    return render(request, 'schedule/form.html', {'form': form, 'dow': dow})
+    return render(request, 'schedule/form.html', 
+                    {'form': form, 'dow': DOWS, 'pk': pk})
+        
+
+def delete(request, pk):
+    if request.method != 'POST':
+        raise Http404("Invalid request method")  
+
+    o = get_object_or_404(Schedule, id=int(pk))
+    o.delete()
+    return redirect('/schedule')
 
 
