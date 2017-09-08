@@ -5,7 +5,7 @@ import subprocess
 class TXChannelControl(object):
 
     def __init__(self, **kwargs):
-        self.send_command = '/usr/local/bin/rf_pi/send'
+        self.send_command = '/var/www/greenery/send'
         self.base_code = 12066304
         self.pulse_width = 170
         self.gpio_pin = 0
@@ -62,4 +62,7 @@ class TXChannelControl(object):
         code += (channel << 1)
         code += state
 
-        return str(code)      
+        return str(code)  
+
+
+    
