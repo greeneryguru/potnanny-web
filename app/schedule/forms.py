@@ -1,25 +1,25 @@
-from django import forms
+from flask_wtf import FlaskForm
+from wtforms import StringField, HiddenField, IntegerField, SelectField
+from wtforms.validators import ValidationError, InputRequired, DataRequired
 from .models import Schedule
+import re
 
-class ScheduleForm(forms.ModelForm):
-    class Meta:
-        model = Schedule
-        fields = ['outlet', 'on_time', 'off_time', 'days']
-        widgets = {
-            'on_time': forms.TextInput(attrs={
-                                            'required': True,
-                                            'class': 'form-control'}),
-            'off_time': forms.TextInput(attrs={
-                                            'required': True,
-                                            'class': 'form-control'}),
-            'days': forms.NumberInput(attrs={
-                                            'required': True,
-                                            'class': 'form-control'}),
-        }
-        help_texts = {
-            # 'on_time': None,
-            # 'off_time': None,
-            'days': None,
-        }
-        
-   
+
+def valid_time_check(form, field):
+    if not re.search(r'^(\d\d?:\d\d?)\s*(am|pm)?$', field.data, re.IGNORECASE):
+        raise ValidationError('Enter time like "7:35 PM" or "19:35"')
+
+
+class ScheduleForm(FlaskForm):
+    id = HiddenField('id')
+    days = HiddenField('days', default="127")
+    outlet_id = SelectField('Outlet', validators=[DataRequired()])
+    on_time = StringField('ON time', 
+                            validators=[
+                                InputRequired(),
+                                valid_time_check])
+    off_time = StringField('OFF time', 
+                            validators=[
+                                InputRequired(),
+                                valid_time_check])
+    

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<html>
+    <head>
+        <script src="{{ url_for('static',  filename='js/jquery-3.2.1.min.js') }}"></script>
+        <link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='css/normalize.css') }}">
+        <link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='css/skeleton.css') }}">
+        <link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='css/font-awesome.css') }}">
+        <link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='css/skeleton-fontawesome-buttons.css') }}">
+        <link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='css/greenery.css') }}">
+        <script src="{{ url_for('static',  filename='js/greenery.js') }}"></script>
+    {% block headers %}{% endblock headers %}
+    {% if title %}
+    <title>greenery:{{ title }}</title>
+    {% endif %}
+    </head>
+    <body>
+    <div class="topnav" id="myTopnav">
+        <a href="/">GREENERY.GURU</a>
+        <a href="/outlet">outlets</a>
+        <a href="/schedule">schedules</a>
+
+        <a href="/logout" style="float: right;"><i class="fa fa-sign-out"></i> logout</a>
+        <a href="/admin" style="float: right;"><i class="fa fa-flash"></i> advanced</a>
+        <a href="javascript:void(0);" class="icon" onclick="myFunction()">&#9776;</a>
+    </div>
+    <div class="content">
+    {% block content %}{% endblock content %}
+    </div>
+    </body>
+</html>

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block headers %}
+    <script>
+    $(document).ready(function() {
+        $("button.greenery").click(function(){
+            var [mode, pk] = this.id.split('-',2);
+            if (mode == 'delete') {
+                if (window.confirm("Are you sure you want to delete this object from the system?")) {          
+                    $.post("/sensor/" + pk + "/delete",
+                        {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
+                        function(){
+                            window.location.replace("/sensor");
+                        }
+                    );
+                }
+            }
+			return false;
+        });
+    });
+    </script>
+{% endblock headers %}
+{% block content %}
+{% if title %}
+    <h2>{{ title }}</h2>
+{% endif %}
+    <form action="" method="post" name="outlet">
+        {{ form.hidden_tag() }}
+        <p>
+        {{ form.name.label }} {{ form.name(size=24) }}<br>
+        {% for err in form.name.errors %}
+            <span style="color: red;">[{{ err }}]</span>
+        {% endfor %}<br>
+        </p>
+        <p>
+        <input type="submit" value="{% if pk %}Save{% else %}Submit{% endif %}">
+        {% if pk %}<button class="button greenery" type="button" id="delete-{{ pk }}">Delete</button>{% endif %}        
+        </p>
+    </form>
+{% endblock %}

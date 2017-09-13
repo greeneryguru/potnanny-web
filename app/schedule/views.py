@@ -1,67 +1,70 @@
-from __future__ import unicode_literals
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import Http404, JsonResponse
+from flask import render_template, redirect, request, session
+from flask import jsonify
+from app import app, db
+from flask_login import login_required
 from .models import Schedule
 from .forms import ScheduleForm
-
-DOWS = [
-    ('Su', 64),
-    ('Mo', 32),
-    ('Tu', 16),
-    ('We', 8),
-    ('Th', 4),
-    ('Fr', 2),
-    ('Sa', 1),
-]
-
-def index(request):
-    context = { 'title': 'Schedules' }
-
-    try:
-        context['payload'] = Schedule.objects.all()
-    except:
-        pass
-
-    return render(request, 'schedule/index.html', context)
+from app.outlet.models import Outlet
+from app.lib.greenery.utils import WeekdayMap
 
 
-def create(request):
-    if request.method == 'POST':
-        form = ScheduleForm(request.POST)
+@app.route('/schedule')
+@login_required
+def schedule_index():
+    schedules = Schedule.query.all()
+    return render_template('schedule/index.html', 
+                title='schedules',
+                payload=schedules)
 
-        if form.is_valid():
-            sched = form.save()
-            sched.save()
+        
+@app.route('/schedule/create', methods=['GET','POST'])
+@app.route('/schedule/<pk>/edit', methods=['GET','POST'])
+@login_required
+def schedule_edit(pk=None):
+    obj = None
+    title = 'add schedule'
+    dow = WeekdayMap(show_first=2).reverse_ordered_list()
+
+    if pk:
+        title = 'edit schedule'
+        obj = Schedule.query.get_or_404(int(pk))
+        
+    form = ScheduleForm(obj=obj)
+    form.outlet_id.choices = [(str(row.id), row.name) for row in Outlet.query.all()]
+
+    if request.method == 'POST' and form.validate_on_submit():
+        if pk:
+            form.populate_obj(obj)
+        else:
+            o = Schedule()
+            o.outlet_id = int(form.outlet_id.data)
+            o.on_time = form.on_time.data
+            o.off_time = form.off_time.data
+            o.days = int(form.days.data)
+            db.session.add(o)
+    
+        db.session.commit()
+        if request.args.get("next"):
+            return redirect(request.args.get("next"))    
+        else:
             return redirect('/schedule')
 
+    return render_template('schedule/form.html', 
+        form=form,
+        title=title,
+        dow=dow,
+        pk=pk)    
+
+
+@app.route('/schedule/<pk>/delete', methods=['POST'])
+@login_required
+def schedule_delete(pk):
+    o = Outlet.query.get_or_404(int(pk))
+    db.session.delete(o)
+    db.session.commit()
+    if request.args.get("next"):
+        return redirect(request.args.get("next"))    
     else:
-        form = ScheduleForm()
-
-    return render(request, 'schedule/form.html', 
-                                    {'form': form, 'dow': DOWS})
-
-
-def edit(request, pk):
-    o = get_object_or_404(Schedule, id=int(pk))
-    form = ScheduleForm(instance=o)
-
-    if request.method == 'POST':
-        form = ScheduleForm(request.POST, instance=o)
-        if form.is_valid():
-            sched = form.save()
-            sched.save()
-            return redirect('/schedule')
-        
-    return render(request, 'schedule/form.html', 
-                    {'form': form, 'dow': DOWS, 'pk': pk})
-        
-
-def delete(request, pk):
-    if request.method != 'POST':
-        raise Http404("Invalid request method")  
-
-    o = get_object_or_404(Schedule, id=int(pk))
-    o.delete()
-    return redirect('/schedule')
-
-
+        return redirect('/schedule')
+    
+ 

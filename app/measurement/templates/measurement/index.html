@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block headers %}
+    <script>
+    $(document).ready(function() {
+        $("input:checkbox").change(function(){
+            var pk = this.id.split("-")[1];
+            var self = this;
+            $.post("/outlet/" + pk + "/toggle", 
+                {}, function(data){
+                    $(self).prop("checked", data.state);
+			}, 'json');
+			return false;
+        });
+        $("button").click(function(){
+            var [mode, pk] = this.id.split('-',2);
+            if (mode == 'edit') {
+                location.href = "/outlet/" + pk + "/edit";
+            } else {
+                if (window.confirm("Are you sure you want to delete this object from the system?")) {
+                    $.post("/outlet/" + pk + "/delete",
+                        {'csrfmiddlewaretoken': '{{ csrf_token() }}'}, 
+                        function(){location.reload();}
+                    );
+                }
+            }
+			return false;
+        });
+    });
+    </script>
+{% endblock %}
+
+{% block content %}
+{% if title %}
+    <h2>{{ title }}</h2>
+{% endif %}
+{% if payload %}
+    <table>
+    {% for o in payload %}
+        <tr>
+        <td>{{ o.name }}</td>
+        <td>channel {{ o.channel }}</td>
+        <td>
+        {% if o.state == 1 %}
+        <input type="checkbox" id="outlet-{{ o.id }}" checked>
+        {% else %}
+        <input type="checkbox" id="outlet-{{ o.id }}">
+        {% endif %}
+        </td>
+        <td>
+        <button id="edit-{{ o.id }}">edit</button>
+        </td>
+        <td>
+        <button id="delete-{{ o.id }}">delete</button>
+        </td>
+        </tr>
+    {% endfor %}
+    </table>
+{% else %}
+    No data available
+{% endif %}
+<hr>
+<a href="/outlet/create">Add New Outlet</a>
+{% endblock %}

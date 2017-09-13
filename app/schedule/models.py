@@ -1,48 +1,40 @@
-from __future__ import unicode_literals
-from django.db import models
-from django.utils.encoding import python_2_unicode_compatible
-from django.core.validators import MaxValueValidator, MinValueValidator
+from app import db
 from app.outlet.models import Outlet
+from app.lib.greenery.utils import WeekdayMap
+import json
 
 
-# Create your models here.
-@python_2_unicode_compatible
-class Schedule(models.Model):
-    outlet = models.ForeignKey(Outlet)
-    on_time = models.TextField(
-                        default="7:00 AM",
-                        blank=False,
-                        null=False,
-                        help_text='Like "7:30 AM"')
-    off_time = models.TextField(
-                        default="7:00 PM",
-                        blank=False,
-                        null=False,
-                        help_text='Like "12:00 PM"')
-    days = models.IntegerField(
-                        default=127,
-                        blank=False,
-                        null=False,
-                        help_text='Days to run. Binary encoded')
+class Schedule(db.Model):
+    __tablename__ = 'schedules'
+    id = db.Column(db.Integer, primary_key=True)
+    outlet_id = db.Column(db.Integer, db.ForeignKey('outlets.id'))
+    on_time = db.Column(db.String(16), nullable=False, server_default='')
+    off_time = db.Column(db.String(16), nullable=False, server_default='')
+    days = db.Column(db.Integer, nullable=False, server_default='127')
+    
+    outlet = db.relationship('Outlet',
+                           backref=db.backref('schedules', cascade="all, delete-orphan"), lazy='joined')
 
 
-    def __str__(self):
+    def __repr__(self):
+        o = Outlet.query.filter(Outlet.id == self.outlet_id).first()
         d = ",".join(self.run_days())
-        return "%s %s/%s (%s)" % (self.outlet, self.on_time,
+        return "%s %s/%s (%s)" % (o.name, self.on_time,
                     self.off_time, d)
 
 
+    def simplified(self):
+        return {'id': self.id, 
+                'outlet_id': self.outlet_id, 
+                'on_time': self.hour,
+                'off_time': self.minute,
+                'days': self.outlet_state,
+                }
+    
+
     def run_days(self):
         results = [];
-        dow = [
-            ('Su', 64),
-            ('Mo', 32),
-            ('Tu', 16),
-            ('We', 8),
-            ('Th', 4),
-            ('Fr', 2),
-            ('Sa', 1),
-        ]
+        dow = WeekdayMap(show_first=2).reverse_ordered_list()
         if self.days == 127:
             results.append('Every Day')
         else:
@@ -51,9 +43,13 @@ class Schedule(models.Model):
                     results.append(item[0])
 
         return results
-    
 
 
+    def runs_on(self, wkday):
+        for k, v in self.data:
+            if re.search(wkday, v, re.IGNORECASE):
+                return True
 
+        return False
 
-
+        

@@ -1,8 +1,0 @@
-SENSORS
-
-Any sensor attached to the Raspberry PI must have a corresponding plugin, so
-that Greenery can poll it to get data.
-
-    Current Plugins:
-    ----------------
-    - Adafruit DHT: Temp and humidity from DHT11, DHT22, and AM2302 sensors.

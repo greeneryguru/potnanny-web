@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+{% if title %}
+    <h2>{{ title }}</h2>
+{% endif %}
+    <form action="" method="post" name="resetpass">
+        {{ form.hidden_tag() }}
+        <p>
+        {{ form.original.label }} {{ form.original(size=24) }}<br>
+        {% for err in form.original.errors %}
+            <span style="color: red;">[{{ err }}]</span>
+        {% endfor %}<br>
+        </p>
+        <p>
+        {{ form.password1.label }} {{ form.password1(size=24) }}<br>
+        {% for err in form.password1.errors %}
+            <span style="color: red;">[{{ err }}]</span>
+        {% endfor %}<br>
+        </p>
+        <p>
+        {{ form.password2.label }} {{ form.password2(size=24) }}<br>
+        {% for err in form.password2.errors %}
+            <span style="color: red;">[{{ err }}]</span>
+        {% endfor %}<br>
+        </p>
+        <p>
+        <input type="submit" value="Submit">      
+        </p>
+    </form>
+{% endblock %}
+

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+    <form action="" method="post" name="outlet">
+        {{ form.hidden_tag() }}
+        <div class="row">
+            <div class="twelve columns">
+            {{ setting }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="twelve columns">
+            {{ form.value.label }} {{ form.value }}
+            {% for err in form.value.errors %}
+            <span style="color: red;">[{{ err }}]</span>
+            {% endfor %}
+            </div>
+        </div>
+        <div class="row">
+            <input type="submit" value="Save">    
+        </div>
+    </form>
+{% endblock %}

@@ -1,27 +1,19 @@
 {% extends "base.html" %}
-{% block headers %}
-{% endblock headers %}
-
 {% block content %}
-<a href="/schedule/create"><span class="glyphicon glyphicon-plus"></span></a>
-
-{% if payload %}
-    <div class="table-responsive">
-        <table class="table">
-    {% for s in payload %}
-        <tr><td><a href="/schedule/{{ s.id }}/edit" class="btn btn-primary" role="button"  style="width: 380px;">{{ s }}</a></td></tr>
-    {% endfor %}
-        </table>
-    </div>
-{% else %}
-    <hr>
-    <p>
-    No Schedules defined. 
-    </p>
-    <p>
-    Press "+" symbol above to add a new schedule.
-    </p>
+{% if title %}
+    <h2>{{ title }}</h2>
 {% endif %}
-{% endblock content %}
-
-
+{% if payload %}
+    <table>
+    {% for schedule in payload %}
+    <tr>
+    <td>{{ schedule }}</td>
+    </tr>
+    {% endfor %}
+{% else %}
+    No data available
+{% endif %}
+<p>
+<a href="/schedule/create">Add</a>
+</p>
+{% endblock %}

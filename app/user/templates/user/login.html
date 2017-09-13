@@ -1,0 +1,29 @@
+{% block content %}
+<div class="container">
+    <form action="" method="post" name="login">
+        {{ form.hidden_tag() }}
+    <div class="row">
+        <div class="twelve columns">
+            {{ form.username.label }} {{ form.username }}
+            {% for err in form.username.errors %}
+            <span style="color: red;">[{{ err }}]</span>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="twelve columns">
+            {{ form.password.label }} {{ form.password }}
+            {% for err in form.password.errors %}
+            <span style="color: red;">[{{ err }}]</span>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="twelve columns">
+            <input type="submit" value="Login">
+            
+        </div>
+    </div>
+    </form>
+</div>
+{% endblock %}
