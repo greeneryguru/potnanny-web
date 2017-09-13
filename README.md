@@ -1,2 +1,2 @@
 # greenery
-django dashboard for monitoring
+flask dashboard for monitoring and automation

@@ -5,10 +5,10 @@ import sys
 import imp
 from migrate.versioning import api
 
-sys.path.append( os.environ.get('GREENERY_WEB','/var/www/') )
-from greenery.app import db
-from greenery.config import SQLALCHEMY_DATABASE_URI
-from greenery.config import SQLALCHEMY_MIGRATE_REPO
+sys.path.append( os.environ.get('GREENERY_WEB','/var/www/greenery') )
+from app import db
+from config import SQLALCHEMY_DATABASE_URI
+from config import SQLALCHEMY_MIGRATE_REPO
 
 
 v = api.db_version(SQLALCHEMY_DATABASE_URI, SQLALCHEMY_MIGRATE_REPO)

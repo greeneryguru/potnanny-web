@@ -8,15 +8,15 @@
 import os
 import sys
 import getpass
-sys.path.append( os.environ.get('GREENERY_WEB','/var/www/') )
-from greenery.app import app, db
-from greenery.app.user.models import User
+sys.path.append( os.environ.get('GREENERY_WEB','/var/www/greenery') )
+from app import app, db
+from app.user.models import User
 from werkzeug.security import generate_password_hash
 
 def main():
     if not sys.argv[1]:
-        print "Must provide username"
-        print "Usage: reset_user_pw.py <username>"
+        print("Must provide username")
+        print("Usage: reset_user_pw.py <username>")
         sys.exit(1)
 
     name = sys.argv[1]
@@ -38,7 +38,7 @@ def main():
     u.password = hashed
     db.session.commit()
 
-    print "Ok"
+    print("Ok")
 
 
 if __name__ == '__main__':

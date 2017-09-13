@@ -86,7 +86,7 @@ fi
 crontab -l | grep "$GREENERY_WEB/scheduler.py"
 catch = $?
 if (( catch )); then
-    sudo echo "* * * * * bash -c 'source $HOME/.profile; $GREENERY_WEB/scheduler.py'" >> /var/spool/cron/crontab/pi
+    sudo echo "* * * * * bash -c 'source $HOME/.profile; $GREENERY_WEB/scripts/scheduler.py'" >> /var/spool/cron/crontab/pi
 fi
 sudo -u www-data touch /var/tmp/greenery.scheduler.log
 

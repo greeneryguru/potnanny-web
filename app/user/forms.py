@@ -19,10 +19,6 @@ def unique_name_check(form, field):
 
 
 def is_password(form, field):
-    print field
-    print field.data
-    print form
-
     u = User.query.get(int(form.id.data))
     if not u:
         raise ValidationError('Account error')

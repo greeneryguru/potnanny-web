@@ -1,9 +1,8 @@
 from flask import Flask, abort
 from flask_sqlalchemy import SQLAlchemy
-from config import basedir
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager
-
+from config import basedir
 
 app = Flask(__name__)
 app.config.from_object('config')

@@ -5,7 +5,7 @@ from flask_login import login_required
 from .models import Schedule
 from .forms import ScheduleForm
 from app.outlet.models import Outlet
-from app.lib.greenery.utils import WeekdayMap
+from app.lib.utils import WeekdayMap
 
 
 @app.route('/schedule')
