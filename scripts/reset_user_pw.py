@@ -11,7 +11,7 @@ import getpass
 sys.path.append( os.environ.get('GREENERY_WEB','/var/www/greenery') )
 from app import app, db
 from app.user.models import User
-from werkzeug.security import generate_password_hash
+
 
 def main():
     if not sys.argv[1]:
@@ -34,10 +34,8 @@ def main():
         sys.stderr.write("Username '%s' not found\n" % name)
         sys.exit(1)
 
-    hashed = generate_password_hash(pswd.rstrip())
-    u.password = hashed
+    u.set_password(pswd.rstrip())
     db.session.commit()
-
     print("Ok")
 
 
