@@ -1,22 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
-
-<div class="row">
-    <div class="one column">
-        <a class="button" href="/user" style="min-width: 180px; width=100%;"><i class="fa fa-user"></i> users</a>
-    </div>
-</div>
-
-<div class="row">
-    <div class="one column">
-        <a class="button" href="/settings" style="min-width: 180px; width=100%;"><i class="fa fa-cog"></i> settings</a>
-    </div>
-</div>
-
-<div class="row">
-    <div class="one column">
-        <a class="button" href="/about" style="min-width: 180px; width=100%;"><i class="fa fa-info-circle"></i> about</a>
-    </div>
-</div>
-
+    <table class="pure-table pure-table-horizontal">
+        <thead>
+        </thead>
+        <tr>
+            <td><a href="/admin/profile" class="pure-button" style="width:100%;"><i class="fa fa-user"></i> user profile</a></td>
+        </tr>
+        <tr>
+            <td><a href="/admin/resetpass" class="pure-button" style="width:100%;"><i class="fa fa-lock"></i> change password</a></td>
+        </tr>
+        <tr>
+            <td><a href="/admin/settings" class="pure-button" style="width:100%;"><i class="fa fa-cog"></i> system settings</a></td>
+        </tr>
+    </table>
 {% endblock %}

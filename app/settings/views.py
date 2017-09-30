@@ -1,8 +1,9 @@
-from flask import render_template, redirect, request, session
+from flask import render_template, redirect, request, session, jsonify
 from flask_login import login_required
 from app import app, db
 from .models import Setting
 from .forms import SettingForm
+import datetime
 
 
 @app.route('/settings')
@@ -33,4 +34,11 @@ def settings_edit(pk):
         title=title,
         pk=pk,
         setting=obj.name)    
-  
+
+
+@app.route('/settings/time')
+@login_required
+def settings_servertime():
+    return jsonify({'servertime': datetime.datetime.now().strftime("%H:%M")})
+
+

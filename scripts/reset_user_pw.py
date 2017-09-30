@@ -10,7 +10,7 @@ import sys
 import getpass
 sys.path.append( os.environ.get('GREENERY_WEB','/var/www/greenery') )
 from app import app, db
-from app.user.models import User
+from app.admin.models import User
 
 
 def main():

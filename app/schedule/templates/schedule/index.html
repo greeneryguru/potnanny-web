@@ -1,19 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
-{% if title %}
-    <h2>{{ title }}</h2>
-{% endif %}
 {% if payload %}
-    <table>
+    <table class="pure-table pure-table-horizontal">
+        <thead></thead>
     {% for schedule in payload %}
-    <tr>
-    <td>{{ schedule }}</td>
-    </tr>
+        <tr>
+            <td><a href="/schedule/{{ schedule.id }}/edit" class="pure-button">{{ schedule }}</a></td>
+        </tr>
     {% endfor %}
+    </table>
 {% else %}
     No data available
 {% endif %}
-<p>
-<a href="/schedule/create">Add</a>
-</p>
+<p><a href="/schedule/create"><i class="fa fa-plus"></i> add</a></p>
 {% endblock %}

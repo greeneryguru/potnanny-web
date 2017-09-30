@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+    <form action="" method="post" name="setting"  class="pure-form">
+        {{ form.hidden_tag() }}
+        <fieldset>
+            <legend>{{ setting }}</legend>
+            {{ form.value.label }}
+            {{ form.value }}
+            {% for err in form.value.errors %}
+                <span style="color: red;">[{{ err }}]</span>
+            {% endfor %}
+        </fieldset>
+        
+        <input type="submit" value="Save" class="pure-button pure-button-primary">
+    </form>
+{% endblock %}

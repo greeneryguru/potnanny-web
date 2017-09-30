@@ -3,9 +3,8 @@ from wtforms import StringField, HiddenField, IntegerField, PasswordField, \
     BooleanField
 from wtforms.validators import DataRequired, ValidationError, NumberRange, \
     InputRequired, Length, EqualTo, Email
-from wtforms_components import Email
 from .models import User
-
+import re
 
 ## custom validators ##
 def setting_check(form, field):
@@ -51,25 +50,12 @@ class LoginForm(FlaskForm):
                 validators=[InputRequired()])
 
 
-class UserForm(FlaskForm):
-    id = HiddenField()
-    username = StringField('username', 
-                validators=[InputRequired(),
-                            unique_name_check])
-    email = StringField('email', validators=[Email()])
-    password = PasswordField('password',
-                validators=[InputRequired(), Length(min=8, max=48), EqualTo('confirm', message='Passwords must match')])
-    active = BooleanField('is active', default=1)
-    confirm = PasswordField('password again', validators=[InputRequired()])
-
-
 class UserEditForm(FlaskForm):
     id = HiddenField()
     username = StringField('username', 
                 validators=[InputRequired(),
                             unique_name_check])
     email = StringField('email', validators=[Email()])
-    active = BooleanField('is active', default=1)
 
 
 class PasswordResetForm(FlaskForm):

@@ -4,7 +4,7 @@ from flask_login import login_required
 from app import app, db
 from .models import Outlet
 from .forms import OutletForm
-
+from app.lib.rfutils import TXChannelControl
 
 @app.route('/outlet')
 @login_required
@@ -57,4 +57,22 @@ def outlet_delete(pk):
     else:
         return redirect('/outlet')
     
+
+@app.route('/outlet/<pk>/toggle', methods=['POST'])
+@login_required
+def outlet_toggle(pk):
+    o = Outlet.query.get_or_404(int(pk))
+    tcc = TXChannelControl()
+
+    if o.state == 1 or o.state is True:
+        newstate = 0
+    else:
+        newstate = 1
+        
+    rval, msg = tcc.send_control(o.channel, newstate)
+    if not rval:
+        o.state = newstate
+        db.session.commit()
+
+    return jsonify(o.simplified())
 

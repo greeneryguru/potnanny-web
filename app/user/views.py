@@ -1,7 +1,7 @@
 from flask import render_template, redirect, request, session, flash
 from app import app, db, login_manager
 from .models import User
-from .forms import LoginForm, NewUserForm, PasswordResetForm
+from .forms import LoginForm, UserForm, UserEditForm, PasswordResetForm
 from flask_login import login_required, login_user, logout_user, current_user
 
 
@@ -61,13 +61,15 @@ def user_index():
 @login_required
 def user_create():
     title = 'new user'
-    form = NewUserForm()
+    form = UserForm()
     if request.method == 'POST' and form.validate_on_submit():
-        u = User(form.username.data)
-        u.set_password(form.password1.data)
-        db.session.add(u)
+        obj = User(form.username.data)
+        obj.set_password(form.password.data)
+        obj.active = int(form.active.data)
+        obj.email = form.email.data
+        db.session.add(obj)
         db.session.commit()
-        flash("user created successfully")
+        flash("create user ok")
         if request.args.get("next"):
             return redirect(request.args.get("next"))
         else:
@@ -83,16 +85,17 @@ def user_create():
 def user_edit(pk):
     title = 'edit user'
     u = User.query.get_or_404(int(pk))  
-    form = UserForm(obj=u)  
+    form = UserEditForm(obj=u)  
     if request.method == 'POST' and form.validate_on_submit():
         form.populate_obj(u)
         db.session.commit()
+        flash("edit user ok")
         if request.args.get("next"):
             return redirect(request.args.get("next"))
         else:
             return redirect('/user')
 
-    return render_template('user/form.html', 
+    return render_template('user/edit.html', 
         form=form,
         title=title,
         pk=pk)    
@@ -105,12 +108,12 @@ def user_delete(pk):
 
     # nope, the admin user cannot be deleted
     if u.username == 'admin':
-        flash('the admin account cannot be removed')
-        return redirect('user')
+        flash("admin account cannot be removed")
+    else:
+        db.session.delete(u)
+        db.session.commit()
+        flash("user delete ok")
 
-    db.session.delete(u)
-    db.session.commit()
-    flash("user deleted successfully")
     return redirect('/user')
     
 

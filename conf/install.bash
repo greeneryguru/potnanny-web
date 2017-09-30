@@ -9,9 +9,9 @@
 # base installs
 sudo apt-get update
 sudo apt-get -y install build-essential
+sudo apt-get -y install sqlite3
 sudo apt-get -y install python3-dev
 sudo apt-get -y install python3-cryptography
-sudo apt-get -y install sqlite3
 sudo apt-get -y install python3-pip
 
 
@@ -27,6 +27,7 @@ sudo pip3 install flask-login
 sudo pip3 install flask-wtf
 sudo pip3 install flask-sqlalchemy
 sudo pip3 install sqlalchemy-migrate
+sudo pip3 install sqlalchemy_utils
 
 
 # download greenery app

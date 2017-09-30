@@ -5,18 +5,19 @@
         $("input:checkbox").change(function(){
             var pk = this.id.split("-")[1];
             var self = this;
-            $.post("/outlet/" + pk + "/toggle", 
-                {}, function(data){
+            $.post("/outlet/" + pk + "/toggle",
+                {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
+                function(data){
                     $(self).prop("checked", data.state);
 			}, 'json');
 			return false;
         });
-        $("button").click(function(){
+        $(".pure-button").click(function(){
             var [mode, pk] = this.id.split('-',2);
             if (mode == 'edit') {
                 location.href = "/outlet/" + pk + "/edit";
             } else {
-                if (window.confirm("Are you sure you want to delete this object from the system?")) {
+                if (window.confirm("Are you sure you want to delete this?")) {
                     $.post("/outlet/" + pk + "/delete",
                         {'csrfmiddlewaretoken': '{{ csrf_token() }}'}, 
                         function(){location.reload();}
@@ -28,28 +29,28 @@
     });
     </script>
 {% endblock %}
-
 {% block content %}
 {% if payload %}
-    <table>
+    <table class="pure-table pure-table-horizontal">
     <thead></thead>
     {% for o in payload %}
     <tr>
-        <td class="nolines">
-            <a class="button" href="/outlet/{{ o.id }}/edit" style="min-width: 180px; width: 100%;">{{ o.name }}</a>
+        <td>
+            <a class="pure-button" href="/outlet/{{ o.id }}/edit" id="edit-{{ o.id }}" style="min-width: 180px;">{{ o.name }}</a>
         </td>
-        <td class="nolines">
-            <label class="switch">
-            <input type="checkbox" id="outlet-{{ o.id }}"{% if o.state == 1 %} checked
-            {% endif %}>
-            <span class="slider round"></span>
+        <td>
+            <div class="onoffswitch">
+            <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="outlet-{{ o.id }}"{% if o.state == 1 %} checked{% endif %}>
+            <label class="onoffswitch-label" for="outlet-{{ o.id }}">
+            <span class="onoffswitch-inner"></span>
+            <span class="onoffswitch-switch"></span>
             </label>
+            </div>
         </td>
     {% endfor %}
     </table>
 {% else %}
     No data available
-    <hr>
 {% endif %}
-<a href="/outlet/create">add new <i class="fa fa-plus"></i></a>
+<p><a href="/outlet/create"><i class="fa fa-plus"></i> add</a></p>
 {% endblock %}

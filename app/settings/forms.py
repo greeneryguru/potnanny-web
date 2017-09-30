@@ -7,8 +7,8 @@ import re
 
 def setting_check(form, field):
     if re.search('retention days', form.name.data, re.IGNORECASE):
-        if int(field.data) < 7 or int(field.data) > 90: 
-            raise ValidationError('Value must be between 7 and 90') 
+        if int(field.data) < 7 or int(field.data) > 180: 
+            raise ValidationError('Value must be between 7 and 180') 
 
     if re.search('polling interval minutes', form.name.data, re.IGNORECASE):
         if int(field.data) < 1 or int(field.data) > 15: 

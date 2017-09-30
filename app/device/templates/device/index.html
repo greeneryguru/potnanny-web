@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+{% if payload %}
+    {% for o in payload %}
+    <div class="row">
+        <div class="twelve columns">
+            <div class="faux" style="border: solid 1px #ccc; margin: 5px 5px 5px 5px; border-radius: 15px;">
+            {{ o.name }}
+            <br>
+            <i class="fa fa-power-off" aria-hidden="true" style="font-size: 1.6em;"></i>
+            <i class="fa fa-edit" aria-hidden="true" style="font-size: 1.6em;"></i>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    No data available
+{% endif %}
+{% endblock %}
