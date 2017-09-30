@@ -68,7 +68,7 @@ sudo usermod -a -G www-data pi
 
 # add env variables to pi
 cat $HOME/.profile | grep GREENERY_WEB
-catch = $?
+catch=$?
 if (( catch )); then
     echo "GREENERY_WEB=/var/www/greenery" >> $HOME/.profile
     echo "export GREENERY_WEB" >> $HOME/.profile
@@ -77,7 +77,7 @@ fi
 
 # install base crontab file for pi
 sudo ls -l /var/spool/cron/crontabs/pi
-catch = $?
+catch=$?
 if (( catch )); then
     sudo touch /var/spool/cron/crontabs/pi
 fi
@@ -85,7 +85,7 @@ fi
 
 # setup scheduler cron for pi
 crontab -l | grep "$GREENERY_WEB/scheduler.py"
-catch = $?
+catch=$?
 if (( catch )); then
     sudo echo "* * * * * bash -c 'source $HOME/.profile; $GREENERY_WEB/scripts/scheduler.py'" >> /var/spool/cron/crontab/pi
 fi

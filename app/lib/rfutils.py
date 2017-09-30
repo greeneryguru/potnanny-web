@@ -14,8 +14,8 @@ class TXChannelControl(object):
         for k, v in kwargs.items():
             setattr(self, k, v)
     
-        if not os.path.exists(self.send_command):
-            raise IOError(errno.ENOENT, 'File not found', self.send_command)
+        # if not os.path.exists(self.send_command):
+        #    raise IOError(errno.ENOENT, 'File not found', self.send_command)
 
    
     """
