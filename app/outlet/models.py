@@ -27,7 +27,7 @@ class Outlet(db.Model):
         rval, msg = ctrl.send_control(self.channel, 1)
         if not rval:
             self.state = 1
-        
+
         return rval
 
 
@@ -36,6 +36,6 @@ class Outlet(db.Model):
         rval, msg = ctrl.send_control(self.channel, 0)
         if not rval:
             self.state = 0
-         
+
         return rval
 

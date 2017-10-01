@@ -55,6 +55,7 @@ sudo ln -s /etc/uwsgi/apps-available/uwsgi.ini /etc/uwsgi/apps-enabled/uwsgi.ini
 # inital app db
 cd /var/www/greenery
 sudo cp initial.db app.db
+sudo chmod 664 app.db
 sudo chown www-data app.db
 sudo chgrp www-data app.db
 
@@ -89,7 +90,7 @@ fi
 sudo cat /var/spool/cron/crontabs/pi | grep "$GREENERY_WEB/scheduler.py"
 catch=$?
 if (( catch )); then
-    sudo echo "* * * * * bash -c 'source $HOME/.profile; $GREENERY_WEB/scripts/scheduler.py'" >> /var/spool/cron/crontab/pi
+    sudo echo "* * * * * bash -c 'source $HOME/.profile; $GREENERY_WEB/scripts/scheduler.py'" >> /var/spool/cron/crontabs/pi
 fi
 sudo -u www-data touch /var/tmp/greenery.scheduler.log
 sudo chmod 664 /var/tmp/greenery.scheduler.log
