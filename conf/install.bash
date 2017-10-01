@@ -55,6 +55,8 @@ sudo ln -s /etc/uwsgi/apps-available/uwsgi.ini /etc/uwsgi/apps-enabled/uwsgi.ini
 # inital app db
 cd /var/www/greenery
 sudo cp initial.db app.db
+sudo chown www-data app.db
+sudo chgrp www-data app.db
 
 
 # restart services

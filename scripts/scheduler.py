@@ -12,6 +12,7 @@ import re
 import datetime
 import logging
 sys.path.append( os.environ.get('GREENERY_WEB','/var/www/greenery') )
+from app import db
 from app.schedule.models import Schedule
 from app.outlet.models import Outlet
 
@@ -47,7 +48,9 @@ def main():
                 if rval:
                     loggging.warning("outlet id %d state change to %d failed" % (o.id, state))
                     pass
-       
+                else:
+                    db.session.commit()
+
 
 """
 takes a time-string, and returns a tuple (hour, min)
