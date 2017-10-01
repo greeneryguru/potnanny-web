@@ -24,7 +24,7 @@ class Outlet(db.Model):
 
     def on(self):
         ctrl = TXChannelControl()
-        rval, msg ctrl.send_control(self.channel, 1)
+        rval, msg = ctrl.send_control(self.channel, 1)
         if not rval:
             self.state = 1
         
