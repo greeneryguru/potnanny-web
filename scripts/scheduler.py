@@ -12,7 +12,6 @@ import re
 import datetime
 import logging
 sys.path.append( os.environ.get('GREENERY_WEB','/var/www/') )
-from greenery.app.lib.rfutils import TXChannelControl
 from greenery.app.schedule.models import Schedule
 from greenery.app.outlet.models import Outlet
 
@@ -39,10 +38,15 @@ def main():
 
                 o = Outlet.query.get(s.outlet_id)
                 if not o:
-                    logging.
-                rval, msg = tcc.send_control(o.channel, state)
+                    logging.error("no outlet with id %d", s.outlet_id)
+
+                if state == 1:
+                    rval = o.on()
+                else:
+                    rval = o.off()
+
                 if rval:
-                    # error message
+                    loggging.warning("outlet id %d state change to %d failed" % (o.id, state))
                     pass
        
 

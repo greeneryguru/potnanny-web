@@ -84,7 +84,7 @@ fi
 
 
 # setup scheduler cron for pi
-crontab -l | grep "$GREENERY_WEB/scheduler.py"
+sudo cat /var/spool/cron/crontabs/pi | grep "$GREENERY_WEB/scheduler.py"
 catch=$?
 if (( catch )); then
     sudo echo "* * * * * bash -c 'source $HOME/.profile; $GREENERY_WEB/scripts/scheduler.py'" >> /var/spool/cron/crontab/pi
