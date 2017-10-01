@@ -11,9 +11,9 @@ import sys
 import re
 import datetime
 import logging
-sys.path.append( os.environ.get('GREENERY_WEB','/var/www/') )
-from greenery.app.schedule.models import Schedule
-from greenery.app.outlet.models import Outlet
+sys.path.append( os.environ.get('GREENERY_WEB','/var/www/greenery') )
+from app.schedule.models import Schedule
+from app.outlet.models import Outlet
 
 
 logging.basicConfig(filename='/var/tmp/greenery.scheduler.log')
@@ -22,16 +22,15 @@ logging.basicConfig(filename='/var/tmp/greenery.scheduler.log')
 def main():
     now = datetime.datetime.now()
     wkday = now.date().strftime("%A")
-    tcc = TXChannelControl()
     scheds = Schedule.query.all()
-
+    logging.info("start %s" % now)
     for s in scheds:
-        if not schedule.runs_on(wkday):
+        if not s.runs_on(wkday):
             continue
 
         for k, t in {'on': s.on_time, 'off': s.off_time}.items():
             hour, minute = to_24h(t)
-            if minute == now.minute and hour = now.hour:
+            if minute == now.minute and hour == now.hour:
                 state = 0
                 if k == 'on':
                     state = 1
@@ -58,9 +57,9 @@ If there was an error it will return (None, None)
 def to_24h(strng):
     hour = None
     minute = None
-    match = re.search(r'(\d+):(\d+)\s*(am|pm)?', strng, re.IGNORECASE):
+    match = re.search(r'(\d+):(\d+)\s*(am|pm)?', strng, re.IGNORECASE)
     if match:
-        minute = match.group(2)
+        minute = int(match.group(2))
         hour = int(match.group(1))
         if match.group(3):
             if re.search(r'am', match.group(3), re.IGNORECASE) and hour == 12:

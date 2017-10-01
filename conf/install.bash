@@ -90,7 +90,9 @@ if (( catch )); then
     sudo echo "* * * * * bash -c 'source $HOME/.profile; $GREENERY_WEB/scripts/scheduler.py'" >> /var/spool/cron/crontab/pi
 fi
 sudo -u www-data touch /var/tmp/greenery.scheduler.log
-
+sudo chmod 664 /var/tmp/greenery.scheduler.log
+sudo chown www-data /var/tmp/greenery.scheduler.log
+sudo chgrp www-data /var/tmp/greenery.scheduler.log
 
 
 

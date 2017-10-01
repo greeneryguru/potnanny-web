@@ -72,3 +72,10 @@ def outlet_toggle(pk):
 
     return jsonify(o.simplified())
 
+
+@app.route('/outlet/<pk>', methods=['GET'])
+def outlet_status(pk):
+    o = Outlet.query.get_or_404(int(pk))
+    return jsonify(o.simplified())
+
+

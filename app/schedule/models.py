@@ -2,7 +2,7 @@ from app import db
 from app.outlet.models import Outlet
 from app.lib.utils import WeekdayMap
 import json
-
+import re
 
 class Schedule(db.Model):
     __tablename__ = 'schedules'
@@ -11,9 +11,6 @@ class Schedule(db.Model):
     on_time = db.Column(db.String(16), nullable=False, server_default='')
     off_time = db.Column(db.String(16), nullable=False, server_default='')
     days = db.Column(db.Integer, nullable=False, server_default='127')
-    
-    outlet = db.relationship('Outlet',
-                           backref=db.backref('schedules', cascade="all, delete-orphan"), lazy='joined')
 
 
     def __repr__(self):
@@ -46,8 +43,10 @@ class Schedule(db.Model):
 
 
     def runs_on(self, wkday):
-        for k, v in self.data:
-            if re.search(wkday, v, re.IGNORECASE):
+        dow = WeekdayMap().reverse_ordered_list()
+        for d in dow:
+            k, v = d
+            if re.search(wkday, k, re.IGNORECASE):
                 return True
 
         return False

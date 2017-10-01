@@ -3,17 +3,10 @@
 {% if payload %}
     <table class="pure-table  pure-table-horizontal">
         <thead>
-        <tr>
-        <td>setting</td>
-        <td>value</td>
-        <td>action</td>
-        </tr>
         </thead>
     {% for s in payload %}
         <tr>
-        <td>{{ s.name }}</td>
-        <td>{{ s.value }}</td>
-        <td><a href="/admin/settings/{{ s.id }}/edit" class="pure-button" style="width:100%;"><i class="fa fa-edit"></i> edit</a></td>
+        <td><a href="/admin/settings/{{ s.id }}/edit" class="pure-button" style="width:100%;">{{ s.name }} = {{ s.value }}</a></td>
         </tr>
     {% endfor %}
     </table>

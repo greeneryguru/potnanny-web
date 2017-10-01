@@ -2,6 +2,21 @@
 {% block headers %}
     <script>
     $(document).ready(function() {
+
+        setInterval(function(){
+            $("input:checkbox").each(function(){
+                var [mode, pk] = this.id.split('-',2);
+                var self = this;
+                if (mode == "outlet") {
+                    $.get("/outlet/" + pk,
+                        {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
+                        function(data){
+                            $(self).prop("checked", data.state);
+			            }, 'json');
+                }
+            });
+        }, 5000);
+
         $("input:checkbox").change(function(){
             var pk = this.id.split("-")[1];
             var self = this;
@@ -12,6 +27,7 @@
 			}, 'json');
 			return false;
         });
+
         $(".pure-button").click(function(){
             var [mode, pk] = this.id.split('-',2);
             if (mode == 'edit') {
