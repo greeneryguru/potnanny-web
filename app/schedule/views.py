@@ -59,7 +59,7 @@ def schedule_edit(pk=None):
 @app.route('/schedule/<pk>/delete', methods=['POST'])
 @login_required
 def schedule_delete(pk):
-    o = Outlet.query.get_or_404(int(pk))
+    o = Schedule.query.get_or_404(int(pk))
     db.session.delete(o)
     db.session.commit()
     if request.args.get("next"):

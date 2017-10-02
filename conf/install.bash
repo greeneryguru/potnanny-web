@@ -53,11 +53,13 @@ sudo ln -s /etc/uwsgi/apps-available/uwsgi.ini /etc/uwsgi/apps-enabled/uwsgi.ini
 
 
 # inital app db
-cd /var/www/greenery
-sudo cp initial.db app.db
-sudo chmod 664 app.db
-sudo chown www-data app.db
-sudo chgrp www-data app.db
+sudo ls -l /var/www/greenery/app.db
+catch=$?
+if (( catch )); then
+    sudo cp /var/www/greenery/initial.db /var/www/greenery/app.db
+    sudo chown www-data /var/www/greenery/app.db
+    sudo chgrp www-data /var/www/greenery/app.db
+fi
 
 
 # restart services
@@ -65,37 +67,22 @@ sudo service uwsgi restart
 sudo service nginx restart
 
 
-# add pi user to www-data
-sudo usermod -a -G www-data pi
-
-
-# add env variables to pi
-cat $HOME/.profile | grep GREENERY_WEB
+# install base crontab file for www-data
+sudo ls -l /var/spool/cron/crontabs/www-data
 catch=$?
 if (( catch )); then
-    echo "GREENERY_WEB=/var/www/greenery" >> $HOME/.profile
-    echo "export GREENERY_WEB" >> $HOME/.profile
+    sudo cp www.cron /var/spool/cron/crontabs/www-data
 fi
 
 
-# install base crontab file for pi
-sudo ls -l /var/spool/cron/crontabs/pi
+# log file that the scheduler should write to
+sudo ls -l /var/tmp/greenery.scheduler.log
 catch=$?
 if (( catch )); then
-    sudo touch /var/spool/cron/crontabs/pi
+    sudo -u www-data touch /var/tmp/greenery.scheduler.log
 fi
 
 
-# setup scheduler cron for pi
-sudo cat /var/spool/cron/crontabs/pi | grep "$GREENERY_WEB/scheduler.py"
-catch=$?
-if (( catch )); then
-    sudo echo "* * * * * bash -c 'source $HOME/.profile; $GREENERY_WEB/scripts/scheduler.py'" >> /var/spool/cron/crontabs/pi
-fi
-sudo -u www-data touch /var/tmp/greenery.scheduler.log
-sudo chmod 664 /var/tmp/greenery.scheduler.log
-sudo chown www-data /var/tmp/greenery.scheduler.log
-sudo chgrp www-data /var/tmp/greenery.scheduler.log
 
 
 

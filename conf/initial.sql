@@ -4,5 +4,5 @@ insert into settings ("name","value") values ("data retention days",60);
 insert into settings ("name","value") values ("gpio tx pin",0);
 insert into settings ("name","value") values ("gpio rx pin",60);
 insert into settings ("name","value") values ("polling interval minutes",3);
-
+insert into settings ("name","value") values ("base code",12066304);
 

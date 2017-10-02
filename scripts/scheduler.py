@@ -12,18 +12,19 @@ import re
 import datetime
 import logging
 sys.path.append( os.environ.get('GREENERY_WEB','/var/www/greenery') )
+from app import db
 from app.schedule.models import Schedule
 from app.outlet.models import Outlet
 
 
 logging.basicConfig(filename='/var/tmp/greenery.scheduler.log')
+logger = logging.getLogger('scheduler')
 
 
 def main():
     now = datetime.datetime.now()
     wkday = now.date().strftime("%A")
     scheds = Schedule.query.all()
-    logging.info("start %s" % now)
     for s in scheds:
         if not s.runs_on(wkday):
             continue
@@ -31,21 +32,29 @@ def main():
         for k, t in {'on': s.on_time, 'off': s.off_time}.items():
             hour, minute = to_24h(t)
             if minute == now.minute and hour == now.hour:
+                logger.info("schedule activated: %s" % s)
+
                 state = 0
                 if k == 'on':
                     state = 1
 
                 o = Outlet.query.get(s.outlet_id)
                 if not o:
-                    logging.error("no outlet with id %d", s.outlet_id)
+                    logger.error("no outlet with id %d", s.outlet_id)
 
-                if state == 1:
-                    rval = o.on()
-                else:
-                    rval = o.off()
+                try:
+                    if state == 1:
+                        rval = o.on()
+                    else:
+                        rval = o.off()
 
-                if rval:
-                    loggging.warning("outlet id %d state change to %d failed" % (o.id, state))
+                    if rval:
+                        logger.warning("outlet id %d state change to %d failed" % (o.id, state))
+                    else:
+                        o.state = state
+                        db.session.commit()
+                except Exception as x:
+                    logger.error(x)
 
 
 """
