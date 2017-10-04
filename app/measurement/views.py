@@ -10,18 +10,24 @@ import datetime
 @app.route('/', methods=['GET'])
 @login_required
 def dashboard_index():
-    payload = []
+    payload = None
     types = MeasurementType.query.all()
     now = datetime.datetime.now()
     past = now - datetime.timedelta(minutes=60)
     for t in types:
         dataset = [t.id, t.name, None, [], []]
+
         recent = Measurement.query.filter(Measurement.type_id == t.id, Measurement.date_time > past).order_by(Measurement.date_time.asc())
+        if not recent:
+            continue
 
         dataset[2] = recent[-1].simplified()
         for d in recent:
             dataset[3].append(datetime.datetime.strftime(d.date_time, "%m/%d/%y %H:%M"))
             dataset[4].append(d.value)
+
+        if not payload:
+            payload = []
 
         payload.append(dataset)
 
