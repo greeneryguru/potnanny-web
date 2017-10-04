@@ -8,83 +8,46 @@
     <link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='css/pure/grids-responsive-min.css') }}"> 
     <link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='css/pure/buttons-min.css') }}">
     <link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='css/font-awesome.css') }}">
-    <link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='css/greenery-nav.css') }}">
-    <link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='css/greenery.css') }}">
+    <link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='css/pure/side-menu.css') }}">
     {% block headers %}{% endblock headers %}
     {% if title %}
     <title>greenery:{{ title }}</title>
     {% endif %}
   </head>
   <body>
-    <div class="custom-wrapper pure-g" id="menu">
-        <div class="pure-u-1 pure-u-md-1-3">
-            <div class="pure-menu">
-            <a href="/" class="pure-menu-heading custom-brand">site</a>
-            <a href="#" class="custom-toggle" id="toggle"><s class="bar"></s><s class="bar"></s></a>
-            </div>
+    <div class="layout">
+      <a href="#" id="menuLink" class="menu-link">
+        <!-- Hamburger icon -->
+        <span></span>
+      </a>
+      <div id="menu">
+        <div class="pure-menu">
+          <a class="pure-menu-heading" href="/"><i class="fa fa-leaf"></i> Greenery</a>
+          <ul class="pure-menu-list">
+            <li class="pure-menu-item"><a href="/" class="pure-menu-link">Environment</a></li>
+            <li class="pure-menu-item"><a href="/outlet" class="pure-menu-link">Outlets</a></li>
+            <li class="pure-menu-item"><a href="/schedule" class="pure-menu-link">Schedules</a></li>
+            <li class="pure-menu-item"><a href="/action" class="pure-menu-link">Actions</a></li>
+            <li class="pure-menu-item" class="menu-item-divided pure-menu-selected"><a href="/admin" class="pure-menu-link"><i class="fa fa-bolt"></i> Admin</a></li>
+            <li class="pure-menu-item"><a href="/logout" class="pure-menu-link"><i class="fa fa-sign-out"></i> Logout</a></li>
+          </ul>
         </div>
-    <div class="pure-u-1 pure-u-md-1-3">
-        <div class="pure-menu pure-menu-horizontal custom-can-transform">
-            <ul class="pure-menu-list">
-            <li class="pure-menu-item"><a href="/outlet" class="pure-menu-link">outlets</a></li>
-            <li class="pure-menu-item"><a href="/schedule" class="pure-menu-link">schedules</a></li>
-            </ul>
+      </div>
+
+      <script src="{{ url_for('static',  filename='js/ui.js') }}"></script>
+
+      <div id="main">
+        <div class="header">
+          <h1>{{ title }}</h1>
+            {% if subtitle %}
+            <h2>{{ subtitle }}</h2>
+            {% endif %}
         </div>
-    </div>
-    <div class="pure-u-1 pure-u-md-1-3">
-        <div class="pure-menu pure-menu-horizontal custom-menu-3 custom-can-transform">
-            <ul class="pure-menu-list">
-            <li class="pure-menu-item"><a href="/admin" class="pure-menu-link"><i class="fa fa-flash"></i> admin</a></li>
-            <li class="pure-menu-item"><a href="/logout" class="pure-menu-link"><i class="fa fa-sign-out"></i> logout</a></li>
-            </ul>
+        <div class="content">
+        {% block content %}{% endblock content %}
         </div>
-    </div>
-</div>
-    <script>
-    (function (window, document) {
-            var menu = document.getElementById('menu'),
-            WINDOW_CHANGE_EVENT = ('onorientationchange' in window) ? 'orientationchange':'resize';
-
-            function toggleHorizontal() {
-                [].forEach.call(
-                document.getElementById('menu').querySelectorAll('.custom-can-transform'),
-                    function(el){
-                        el.classList.toggle('pure-menu-horizontal');
-                    }
-                );
-            };
-
-            function toggleMenu() {
-            // set timeout so that the panel has a chance to roll up
-            // before the menu switches states
-                if (menu.classList.contains('open')) {
-                    setTimeout(toggleHorizontal, 500);
-                }
-                else {
-                    toggleHorizontal();
-                }
-                menu.classList.toggle('open');
-                document.getElementById('toggle').classList.toggle('x');
-            };
-
-            function closeMenu() {
-                if (menu.classList.contains('open')) {
-                    toggleMenu();
-                }
-            }
-
-            document.getElementById('toggle').addEventListener('click', function (e) {
-                toggleMenu();
-                e.preventDefault();
-            });
-
-            window.addEventListener(WINDOW_CHANGE_EVENT, closeMenu);
-    })(this, this.document);
-    </script>
-    <div class="content">
-    {% block content %}{% endblock content %}
-    </div>
-    <div class="footer">
+      
+        <div class="footer">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
         <ul class="flashes">
@@ -94,6 +57,8 @@
         </ul>
         {% endif %}
 {% endwith %}
+        </div>
+      </div>
     </div>
   </body>
 </html>

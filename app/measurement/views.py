@@ -1,56 +1,42 @@
 from flask import render_template, redirect, request, session
 from flask import jsonify
+from flask_login import login_required
 from app import app, db
-from .models import Outlet
-from .forms import OutletForm
+from .models import MeasurementType, Measurement
+import re
+import datetime
 
 
-@app.route('/outlet')
-def outlet_index():
-    outlets = Outlet.query.all()
-    return render_template('outlet/index.html', 
-                title='outlets',
-                payload=outlets)
+@app.route('/', methods=['GET'])
+@login_required
+def dashboard_index():
+    payload = []
+    types = MeasurementType.query.all()
+    now = datetime.datetime.now()
+    past = now - datetime.timedelta(minutes=60)
+    for t in types:
+        dataset = [t.id, t.name, None, [], []]
+        recent = Measurement.query.filter(Measurement.type_id == t.id, Measurement.date_time > past).order_by(Measurement.date_time.asc())
 
-        
-@app.route('/outlet/create', methods=['GET','POST'])
-@app.route('/outlet/<pk>/edit', methods=['GET','POST'])
-def outlet_edit(pk=None):
-    obj = None
-    title = 'add outlet'
+        dataset[2] = recent[-1].simplified()
+        for d in recent:
+            dataset[3].append(datetime.datetime.strftime(d.date_time, "%m/%d/%y %H:%M"))
+            dataset[4].append(d.value)
 
-    if pk:
-        title = 'edit outlet'
-        obj = Outlet.query.get_or_404(int(pk))
-        
-    form = OutletForm(obj=obj)  
-    if request.method == 'POST' and form.validate_on_submit():
-        if pk:
-            form.populate_obj(obj)
-        else:
-            o = Outlet(form.name.data, int(form.channel.data))
-            db.session.add(o)
-    
-        db.session.commit()
-        if request.args.get("next"):
-            return redirect(request.args.get("next"))
-        else:
-            return redirect('/outlet')
+        payload.append(dataset)
 
-    return render_template('outlet/form.html', 
-        form=form,
-        title=title,
-        pk=pk)    
+    return render_template('measurement/index.html', 
+                title='Environment',
+                payload=payload)
 
 
-@app.route('/outlet/<pk>/delete', methods=['POST'])
-def outlet_delete(pk):
-    o = Outlet.query.get_or_404(int(pk))
-    db.session.delete(o)
-    db.session.commit()
-    if request.args.get("next"):
-        return redirect(request.args.get("next"))
-    else:
-        return redirect('/outlet')
-    
+@app.route('/measurement_type/<pk>/latest', methods=['GET'])
+def measurement_latest(pk):
+    mt = MeasurementType.query.get_or_404(int(pk))
+    latest = Measurement.query.filter(Measurement.type_id == mt.id).order_by(Measurement.date_time.desc()).first()
+    return jsonify(latest.simplified())
+
+
+
+
 

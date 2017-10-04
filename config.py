@@ -2,7 +2,7 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 WTF_CSRF_ENABLED = False
-SECRET_KEY = 'totally-secret'
+SECRET_KEY = 'a-totally-secret-key-no-one-will-ever-guess'
 
 # SqlAlchemy config
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+{% if payload %}
+    <table class="pure-table pure-table-horizontal" style="width: 100%;">
+        <thead></thead>
+    {% for action in payload %}
+        <tr>
+            <td><a href="/action/{{ action.id }}/edit" class="pure-button" style="width: 100%;">{{ action }}</a></td>
+        </tr>
+    {% endfor %}
+    </table>
+{% else %}
+    No data available
+{% endif %}
+<p><a href="/action/create"><i class="fa fa-plus"></i> add</a></p>
+{% endblock %}o

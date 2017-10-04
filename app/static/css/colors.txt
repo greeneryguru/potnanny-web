@@ -1,0 +1,14 @@
+
+ GREENERY!      #92B558
+ ANDROID        #A4C639
+ MS             #7CBB00
+
+
+HEX: #d5e1df    - very light grey green
+
+HEX: #e3eaa7    - light yellow green
+
+HEX: #b5e7a0    - light minty green
+
+HEX: #86af49    - dark lime
+

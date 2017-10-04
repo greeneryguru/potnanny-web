@@ -13,7 +13,8 @@ from app.lib.utils import WeekdayMap
 def schedule_index():
     schedules = Schedule.query.all()
     return render_template('schedule/index.html', 
-                title='schedules',
+                title='Schedules',
+                subtitle='on/off timers for outlets',
                 payload=schedules)
 
         
@@ -22,11 +23,11 @@ def schedule_index():
 @login_required
 def schedule_edit(pk=None):
     obj = None
-    title = 'add schedule'
+    title = 'Add Schedule'
     dow = WeekdayMap(show_first=2).reverse_ordered_list()
 
     if pk:
-        title = 'edit schedule'
+        title = 'Edit Schedule'
         obj = Schedule.query.get_or_404(int(pk))
         
     form = ScheduleForm(obj=obj)

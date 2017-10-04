@@ -11,7 +11,7 @@ from flask_login import login_required, login_user, logout_user, current_user
 @login_required
 def admin_index():
     return render_template('admin/index.html', 
-                title='admin')
+                title='Sys Admin')
 
 
 ## system settings pages ##
@@ -21,13 +21,14 @@ def admin_index():
 def settings_index():
     s = Setting.query.all()
     return render_template('admin/settings_index.html', 
-                title='settings',
+                title='System Settings',
+                subtitle='read documentation first!',
                 payload=s)
 
 @app.route('/admin/settings/<pk>/edit', methods=['GET','POST'])
 @login_required
 def settings_edit(pk):
-    title = 'edit setting'
+    title = 'Edit Setting'
     obj = Setting.query.get_or_404(int(pk))    
     form = SettingForm(obj=obj)  
     if request.method == 'POST' and form.validate_on_submit():
@@ -59,7 +60,7 @@ def load_user(pk):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    title = 'login'
+    title = 'Login'
     form = LoginForm()
     if request.method == 'POST' and form.validate_on_submit():
         u = User.query.filter(User.username == form.username.data).first()
@@ -90,7 +91,7 @@ def logout():
 @app.route('/admin/profile', methods=['GET','POST'])
 @login_required
 def user_edit():
-    title = 'edit profile'
+    title = 'Edit Profile'
     u = User.query.get(current_user.id)
     form = UserEditForm(obj=u)  
     if request.method == 'POST' and form.validate_on_submit():
@@ -109,7 +110,7 @@ def user_edit():
 @app.route('/admin/resetpass', methods=['GET','POST'])
 @login_required
 def password_reset():
-    title = 'reset password'
+    title = 'Reset Password'
     u = User.query.get(current_user.id)
     form = PasswordResetForm(obj=u)
     if request.method == 'POST' and form.validate_on_submit():

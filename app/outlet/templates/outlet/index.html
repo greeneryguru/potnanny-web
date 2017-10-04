@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block headers %}
+    <link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='css/toggle-switch.css') }}">
     <script>
     $(document).ready(function() {
 
@@ -47,7 +48,7 @@
 {% endblock %}
 {% block content %}
 {% if payload %}
-    <table class="pure-table pure-table-horizontal">
+    <table class="pure-table pure-table-horizontal" style="width: 100%;">
     <thead></thead>
     {% for o in payload %}
     <tr>

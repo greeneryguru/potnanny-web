@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
 {% if payload %}
-    <table class="pure-table pure-table-horizontal">
+    <table class="pure-table pure-table-horizontal" style="width: 100%;">
         <thead></thead>
     {% for schedule in payload %}
         <tr>
-            <td><a href="/schedule/{{ schedule.id }}/edit" class="pure-button">{{ schedule }}</a></td>
+            <td><a href="/schedule/{{ schedule.id }}/edit" class="pure-button" style="width: 100%;">{{ schedule }}</a></td>
         </tr>
     {% endfor %}
     </table>

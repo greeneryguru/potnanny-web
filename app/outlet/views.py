@@ -10,7 +10,8 @@ from .forms import OutletForm
 def outlet_index():
     outlets = Outlet.query.all()
     return render_template('outlet/index.html', 
-                title='outlets',
+                title='Outlets',
+                subtitle='wireless power control',
                 payload=outlets)
 
         
@@ -19,10 +20,10 @@ def outlet_index():
 @login_required
 def outlet_edit(pk=None):
     obj = None
-    title = 'add outlet'
+    title = 'Add Outlet'
 
     if pk:
-        title = 'edit outlet'
+        title = 'Edit Outlet'
         obj = Outlet.query.get_or_404(int(pk))
         
     form = OutletForm(obj=obj)  

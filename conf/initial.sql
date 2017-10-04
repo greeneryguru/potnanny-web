@@ -2,7 +2,13 @@ insert into users ("username","password") values ("admin","pbkdf2:sha256:50000$e
 
 insert into settings ("name","value") values ("data retention days",60);
 insert into settings ("name","value") values ("gpio tx pin",0);
-insert into settings ("name","value") values ("gpio rx pin",60);
-insert into settings ("name","value") values ("polling interval minutes",3);
+insert into settings ("name","value") values ("gpio rx pin",2);
+insert into settings ("name","value") values ("polling interval minutes",5);
 insert into settings ("name","value") values ("base code",12066304);
+insert into settings ("name","value") values ("store temperature fahrenheit",1);
+
+insert into measurement_types ("name") values ("temperature");
+insert into measurement_types ("name") values ("humidity");
+
+
 

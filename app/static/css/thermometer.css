@@ -1,0 +1,19 @@
+.gauge {
+    border: 1px solid #aaa;
+    border-radius: 20px;
+    width: 100%;
+    text-align: center;
+}
+
+.gauge .subtext {
+    font-size: .8em;
+    color: #aaa;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+}
+
+.gauge .measurement {
+    font-size: 2.6em;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
