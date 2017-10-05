@@ -12,7 +12,7 @@ import datetime
 import logging
 sys.path.append( os.environ.get('GREENERY_WEB','/var/www/greenery') )
 from app import db
-from app.actions.models import Action, ActionProcess
+from app.action.models import Action, ActionProcess
 from app.outlet.models import Outlet
 from app.measurement.models import MeasurementType, Measurement
 from app.admin.models import Setting
