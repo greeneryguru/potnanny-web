@@ -18,18 +18,19 @@ def dashboard_index():
         dataset = [t.id, t.name, None, [], []]
 
         recent = Measurement.query.filter(Measurement.type_id == t.id, Measurement.date_time > past).order_by(Measurement.date_time.asc())
-        if not recent:
-            continue
 
-        dataset[2] = recent[-1].simplified()
-        for d in recent:
-            dataset[3].append(datetime.datetime.strftime(d.date_time, "%m/%d/%y %H:%M"))
-            dataset[4].append(d.value)
+        try:
+            dataset[2] = recent[-1].simplified()
+            for d in recent:
+                dataset[3].append(datetime.datetime.strftime(d.date_time, "%m/%d/%y %H:%M"))
+                dataset[4].append(d.value)
 
-        if not payload:
-            payload = []
+            if not payload:
+                payload = []
 
-        payload.append(dataset)
+            payload.append(dataset)
+        except:
+            pass
 
     return render_template('measurement/index.html', 
                 title='Environment',
@@ -40,6 +41,9 @@ def dashboard_index():
 def measurement_latest(pk):
     mt = MeasurementType.query.get_or_404(int(pk))
     latest = Measurement.query.filter(Measurement.type_id == mt.id).order_by(Measurement.date_time.desc()).first()
+    if not latest:
+        return None
+
     return jsonify(latest.simplified())
 
 
