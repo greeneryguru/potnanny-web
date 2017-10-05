@@ -25,8 +25,7 @@ logfile = '/var/tmp/greenery.actions.log'
 logging.basicConfig(filename=logfile)
 logger = logging.getLogger('actions')
 logger.setLevel(10)
-pause_time = 15
-debug = True
+pause_time = 20
 
 def main():
     now = datetime.datetime.now()
@@ -58,19 +57,11 @@ returns:
 def process_actions(now, pivl):
     actions = Action.query.all()
     for a in actions:
-        if debug:
-            sys.stderr.write("action: %s\n" % a)
-
         meas = latest_measurement(a.type_id, now, pivl)
         if not meas:
-            if debug:
-                sys.stderr.write("no valid measurement\n")
             continue
 
         rval = is_action_needed(a, now, meas)
-        if debug:
-            sys.stderr.write("action needed: %d\n" % rval)
-
         if rval:
             p = ActionProcess(a.id, now)
             db.session.add(p)
@@ -95,6 +86,7 @@ returns:
     a Measurement object on success. None on fail
 """
 def latest_measurement(id, now, pivl):
+    
     min_age = now - datetime.timedelta(minutes=pivl)
     dat = Measurement.query.filter(Measurement.type_id == id).order_by(Measurement.date_time.desc()).first()
     if not dat:
@@ -123,8 +115,7 @@ def outlet_switch(action):
         o.state = action.action_state
         db.session.commit()
     else:
-        if debug:
-            sys.stderr.write("outlet on/off failed with code: %d\n" % rval)
+        logger.warning("outlet on/off failed with code: %d\n" % rval)
 
     return
     
@@ -133,8 +124,18 @@ def outlet_switch(action):
 def sms_message(action, measurement):
     pass
 
+
+
 """
 check if an action needs to be run, based on current related measurement data.
+
+params:
+    1. an Action object
+    2. datetime.datetime
+    3. a Measurement object
+
+returns:
+    True/False
 """
 def is_action_needed(action, now, meas):
     trigger = False
@@ -150,9 +151,11 @@ def is_action_needed(action, now, meas):
     if not trigger:
         return False
 
+    # check if this action already has a process that we need to wait for
     procs = ActionProcess.query.filter(ActionProcess.action_id == action.id)
     for p in procs:
         if p.date_time < past:
+            # delete stale processes
             db.session.delete(p)
             db.session.commit()
         else:
