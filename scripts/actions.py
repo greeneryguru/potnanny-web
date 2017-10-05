@@ -22,7 +22,6 @@ from app.admin.models import Setting
 logging.basicConfig(filename='/var/tmp/greenery.actions.log')
 logger = logging.getLogger('actions')
 
-
 def main():
     now = datetime.datetime.now()
     poll = Setting.query.filter(Setting.name == 'polling interval minutes').first()
@@ -32,7 +31,7 @@ def main():
         sys.exit(0)
     else:
         # let any polling jobs finish before we start handling records
-        time.sleep(25)
+        time.sleep(5)
 
     actions = Action.query.all()
     for a in actions:
@@ -76,16 +75,17 @@ def action_needed(action, now, meas):
     if not trigger:
         return false
 
-    procs = ActionProcess.query.filter(ActionProcess.action_id == a.id)
-    nprocs = len(procs)
+    procs = ActionProcess.query.filter(ActionProcess.action_id == action.id)
+    tally = 0
     removed = 0
     for p in procs:
+        tally += 1
         if p.date_time < past:
             db.session.delete(p)
             removed += 1
 
     db.session.commit()
-    if nprocs == removed:
+    if tally == removed:
         return True
 
     return False
