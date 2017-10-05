@@ -59,7 +59,7 @@ def process_actions(now, pivl):
     actions = Action.query.all()
     for a in actions:
         if debug:
-            logger.debug("action: %" % a)
+            logger.debug("action: %s" % a)
 
         meas = latest_measurement(a.type_id, now, pivl)
         if not meas:
