@@ -1,10 +1,12 @@
 #!/usr/bin/python3
 
-#
-# check all existing Schedule objects, and if one of them should be run now,
-# run the change.
-#
-#
+
+"""
+
+check all existing Schedule objects, and if one of them should be run now,
+run the change.
+
+"""
 
 import os
 import sys

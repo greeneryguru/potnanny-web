@@ -24,11 +24,11 @@ from app.admin.models import Setting
 logfile = '/var/tmp/greenery.actions.log'
 logging.basicConfig(filename=logfile)
 logger = logging.getLogger('actions')
+logger.setLevel(10)
 pause_time = 15
-
+debug = True
 
 def main():
-    print("Log file: %s" % logfile)
     now = datetime.datetime.now()
     poll = Setting.query.filter(Setting.name == 'polling interval minutes').first()
     if not poll:
@@ -58,11 +58,19 @@ returns:
 def process_actions(now, pivl):
     actions = Action.query.all()
     for a in actions:
+        if debug:
+            logger.debug("action: %" % a)
+
         meas = latest_measurement(a.type_id, now, pivl)
         if not meas:
+            if debug:
+                logger.debug("no valid measurement")
             continue
 
         rval = is_action_needed(a, now, meas)
+        if debug:
+            logger.debug("action needed: %d" % rval)
+
         if rval:
             p = ActionProcess(a.id, now)
             db.session.add(p)
@@ -114,6 +122,9 @@ def outlet_switch(action):
     if not rval:
         o.state = action.action_state
         db.session.commit()
+    else:
+        if debug:
+            logger.debug("outlet on/off failed with code:  %d" % rval)
 
     return
     
@@ -140,9 +151,6 @@ def is_action_needed(action, now, meas):
         return False
 
     procs = ActionProcess.query.filter(ActionProcess.action_id == action.id)
-    if not procs:
-        return True
-
     for p in procs:
         if p.date_time < past:
             db.session.delete(p)
