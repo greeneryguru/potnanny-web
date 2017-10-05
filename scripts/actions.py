@@ -33,7 +33,7 @@ def main():
     poll = Setting.query.filter(Setting.name == 'polling interval minutes').first()
     if not poll:
         logger.error("could not determine polling interval from db")
-        sys.stderr.write("error")
+        sys.stderr.write("error\n")
         sys.exit(1)
 
     if now.minute % poll.value:
@@ -59,17 +59,17 @@ def process_actions(now, pivl):
     actions = Action.query.all()
     for a in actions:
         if debug:
-            sys.stderr.write("action: %s" % a)
+            sys.stderr.write("action: %s\n" % a)
 
         meas = latest_measurement(a.type_id, now, pivl)
         if not meas:
             if debug:
-                sys.stderr.write("no valid measurement")
+                sys.stderr.write("no valid measurement\n")
             continue
 
         rval = is_action_needed(a, now, meas)
         if debug:
-            sys.stderr.write("action needed: %d" % rval)
+            sys.stderr.write("action needed: %d\n" % rval)
 
         if rval:
             p = ActionProcess(a.id, now)
@@ -102,7 +102,7 @@ def latest_measurement(id, now, pivl):
         return None
 
     if dat.date_time < min_age:
-        logger.warning("latest measurement for type %d is stale" % id)
+        logger.warning("latest measurement for type %d is stale (now=%s, meas=%s)" % (id, now, dat.date_time))
         return None
     
     return latest
@@ -124,7 +124,7 @@ def outlet_switch(action):
         db.session.commit()
     else:
         if debug:
-            sys.stderr.write("outlet on/off failed with code:  %d" % rval)
+            sys.stderr.write("outlet on/off failed with code: %d\n" % rval)
 
     return
     
