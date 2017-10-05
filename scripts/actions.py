@@ -105,7 +105,7 @@ def latest_measurement(id, now, pivl):
         logger.warning("latest measurement for type %d is stale (now=%s, meas=%s)" % (id, now, dat.date_time))
         return None
     
-    return latest
+    return dat
 
 
 def outlet_switch(action):
