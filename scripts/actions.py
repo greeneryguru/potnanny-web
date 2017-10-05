@@ -59,17 +59,17 @@ def process_actions(now, pivl):
     actions = Action.query.all()
     for a in actions:
         if debug:
-            logger.debug("action: %s" % a)
+            sys.stderr.write("action: %s" % a)
 
         meas = latest_measurement(a.type_id, now, pivl)
         if not meas:
             if debug:
-                logger.debug("no valid measurement")
+                sys.stderr.write("no valid measurement")
             continue
 
         rval = is_action_needed(a, now, meas)
         if debug:
-            logger.debug("action needed: %d" % rval)
+            sys.stderr.write("action needed: %d" % rval)
 
         if rval:
             p = ActionProcess(a.id, now)
@@ -124,7 +124,7 @@ def outlet_switch(action):
         db.session.commit()
     else:
         if debug:
-            logger.debug("outlet on/off failed with code:  %d" % rval)
+            sys.stderr.write("outlet on/off failed with code:  %d" % rval)
 
     return
     
