@@ -42,7 +42,7 @@ def main():
     else:
         # pause, to let any polling jobs finish, before we reading records
         time.sleep(pause_time)
-        sys.exit(process_actions(now, poll))
+        sys.exit(process_actions(now, poll.value))
 
 
 """
