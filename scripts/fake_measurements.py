@@ -23,10 +23,10 @@ def main():
 
     for i in range(0,10):
         now = datetime.datetime.now()
-        m1 = Measurement(t.id, random.randint(67,80), now)
+        m1 = Measurement(t.id, random.randint(65,85), now)
         db.session.add(m1)
 
-        m2 = Measurement(h.id, random.randint(45,60), now)
+        m2 = Measurement(h.id, random.randint(45,58), now)
         db.session.add(m2)
 
         db.session.commit()

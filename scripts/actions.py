@@ -1,9 +1,11 @@
 #!/usr/bin/python3
 
-#
-# check latest db measurements and see if actions need to be taken
-#
-#
+
+"""
+
+check latest db measurements and see if actions need to be taken.
+
+"""
 
 import os
 import sys
@@ -19,49 +21,111 @@ from app.measurement.models import MeasurementType, Measurement
 from app.admin.models import Setting
 
 
-logging.basicConfig(filename='/var/tmp/greenery.actions.log')
+logfile = '/var/tmp/greenery.actions.log'
+logging.basicConfig(filename=logfile)
 logger = logging.getLogger('actions')
+pause_time = 15
+
 
 def main():
+    print("Log file: %s" % logfile)
     now = datetime.datetime.now()
     poll = Setting.query.filter(Setting.name == 'polling interval minutes').first()
-    
+    if not poll:
+        logger.error("could not determine polling interval from db")
+        sys.stderr.write("error")
+        sys.exit(1)
+
     if now.minute % poll.value:
         # not the right time to be running this
         sys.exit(0)
     else:
-        # let any polling jobs finish before we start handling records
-        time.sleep(5)
+        # pause, to let any polling jobs finish, before we reading records
+        time.sleep(pause_time)
+        sys.exit(process_actions(now, poll))
 
+
+"""
+process any actions for the latest measurements
+
+params:
+    1. datetime.datetime
+    2. the system polling inverval (int)
+
+returns:
+    0 on success, non-zero on failure
+"""
+def process_actions(now, pivl):
     actions = Action.query.all()
     for a in actions:
-        recent = Measurement.query.filter(Measurement.type_id == a.type_id).order_by(Measurement.date_time.desc()).first()
-        rval = action_needed(a, now, recent)
-        if rval and a.action == 'switch-outlet':
-            outlet_switch(a)
-        elif rval and a.action == 'sms-message':
-            sms_message(a, recent)
-           
+        meas = latest_measurement(a.type_id, now, pivl)
+        if not meas:
+            continue
+
+        rval = is_action_needed(a, now, meas)
+        if rval:
+            p = ActionProcess(a.id, now)
+            db.session.add(p)
+            db.session.commit()
+
+            if a.action == 'switch-outlet':
+                outlet_switch(a)
+            elif a.action == 'sms-message':
+                sms_message(a, recent)
    
+    return 0        
+
+
+"""
+get latest measurement for particular measurement-type
+
+params:
+    1. a MeasurementType id
+    2. datetime.datetime
+    3. system polling interval
+returns:
+    a Measurement object on success. None on fail
+"""
+def latest_measurement(id, now, pivl):
+    min_age = now - datetime.timedelta(minutes=pivl)
+    dat = Measurement.query.filter(Measurement.type_id == id).order_by(Measurement.date_time.desc()).first()
+    if not dat:
+        logger.warning("no data for measurement type %d" % id)
+        return None
+
+    if dat.date_time < min_age:
+        logger.warning("latest measurement for type %d is stale" % id)
+        return None
+    
+    return latest
+
+
 def outlet_switch(action):
     o = Outlet.query.filter(Outlet.name == action.action_target).first()
+    if not o:
+        logger.warning("no outlet with name '%s' found" % action.action_target)
+        return
+
     if action.action_state == 0:
         rval = o.off()
-        if not rval:
-            o.state = 0
     else:
         rval = o.on()
-        if not rval:
-            o.state = 1
 
-    db.session.commit()
+    if not rval:
+        o.state = action.action_state
+        db.session.commit()
+
+    return
+    
 
 
 def sms_message(action, measurement):
     pass
 
-
-def action_needed(action, now, meas):
+"""
+check if an action needs to be run, based on current related measurement data.
+"""
+def is_action_needed(action, now, meas):
     trigger = False
     past = now - datetime.timedelta(minutes = action.wait_time)
 
@@ -73,22 +137,20 @@ def action_needed(action, now, meas):
         trigger = True
 
     if not trigger:
-        return false
+        return False
 
     procs = ActionProcess.query.filter(ActionProcess.action_id == action.id)
-    tally = 0
-    removed = 0
-    for p in procs:
-        tally += 1
-        if p.date_time < past:
-            db.session.delete(p)
-            removed += 1
-
-    db.session.commit()
-    if tally == removed:
+    if not procs:
         return True
 
-    return False
+    for p in procs:
+        if p.date_time < past:
+            db.session.delete(p)
+            db.session.commit()
+        else:
+            return False
+
+    return True
 
 
 if __name__ == '__main__':
