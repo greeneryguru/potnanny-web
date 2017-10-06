@@ -1,16 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
 {% if payload %}
-    <table class="u-full-width" style="width: 100%;">
-        <thead>
-        </thead>
-        <tbody>
     {% for s in payload %}
-        <tr>
-        <td><a class="button" href="/admin/settings/{{ s.id }}/edit" style="width:100%;">{{ s.name }} = {{ s.value }}</a></td>
-        </tr>
+    <div class="row">    
+      <div class="six columns">
+        <a class="button" href="/admin/settings/{{ s.id }}/edit" style="width:100%;">{{ s.name }} = {{ s.value }}</a>
+      </div>
+    </div>
     {% endfor %}
-        </tbody>
-    </table>
 {% endif %}
 {% endblock %}
