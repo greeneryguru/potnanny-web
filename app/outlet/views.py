@@ -11,10 +11,16 @@ def outlet_index():
     outlets = Outlet.query.all()
     return render_template('outlet/index.html', 
                 title='Outlets',
-                subtitle='wireless power control',
                 payload=outlets)
 
-        
+@app.route('/outlet/edit')
+@login_required
+def outlet_modify():
+    outlets = Outlet.query.all()
+    return render_template('outlet/edit.html', 
+                title='Edit Outlets',
+                payload=outlets)
+
 @app.route('/outlet/create', methods=['GET','POST'])
 @app.route('/outlet/<pk>/edit', methods=['GET','POST'])
 @login_required

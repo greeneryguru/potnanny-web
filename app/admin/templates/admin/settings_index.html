@@ -1,14 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
 {% if payload %}
-    <table class="pure-table  pure-table-horizontal" style="width: 100%;">
+    <table class="u-full-width" style="width: 100%;">
         <thead>
         </thead>
+        <tbody>
     {% for s in payload %}
         <tr>
-        <td><a href="/admin/settings/{{ s.id }}/edit" class="pure-button" style="width:100%;">{{ s.name }} = {{ s.value }}</a></td>
+        <td><a class="button" href="/admin/settings/{{ s.id }}/edit" style="width:100%;">{{ s.name }} = {{ s.value }}</a></td>
         </tr>
     {% endfor %}
+        </tbody>
     </table>
 {% endif %}
 {% endblock %}

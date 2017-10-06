@@ -1,14 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 {% if payload %}
-    <table class="pure-table pure-table-horizontal" style="width: 100%;">
-        <thead></thead>
     {% for action in payload %}
-        <tr>
-            <td><a href="/action/{{ action.id }}/edit" class="pure-button" style="width: 100%;">{{ action }}</a></td>
-        </tr>
+    <div class="row">
+        <div class="six columns">
+            <a class="button" href="/action/{{ action.id }}/edit" style="width: 100%;">{{ action }}</a>
+        </div>
+    </div>
     {% endfor %}
-    </table>
 {% else %}
     No data available
 {% endif %}

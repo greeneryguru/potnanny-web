@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+{% if payload %}
+    {% for o in payload %}
+    <div class="row">    
+      <div class="six columns">
+        <a class="button" href="/outlet/{{ o.id }}/edit" id="edit-{{ o.id }}" style="min-width: 180px; width: 100%;">{{ o.name }}</a>
+      </div>
+    </div>
+    {% endfor %}
+{% else %}
+    No data available
+{% endif %}
+<p>
+<a href="/outlet/create"><i class="fa fa-plus"></i> add</a>
+</p>
+{% endblock %}

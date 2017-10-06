@@ -68,15 +68,15 @@
         <div class="pure-control-group">
             <label>Days</label>
             {% for d in dow %}
-                <div class="clump" style="display: inline;">
-                <input style="display: inline;" type="checkbox" id="cb-{{ d.0 }}" value="{{ d.1 }}">
-                <label style="display: inline; padding-right: 0;" for="cb-{{ d.0 }}">{{ d.0 }}</label>
-                </div>
+                <label class="dow" for="cb-{{ d.0 }}" style="display: inline;">
+                <input type="checkbox"  id="cb-{{ d.0 }}" value="{{ d.1 }}">
+                <span class="label-body">{{ d.0 }}</span>
+                </label>
             {% endfor %}
         
         <div class="pure-controls">
-            <button type="submit" class="pure-button pure-button-primary">Submit</button>
-            {% if pk %}<button type="button" class="pure-button delete" id="delete-{{ pk }}">Delete</button>{% endif %}
+            <button type="submit" class="button-primary">Submit</button>
+            {% if pk %}<button type="button" class="button delete" id="delete-{{ pk }}">Delete</button>{% endif %}
         </div>
         </fieldset>
     </form>

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block headers %}
-    <link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='css/thermometer.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/gauge.css') }}" type= "text/css" >
     <script src="{{ url_for('static',  filename='js/Chart.bundle.js') }}"></script>
 {% endblock %}
 {% block content %}
@@ -10,7 +10,7 @@
         {{ d.1 }}
         <div class="measurement">{{ d.2.value }}{% if d.1 == 'temperature' %}&#176;{% elif d.1 == 'humidity' %}&#37;{% endif %}</div>
         <div class="graph">
-            <canvas id="chart-{{ d.0 }}" height="45"></canvas>
+            <canvas id="chart-{{ d.0 }}" height="40"></canvas>
         </div>
         <div class="subtext">{{ d.2.date_time }}</div>
     </div>

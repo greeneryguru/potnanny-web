@@ -1,0 +1,35 @@
+.content {
+    max-width: 800px;
+    margin: 15px 15px 15px 15px;
+}
+
+h1 { font-size: 3.2rem; letter-spacing: .1rem;}
+h2 { font-size: 3.0rem; letter-spacing: .1rem; }
+h3 { font-size: 2.8rem; letter-spacing: .1rem; }
+
+a { color: #86af49; }
+a:hover { color: #333; }
+
+
+.button.button-primary,
+button.button-primary,
+input[type="submit"].button-primary,
+input[type="reset"].button-primary,
+input[type="button"].button-primary {
+  color: #333;
+  background-color: #A4C639;
+  border-color: #A4C639; }
+.button.button-primary:hover,
+button.button-primary:hover,
+input[type="submit"].button-primary:hover,
+input[type="reset"].button-primary:hover,
+input[type="button"].button-primary:hover,
+.button.button-primary:focus,
+button.button-primary:focus,
+input[type="submit"].button-primary:focus,
+input[type="reset"].button-primary:focus,
+input[type="button"].button-primary:focus {
+  color: #FFF;
+  background-color: #86af49;
+  border-color: #86af49; }
+
