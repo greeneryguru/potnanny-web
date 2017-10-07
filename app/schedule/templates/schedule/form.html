@@ -23,7 +23,7 @@
                 $("#days").val(a - b);
             }
         });
-        $(".pure-button.delete").click(function(){
+        $(".button.delete").click(function(){
             var [mode, pk] = this.id.split('-',2);
             if (mode == "delete") {
                 if (window.confirm("Are you sure you want to delete this?")) {          

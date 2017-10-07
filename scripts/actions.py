@@ -86,8 +86,8 @@ returns:
     a Measurement object on success. None on fail
 """
 def latest_measurement(id, now, pivl):
-    
-    min_age = now - datetime.timedelta(minutes=pivl)
+    add_buffer = 1
+    min_age = now - datetime.timedelta(minutes=pivl + add_buffer)
     dat = Measurement.query.filter(Measurement.type_id == id).order_by(Measurement.date_time.desc()).first()
     if not dat:
         logger.warning("no data for measurement type %d" % id)
