@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% block headers %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/toggle.css') }}" type= "text/css" >
     <script>
     $(document).ready(function() {
         setInterval(function(){
@@ -11,7 +10,7 @@
                     $.get("/outlet/" + pk,
                     {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
                     function(data){
-                        if (data.state) {
+                        if (data.state == true) {
                             if (! $(self).hasClass('button-primary')) {
                                 $(self).addClass('button-primary');
                             }
