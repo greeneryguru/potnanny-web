@@ -33,3 +33,17 @@ input[type="button"].button-primary:focus {
   background-color: #86af49;
   border-color: #86af49; }
 
+.button.button-lit,
+button.button-lit,
+input[type="submit"].button-lit,
+input[type="reset"].button-lit,
+input[type="button"].button-lit {
+  color: #333;
+  background-color: #b5e7a0;
+  border-color: #b5e7a0; 
+  -webkit-transition: all ease 0.8s;
+  -moz-transition: all ease 0.8s;
+  transition: all ease 0.8s;
+}
+
+

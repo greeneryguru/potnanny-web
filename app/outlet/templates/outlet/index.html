@@ -4,24 +4,21 @@
     $(document).ready(function() {
         setInterval(function(){
             $(".button").each(function(){
-                var [mode, pk] = this.id.split('-',2);
+                var pk = this.id.split('-',2)[1];
                 var self = this;
-                if (mode == "outlet") {
-                    $.get("/outlet/" + pk,
-                    {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
-                    function(data){
-                        alert(data)
-                        if (data.state == true) {
-                            if (! $(self).hasClass('button-primary')) {
-                                $(self).addClass('button-primary');
-                            }
-                        } else {
-                            if ($(self).hasClass('button-primary')) {
-                                $(self).removeClass('button-primary');
-                            }
+                $.get("/outlet/" + pk,
+                {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
+                function(data){
+                    if (data.state == true) {
+                        if (! $(self).hasClass("button-lit")) {
+                            $(self).addClass("button-lit");
                         }
-			        }, 'json');
-                }
+                    } else {
+                        if ($(self).hasClass("button-lit")) {
+                            $(self).removeClass("button-lit");
+                        }
+                    }
+		        }, 'json');
             });
         }, 10000);
 
@@ -32,12 +29,12 @@
             {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
             function(data){
                 if (data.state == true) {
-                    if (! $(self).hasClass('button-primary')) {
-                        $(self).addClass('button-primary');
+                    if (! $(self).hasClass('button-lit')) {
+                        $(self).addClass('button-lit');
                     }
                 } else {
-                    if ($(self).hasClass('button-primary')) {
-                        $(self).removeClass('button-primary');
+                    if ($(self).hasClass('button-lit')) {
+                        $(self).removeClass('button-lit');
                     }
                 }
 			}, 'json');
@@ -51,7 +48,7 @@
     {% for o in payload %}
     <div class="row">    
       <div class="six columns">
-        <a class="button" id="edit-{{ o.id }}" style="min-width: 180px; width: 100%;">{{ o.name }} <i class="fa fa-power-off"></i></a>
+        <a class="button {% if o.state %}button-lit{% endif %}" id="edit-{{ o.id }}" style="min-width: 180px; width: 100%;">{{ o.name }} <i class="fa fa-power-off"></i></a>
       </div>
     </div>
     {% endfor %}
