@@ -1,6 +1,17 @@
 {% extends "base.html" %}
 {% block headers %}
     <script>
+    function setSwitchValid(self, data) {
+        if (data.state == true) {
+            if (! $(self).hasClass("button-primary")) {
+                $(self).addClass("button-primary");
+            }
+        } else {
+            if ($(self).hasClass("button-primary")) {
+                $(self).removeClass("button-primary");
+            }
+        }
+    }
     $(document).ready(function() {
         setInterval(function(){
             $(".button").each(function(){
@@ -9,34 +20,26 @@
                 $.get("/outlet/" + pk,
                 {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
                 function(data){
-                    if (data.state == true) {
-                        if (! $(self).hasClass("button-lit")) {
-                            $(self).addClass("button-lit");
-                        }
-                    } else {
-                        if ($(self).hasClass("button-lit")) {
-                            $(self).removeClass("button-lit");
-                        }
-                    }
+                    setSwitchValid(self, data);
 		        }, 'json');
             });
-        }, 10000);
+        }, 7000);
 
         $(".button").click(function(){
             var pk = this.id.split("-")[1];
             var self = this;
+            // preliminary button state change. may change back, depending on
+            // server response. but, need immediate feedback to user, becase
+            // on/off responses take long time.
+            if ($(self).hasClass('button-primary')) {
+                $(self).removeClass('button-primary');
+            } else {
+                $(self).addClass('button-primary');
+            }
             $.post("/outlet/" + pk + "/toggle",
             {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
             function(data){
-                if (data.state == true) {
-                    if (! $(self).hasClass('button-lit')) {
-                        $(self).addClass('button-lit');
-                    }
-                } else {
-                    if ($(self).hasClass('button-lit')) {
-                        $(self).removeClass('button-lit');
-                    }
-                }
+                setSwitchValid(self, data);
 			}, 'json');
 			return false;
         });
@@ -48,7 +51,7 @@
     {% for o in payload %}
     <div class="row">    
       <div class="six columns">
-        <a class="button {% if o.state %}button-lit{% endif %}" id="edit-{{ o.id }}" style="min-width: 180px; width: 100%;">{{ o.name }} <i class="fa fa-power-off"></i></a>
+        <a class="button {% if o.state %}button-primary{% endif %}" id="edit-{{ o.id }}" style="min-width: 180px; width: 100%;">{{ o.name }} <i class="fa fa-power-off"></i></a>
       </div>
     </div>
     {% endfor %}
