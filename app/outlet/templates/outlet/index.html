@@ -10,6 +10,7 @@
                     $.get("/outlet/" + pk,
                     {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
                     function(data){
+                        alert(data)
                         if (data.state == true) {
                             if (! $(self).hasClass('button-primary')) {
                                 $(self).addClass('button-primary');
@@ -24,15 +25,15 @@
             });
         }, 10000);
 
-        $(".button").on("click", function(){
+        $(".button").click(function(){
             var pk = this.id.split("-")[1];
             var self = this;
             $.post("/outlet/" + pk + "/toggle",
             {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
             function(data){
-                if (data.state) {
+                if (data.state == true) {
                     if (! $(self).hasClass('button-primary')) {
-                        $(self).classList.addClass('button-primary');
+                        $(self).addClass('button-primary');
                     }
                 } else {
                     if ($(self).hasClass('button-primary')) {
