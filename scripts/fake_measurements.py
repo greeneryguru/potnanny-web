@@ -21,16 +21,14 @@ def main():
     t = MeasurementType.query.filter(MeasurementType.name.contains('temp'))[0]
     h = MeasurementType.query.filter(MeasurementType.name.contains('humid'))[0]
 
-    for i in range(0,10):
-        now = datetime.datetime.now()
-        m1 = Measurement(t.id, random.randint(68,78), now)
-        db.session.add(m1)
+    now = datetime.datetime.now()
+    m1 = Measurement(t.id, random.randint(68,78), now)
+    db.session.add(m1)
 
-        m2 = Measurement(h.id, random.randint(55,60), now)
-        db.session.add(m2)
+    m2 = Measurement(h.id, random.randint(55,60), now)
+    db.session.add(m2)
 
-        db.session.commit()
-        time.sleep(60)
+    db.session.commit()
         
 
 if __name__ == '__main__':
