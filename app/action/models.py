@@ -17,7 +17,7 @@ class Action(db.Model):
     measurement = db.relationship("MeasurementType")
 
     def __repr__(self):
-        msg = "%s %s %d %s " % (str(self.measurement)[:4], self.condition, self.value, self.action.split("-")[0])
+        msg = "%s %s %d %s " % (str(self.measurement), self.condition, self.value, self.action.split("-")[0])
         if self.action == 'switch-outlet':
             state = 'on' if self.action_state else 'off'
             msg += "%s %s"  % (self.action_target, state)
