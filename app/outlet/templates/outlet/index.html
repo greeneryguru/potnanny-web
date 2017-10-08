@@ -34,9 +34,9 @@
             // to user, becase on/off responses take long time, but may correct
             // depending on server response
             if ($(self).hasClass('button-primary')) {
-                $(self).removeClass('button-primary');
+                setSwitchValid(self, {"state": false, "name": $(self.text()).split(" ")[0]})
             } else {
-                $(self).addClass('button-primary');
+                setSwitchValid(self, {"state": true, "name": $(self.text())})
             }
             $.post("/outlet/" + pk + "/toggle",
             {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
