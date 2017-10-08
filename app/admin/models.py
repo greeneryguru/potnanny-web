@@ -1,7 +1,6 @@
 from app import app, db
 from werkzeug.security import generate_password_hash, check_password_hash
 
-
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -51,5 +50,19 @@ class Setting(db.Model):
 
     def __repr__(self):
         return "%s  value %d" % (self.name, self.value)
+
+
+class TwilioAccount(db.Model):
+    __tablename__ = 'twilio_settings'
+    id = db.Column(db.Integer, primary_key=True)
+    sid = db.Column(db.String(48), nullable=True)
+    token = db.Column(db.String(48), nullable=True)
+    number = db.Column(db.String(32), nullable=True)
+
+    def __init__(self, sid, token, num):
+        self.sid = sid
+        self.token = token
+        self.number = num
+
 
 

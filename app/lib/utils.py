@@ -1,5 +1,6 @@
 import re
 
+
 class WeekdayMap(object):
     """
     Map days of the week to numbers.

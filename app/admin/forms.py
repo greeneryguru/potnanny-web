@@ -75,8 +75,11 @@ class SettingForm(FlaskForm):
                 validators=[InputRequired(),
                             setting_check])
 
-
-
+class TwilioForm(FlaskForm):
+    id = HiddenField('id')
+    sid = StringField('account SID', validators=[InputRequired()])
+    token = StringField('account token', validators=[InputRequired()])
+    number = StringField('phone number', validators=[InputRequired()])
 
 
 

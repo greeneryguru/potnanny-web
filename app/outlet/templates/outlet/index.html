@@ -5,10 +5,12 @@
         if (data.state == true) {
             if (! $(self).hasClass("button-primary")) {
                 $(self).addClass("button-primary");
+                $(self).text(data.name + " ON");
             }
         } else {
             if ($(self).hasClass("button-primary")) {
                 $(self).removeClass("button-primary");
+                $(self).text(data.name);
             }
         }
     }
@@ -28,9 +30,9 @@
         $(".button").click(function(){
             var pk = this.id.split("-")[1];
             var self = this;
-            // preliminary button state change. may change back, depending on
-            // server response. but, need immediate feedback to user, becase
-            // on/off responses take long time.
+            // preliminary button state changebut needed for immediate feedback 
+            // to user, becase on/off responses take long time, but may correct
+            // depending on server response
             if ($(self).hasClass('button-primary')) {
                 $(self).removeClass('button-primary');
             } else {
@@ -51,7 +53,7 @@
     {% for o in payload %}
     <div class="row">    
       <div class="six columns">
-        <a class="button {% if o.state %}button-primary{% endif %}" id="edit-{{ o.id }}" style="min-width: 180px; width: 100%;">{{ o.name }} <i class="fa fa-power-off"></i></a>
+        <a class="button {% if o.state %}button-primary{% endif %}" id="edit-{{ o.id }}" style="min-width: 180px; width: 100%;">{{ o.name }}{% if o.state %} ON{% endif %}</a>
       </div>
     </div>
     {% endfor %}

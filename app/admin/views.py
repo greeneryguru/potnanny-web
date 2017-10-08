@@ -1,7 +1,8 @@
 from flask import render_template, redirect, request, session, flash
 from app import app, db, login_manager
-from .models import User, Setting
-from .forms import LoginForm, UserEditForm, PasswordResetForm, SettingForm
+from .models import User, Setting, TwilioAccount
+from .forms import LoginForm, UserEditForm, PasswordResetForm, SettingForm, \
+                    TwilioForm
 from flask_login import login_required, login_user, logout_user, current_user
 
 
@@ -126,6 +127,23 @@ def password_reset():
         form=form,
         title=title)
 
+@app.route('/admin/twilio', methods=['GET','POST'])
+@login_required
+def twilio_settings():
+    title = 'Twilio Settings'
+    obj = TwilioAccount.query.first()
+    form = TwilioForm(obj=obj)
+    if request.method == 'POST' and form.validate_on_submit():
+        form.populate_obj(obj)
+        db.session.commit()
+        if request.args.get("next"):
+            return redirect(request.args.get("next"))
+        else:
+            return redirect('/admin')
+
+    return render_template('admin/twilio.html', 
+        form=form,
+        title=title)
     
 
 
