@@ -30,13 +30,10 @@
         $(".button").on('click', function(){
             var pk = this.id.split("-")[1];
             var self = this;
-            // preliminary button state changebut needed for immediate feedback 
-            // to user, becase on/off responses take long time, but may correct
-            // depending on server response
             if ($(self).hasClass('button-primary')) {
-                setSwitchValid(self, {"state": false, "name": $(self.text()).split(" ")[0]});
+                setSwitchValid(self, {"state": false, "name": $(self).text().split(" ")[0]});
             } else {
-                setSwitchValid(self, {"state": true, "name": $(self.text())});
+                setSwitchValid(self, {"state": true, "name": $(self).text()});
             }
             $.post("/outlet/" + pk + "/toggle",
             {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
