@@ -27,7 +27,7 @@
             });
         }, 7000);
 
-        $(".button").click(function(){
+        $(".button").on('click', function(){
             var pk = this.id.split("-")[1];
             var self = this;
             // preliminary button state changebut needed for immediate feedback 
