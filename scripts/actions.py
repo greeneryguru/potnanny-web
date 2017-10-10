@@ -19,6 +19,7 @@ from app.action.models import Action, ActionProcess
 from app.outlet.models import Outlet
 from app.measurement.models import MeasurementType, Measurement
 from app.admin.models import Setting
+from app.utils.messenger import Messenger
 
 
 logfile = '/var/tmp/greenery.actions.log'
@@ -122,7 +123,17 @@ def outlet_switch(action):
 
 
 def sms_message(action, measurement):
-    pass
+    mess = Messenger()
+    mt = MeasurementType.query.get(action.type_id)
+
+    body = "%s current value is %d" % (mt.name, measurement.value)
+    if mt.name == 'temperature':
+        body += " degrees"
+    elif mt.name == 'humidity':
+        body += '%'
+
+    m.message(action.action_target, body)
+
 
 
 
