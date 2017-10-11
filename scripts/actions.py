@@ -19,7 +19,7 @@ from app.action.models import Action, ActionProcess
 from app.outlet.models import Outlet
 from app.measurement.models import MeasurementType, Measurement
 from app.admin.models import Setting
-from app.utils.messenger import Messenger
+from app.lib.messenger import Messenger
 
 
 logfile = '/var/tmp/greenery.actions.log'
