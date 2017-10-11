@@ -71,7 +71,7 @@ def process_actions(now, pivl):
             if a.action == 'switch-outlet':
                 outlet_switch(a)
             elif a.action == 'sms-message':
-                sms_message(a, recent)
+                sms_message(a, meas)
    
     return 0        
 
