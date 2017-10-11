@@ -22,10 +22,10 @@ def main():
     h = MeasurementType.query.filter(MeasurementType.name.contains('humid'))[0]
 
     now = datetime.datetime.now()
-    m1 = Measurement(t.id, random.randint(68,78), now)
+    m1 = Measurement(t.id, random.randint(72,78), now)
     db.session.add(m1)
 
-    m2 = Measurement(h.id, random.randint(55,60), now)
+    m2 = Measurement(h.id, random.randint(53,68), now)
     db.session.add(m2)
 
     db.session.commit()

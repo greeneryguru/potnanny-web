@@ -123,13 +123,13 @@ def outlet_switch(action):
 
 
 def sms_message(action, measurement):
-    mess = Messenger()
-    mt = MeasurementType.query.get(action.type_id)
+    m = Messenger()
+    typ = MeasurementType.query.get(action.type_id)
 
-    body = "%s current value is %d" % (mt.name, measurement.value)
-    if mt.name == 'temperature':
+    body = "%s current value is %d" % (typ.name, measurement.value)
+    if typ.name == 'temperature':
         body += " degrees"
-    elif mt.name == 'humidity':
+    elif typ.name == 'humidity':
         body += '%'
 
     m.message(action.action_target, body)

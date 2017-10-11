@@ -13,7 +13,7 @@ class Action(db.Model):
     action = db.Column(db.String(24), nullable=True, server_default='')
     action_target = db.Column(db.String(24), nullable=True, server_default='')
     action_state = db.Column(db.Boolean(), nullable=True, server_default='1')
-    
+
     measurement = db.relationship("MeasurementType")
 
     def __repr__(self):

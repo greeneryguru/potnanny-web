@@ -7,6 +7,7 @@ insert into settings ("name","value") values ("store temperature fahrenheit",1);
 
 insert into measurement_types ("name") values ("temperature");
 insert into measurement_types ("name") values ("humidity");
+insert into measurement_types ("name") values ("soil moisture");
 
 
 
