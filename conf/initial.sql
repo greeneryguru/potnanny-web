@@ -5,9 +5,16 @@ insert into settings ("name","value") values ("polling interval minutes",3);
 insert into settings ("name","value") values ("base code",12066304);
 insert into settings ("name","value") values ("store temperature fahrenheit",1);
 
-insert into measurement_types ("name") values ("temperature");
-insert into measurement_types ("name") values ("humidity");
-insert into measurement_types ("name") values ("soil moisture");
+insert into measurement_types ("name","code") values ("temperature", "t");
+insert into measurement_types ("name","code") values ("humidity", "h");
+insert into measurement_types ("name","code") values ("soil moisture", "sm");
+
+
+insert into sensors ("name","notes","profile") values ("main temp/humidity", "AcuRite 592TXR wireless","t,h");
+insert into sensors ("name","notes","profile") values ("soil sensor 1", "", "sm");
+insert into sensors ("name","notes","profile") values ("soil sensor 2", "", "sm");
+insert into sensors ("name","notes","profile") values ("soil sensor 3", "", "sm");
+insert into sensors ("name","notes","profile") values ("soil sensor 4", "", "sm");
 
 
 

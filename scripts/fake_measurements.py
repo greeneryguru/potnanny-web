@@ -15,18 +15,16 @@ import random
 sys.path.append( os.environ.get('GREENERY_WEB','/var/www/greenery') )
 from app import db
 from app.measurement.models import MeasurementType, Measurement
-
+from app.sensor.models import Sensor
 
 def main():
-    t = MeasurementType.query.filter(MeasurementType.name.contains('temp'))[0]
-    h = MeasurementType.query.filter(MeasurementType.name.contains('humid'))[0]
-
-    now = datetime.datetime.now()
-    m1 = Measurement(t.id, random.randint(72,78), now)
-    db.session.add(m1)
-
-    m2 = Measurement(h.id, random.randint(53,68), now)
-    db.session.add(m2)
+    now = datetime.datetime.now().replace(second=0, microsecond=0)
+    sensors = Sensor.query.all()
+    for s in sensors:
+        dat = s.test_data()
+        for k, v in dat.items():
+            m = Measurement(s.id, k, v, now)
+            db.session.add(m)
 
     db.session.commit()
         

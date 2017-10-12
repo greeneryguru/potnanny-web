@@ -26,9 +26,10 @@ sudo pip3 install flask
 sudo pip3 install flask-login
 sudo pip3 install flask-wtf
 sudo pip3 install flask-sqlalchemy
+sudo pip3 install wtforms_components
 sudo pip3 install sqlalchemy-migrate
 sudo pip3 install sqlalchemy_utils
-sudo pip3 install twilio==5.7.0
+sudo pip3 install twilio
 
 
 # download greenery app

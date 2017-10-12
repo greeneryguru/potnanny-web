@@ -23,21 +23,27 @@ csrf = CSRFProtect(app)
 # import blueprints of individual apps
 from app.admin import admin
 from app.outlet import outlet
+from app.sensor import sensor
 from app.schedule import schedule
 from app.measurement import measurement
 from app.action import action
 
+
 # register blueprints
 app.register_blueprint(admin)
 app.register_blueprint(outlet)
+app.register_blueprint(sensor)
 app.register_blueprint(schedule)
 app.register_blueprint(measurement)
 app.register_blueprint(action)
 
+
 # import views
 from app.admin import views
 from app.outlet import views
+from app.sensor import views
 from app.schedule import views
 from app.measurement import views
 from app.action import views
+
 

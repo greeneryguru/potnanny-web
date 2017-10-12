@@ -14,15 +14,14 @@ def unique_name_check(form, field):
         o = Sensor.query.filter_by(name=field.data).first()
     
     if o:
-        raise ValidationError('Name must be unique')
+        raise ValidationError('Name already used')
 
 
 class SensorForm(FlaskForm):
     id = HiddenField('id')
-    name = StringField('name', 
-                validators=[InputRequired(),
-                            unique_name_check])
-
+    name = StringField('name', validators=[InputRequired(), unique_name_check])
+    notes = StringField('notes')
+    profile = StringField('profile')
 
 
 

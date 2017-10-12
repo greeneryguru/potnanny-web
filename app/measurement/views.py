@@ -1,8 +1,10 @@
 from flask import render_template, redirect, request, session
 from flask import jsonify
 from flask_login import login_required
+from sqlalchemy.sql import func
 from app import app, db
 from .models import MeasurementType, Measurement
+from app.sensor.models import Sensor
 import re
 import datetime
 
@@ -15,22 +17,28 @@ def dashboard_index():
     now = datetime.datetime.now()
     past = now - datetime.timedelta(minutes=60)
     for t in types:
+        # meas_type.id, meas_type.name, current temp, graph-labels, graph-data
         dataset = [t.id, t.name, None, [], []]
+        results = db.session.query(
+            Measurement.code,
+            func.avg(Measurement.value).label('average'),
+            Measurement.date_time
+        ).filter(
+            Measurement.code == t.code
+        ).group_by(
+            Measurement.date_time
+        ).all()
+    
+        # set latest temp
+        dataset[2] = {'value': results[-1][1], 'date_time': results[-1][2]}
+        for row in results:
+            dataset[3].append(datetime.datetime.strftime(row[2], "%m/%d/%y %H:%M"))
+            dataset[4].append(row[1])
 
-        recent = Measurement.query.filter(Measurement.type_id == t.id, Measurement.date_time > past).order_by(Measurement.date_time.asc())
+        if not payload:
+            payload = []
 
-        try:
-            dataset[2] = recent[-1].simplified()
-            for d in recent:
-                dataset[3].append(datetime.datetime.strftime(d.date_time, "%m/%d/%y %H:%M"))
-                dataset[4].append(d.value)
-
-            if not payload:
-                payload = []
-
-            payload.append(dataset)
-        except:
-            pass
+        payload.append(dataset)
 
     return render_template('measurement/index.html', 
                 title='Environment',
