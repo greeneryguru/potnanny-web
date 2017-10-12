@@ -42,10 +42,11 @@ class ActionProcess(db.Model):
 
 
 class ActionTrigger(db.Model):
+    __tablename__ = 'action_triggers'
     id = db.Column(db.Integer, primary_key=True)
     action_id = db.Column(db.Integer, db.ForeignKey('actions.id'))
     date_time = db.Column(db.DateTime, nullable=True)
-    trigger = db.Column(db.String(64), nullable=True)
+    trigger = db.Column(db.String(128), nullable=True)
 
     def __init__(self, a_id, dt, message):
         self.action_id = a_id

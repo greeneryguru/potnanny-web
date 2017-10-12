@@ -1,5 +1,7 @@
 from app import db
+from app.sensor.models import Sensor
 import datetime
+from sqlalchemy.orm import relationship
 
 
 class MeasurementType(db.Model):
@@ -22,6 +24,7 @@ class Measurement(db.Model):
     code = db.Column(db.String(4), index=True, nullable=False)
     value = db.Column(db.Integer, nullable=False, server_default='0')
     date_time = db.Column(db.DateTime, nullable=False)
+    sensor = relationship(Sensor)
 
     def __init__(self, id, code, value, dt=datetime.datetime.now()):
         self.sensor_id = id

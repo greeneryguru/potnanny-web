@@ -12,7 +12,7 @@
             <canvas id="chart-{{ sdata.0 }}" height="60"></canvas>
         </div>
     </div>
-    <a href="/sensor/{{ sdata.0 }}/edit">edit sensor</a> | <a href="#">reports</a>
+    <a href="/sensor/{{ sdata.0 }}/edit">edit</a> | <a href="#">reports</a>
     <script>
         Chart.defaults.global.legend.display = false;
         var ctx = document.getElementById("chart-{{ sdata.0 }}").getContext('2d');

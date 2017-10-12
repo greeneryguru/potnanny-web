@@ -69,14 +69,14 @@ class PasswordResetForm(FlaskForm):
 
 ## settings forms ##
 class SettingForm(FlaskForm):
-    id = HiddenField('id')
+    id = HiddenField()
     name = HiddenField('name')
     value = IntegerField('value',
                 validators=[InputRequired(),
                             setting_check])
 
 class TwilioForm(FlaskForm):
-    id = HiddenField('id')
+    id = HiddenField()
     sid = StringField('account SID', validators=[InputRequired()])
     token = StringField('account token', validators=[InputRequired()])
     number = StringField('phone number', validators=[InputRequired()])

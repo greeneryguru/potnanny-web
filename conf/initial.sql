@@ -18,3 +18,5 @@ insert into sensors ("name","notes","profile") values ("soil sensor 4", "", "sm"
 
 
 
+
+

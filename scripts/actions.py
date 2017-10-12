@@ -15,18 +15,19 @@ import datetime
 import logging
 sys.path.append( os.environ.get('GREENERY_WEB','/var/www/greenery') )
 from app import db
-from app.action.models import Action, ActionProcess
+from app.action.models import Action, ActionProcess, ActionTrigger
 from app.outlet.models import Outlet
 from app.measurement.models import MeasurementType, Measurement
 from app.admin.models import Setting
 from app.lib.messenger import Messenger
+from app.sensor.models import Sensor
 
 
 logfile = '/var/tmp/greenery.actions.log'
 logging.basicConfig(filename=logfile)
 logger = logging.getLogger('actions')
 logger.setLevel(10)
-pause_time = 20
+pause_time = 15
 
 def main():
     now = datetime.datetime.now()
@@ -58,20 +59,25 @@ returns:
 def process_actions(now, pivl):
     actions = Action.query.all()
     for a in actions:
-        meas = latest_measurement(a.type_id, now, pivl)
-        if not meas:
+        measurements = latest_measurements(a.type_id, now, pivl)
+        if not measurements:
             continue
 
-        rval = is_action_needed(a, now, meas)
-        if rval:
-            p = ActionProcess(a.id, now)
-            db.session.add(p)
-            db.session.commit()
+        for m in measurements:
+            rval = is_action_needed(a, now, m)
+            if rval:
+                t = ActionTrigger(a.id, now, "sensor='%s', value=%s, thresh='%s %d', action='%s %s %d'" % (m.sensor, m.value, a.condition, a.value, a.action, a.action_target, a.action_state))
+                db.session.add(t)
 
-            if a.action == 'switch-outlet':
-                outlet_switch(a)
-            elif a.action == 'sms-message':
-                sms_message(a, meas)
+                p = ActionProcess(a.id, now)
+                db.session.add(p)
+
+                db.session.commit()
+
+                if a.action == 'switch-outlet':
+                    outlet_switch(a)
+                elif a.action == 'sms-message':
+                    sms_message(a, m)
    
     return 0        
 
@@ -84,20 +90,15 @@ params:
     2. datetime.datetime
     3. system polling interval
 returns:
-    a Measurement object on success. None on fail
+    a list of Measurement object on success. None on fail
 """
-def latest_measurement(id, now, pivl):
+def latest_measurements(id, now, pivl):
     add_buffer = 1
-    min_age = now - datetime.timedelta(minutes=pivl + add_buffer)
-    dat = Measurement.query.filter(Measurement.type_id == id).order_by(Measurement.date_time.desc()).first()
-    if not dat:
-        logger.warning("no data for measurement type %d" % id)
-        return None
+    past = now - datetime.timedelta(minutes=pivl + add_buffer)
+    mt = MeasurementType.query.get(id)
 
-    if dat.date_time < min_age:
-        logger.warning("latest measurement for type %d is stale (now=%s, meas=%s)" % (id, now, dat.date_time))
-        return None
-    
+    dat = Measurement.query.filter(Measurement.code == mt.code, Measurement.date_time > past).all()
+
     return dat
 
 
@@ -124,13 +125,17 @@ def outlet_switch(action):
 
 def sms_message(action, measurement):
     m = Messenger()
-    typ = MeasurementType.query.get(action.type_id)
+    code = 'temperature'
+    if measurement.code == 'h':
+        code = 'humidity' 
+    elif measurement.code == 'sm':
+        code = 'soil moisture'
 
-    body = "%s current value is %d" % (typ.name, measurement.value)
-    if typ.name == 'temperature':
-        body += " degrees"
-    elif typ.name == 'humidity':
-        body += '%'
+    body = "GREENERY.GURU: sensor '%s' %s is %d" % (measurement.sensor, code, measurement.value)
+    if code == 'temperature':
+        body += ' degrees'
+    elif code == 'humidity' or code == 'soil moisture':
+        body += ' percent'
 
     m.message(action.action_target, body)
 
