@@ -24,7 +24,8 @@ def dashboard_index():
             func.avg(Measurement.value).label('average'),
             Measurement.date_time
         ).filter(
-            Measurement.code == t.code
+            Measurement.code == t.code,
+            Measurement.date_time > past
         ).group_by(
             Measurement.date_time
         ).all()

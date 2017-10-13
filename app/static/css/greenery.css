@@ -11,6 +11,15 @@ a { color: #86af49; }
 a:hover { color: #333; }
 
 
+/* button modifications */
+.button,
+button,
+input[type="submit"],
+input[type="reset"],
+input[type="button"] {
+  border-radius: 8px;
+}
+
 .button.button-primary,
 button.button-primary,
 input[type="submit"].button-primary,
@@ -18,8 +27,7 @@ input[type="reset"].button-primary,
 input[type="button"].button-primary {
   color: #333;
   background-color: #A4C639;
-  border-color: #A4C639; 
-  border-radius: 6px; }
+  border-color: #A4C639; }
 .button.button-primary:hover,
 button.button-primary:hover,
 input[type="submit"].button-primary:hover,
@@ -35,6 +43,7 @@ input[type="button"].button-primary:focus {
   border-color: #86af49; }
 
 
+/* button groups */
 .btn-group .button {
     cursor: pointer;
     float: left;
@@ -49,7 +58,6 @@ input[type="button"].button-primary:focus {
 .btn-group .button:last-child {
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
-    
 }
 
 .btn-group:after {
@@ -57,5 +65,7 @@ input[type="button"].button-primary:focus {
     clear: both;
     display: table;
 }
+
+
 
 

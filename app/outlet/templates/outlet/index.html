@@ -49,10 +49,8 @@
 {% if payload %}
     {% for o in payload %}
     <div class="row">    
-      <div class="seven columns">
-        <div class="btn-group" style="width:100%">
-        <a class="button" href="/outlet/{{ o.id }}/edit" style="width: 80%;">{{ o.name }}</a><a class="button toggle" id="toggle-{{ o.id }}" style="width: 10%;">{% if o.state %}on{% else %}off{% endif %}</a>
-        </div>
+      <div class="seven columns btn-group">
+        <a class="button" href="/outlet/{{ o.id }}/edit" style="width: 83%;">{{ o.name }}</a><a class="button toggle" id="toggle-{{ o.id }}" style="width: 10%;">{% if o.state %}on{% else %}off{% endif %}</a>
       </div>
     </div>
     {% endfor %}
