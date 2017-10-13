@@ -27,13 +27,13 @@
             });
         }, 5000);
 
-        $(".button.toggle").on('click', function(){
+        $(".toggle").on('click', function(){
             var pk = this.id.split("-")[1];
             var self = this;
             if ($(self).hasClass('button-primary')) {
-                setSwitchValid(self, {"state": false, "name": $(self).text().split(" ")[0]});
+                setSwitchValid(self, {"state": false});
             } else {
-                setSwitchValid(self, {"state": true, "name": $(self).text()});
+                setSwitchValid(self, {"state": true});
             }
             $.post("/outlet/" + pk + "/toggle",
             {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
