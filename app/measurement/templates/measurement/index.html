@@ -2,46 +2,105 @@
 {% block headers %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/gauge.css') }}" type= "text/css" >
     <script src="{{ url_for('static',  filename='js/Chart.bundle.js') }}"></script>
+    <script>
+        Chart.defaults.global.legend.display = false;
+        var chartRefs = {}
+
+        function createChart(id, data) {
+            var ctx = document.getElementById("chart-" + id).getContext('2d');
+            if (id in chartRefs) {
+                chartRefs[id].destroy()
+            }
+
+            chartRefs[id] = new Chart(ctx, {
+                type: 'line',
+                options: {
+                    animation: {
+                        duration: 0
+                    },
+                    scales: {
+                        xAxes: [{
+                            display: false
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero:false
+                            }
+                        }],
+                    }
+                },
+                data: {
+                    labels: data['labels'],
+                    datasets: [{
+                        data: data['data'],
+                        fill: false,
+                        lineTension: 0.1,
+                        borderColor: "rgb(120, 200, 0)",
+                    }]
+                }
+            });
+        }
+        function setMeasurement(id, data) {
+            var m = data['value']
+            if (data['type-name'] == 'temperature') {
+                m += String.fromCharCode(176);
+            } else if (data['type-name'] == 'humidity') {
+                m += "%";
+            } else if (data['type-name'] == 'soil moisture') {
+                m += "%";
+            }
+            $("#measurement-" + id).text(m);
+            return false;
+        }
+        function setSubtext(id, data) {
+            $("#subtext-" + id).text(data['date-time']);
+            return false;
+        }
+        $(document).ready(function() {
+            $(".gauge").each(function(){
+                var pk = this.id.split("-")[1];
+                $.get("/measurement/type/" + pk + "/newest/avg",
+                    {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
+                    function(data){
+                        setMeasurement(pk, data);
+                        setSubtext(pk, data);
+		            }, 'json');
+                $.get("/measurement/type/" + pk + "/newest/avg/graph",
+                    {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
+                    function(data){
+                        createChart(pk, data);
+		            }, 'json');
+            });
+            setInterval(function(){
+                $(".gauge").each(function(){
+                    var pk = this.id.split('-',2)[1];
+                    $.get("/measurement/type/" + pk + "/newest/avg",
+                        {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
+                        function(data){
+                            setMeasurement(pk, data);
+                            setSubtext(pk, data);
+		                }, 'json');
+                    $.get("/measurement/type/" + pk + "/newest/avg/graph",
+                        {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
+                        function(data){
+                            createChart(pk, data);
+		                }, 'json');
+                });
+            }, 60000);
+        });
+    </script>
 {% endblock %}
 {% block content %}
 {% if payload %}
-    {% for d in payload %}
-    <div class="gauge">
-        average {{ d.1 }}
-        <div class="measurement">{{ d.2.value }}{% if d.1 == 'temperature' %}&#176;{% else %}&#37;{% endif %}</div>
+    {% for m in payload %}
+    <div class="gauge" id="gauge-{{ m.id }}">
+        average {{ m.name }}
+        <div class="measurement" id="measurement-{{ m.id }}"></div>
         <div class="graph">
-            <canvas id="chart-{{ d.0 }}" height="40"></canvas>
+            <canvas id="chart-{{ m.id }}" height="40"></canvas>
         </div>
-        <div class="subtext">{{ d.2.date_time }}</div>
+        <div class="subtext" id="subtext-{{ m.id }}"></div>
     </div>
-    <script>
-        Chart.defaults.global.legend.display = false;
-        var ctx = document.getElementById("chart-{{ d.0 }}").getContext('2d');
-        var myChart = new Chart(ctx, {
-            type: 'line',
-            options: {
-                scales: {
-                    xAxes: [{
-                        display: false
-                    }],
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero:false
-                        }
-                    }],
-                }
-            },
-            data: {
-                labels: {{ d.3 | safe }},
-                datasets: [{
-                    data: {{ d.4 }},
-                    fill: false,
-                    lineTension: 0.1,
-                    borderColor: "rgb(120, 200, 0)",
-                }]
-            }
-        });
-    </script>
     <p></p>
     {% endfor %}
 {% else %}
