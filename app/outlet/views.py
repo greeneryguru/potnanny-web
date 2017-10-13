@@ -5,6 +5,7 @@ from app import app, db
 from .models import Outlet
 from .forms import OutletForm
 
+
 @app.route('/outlet')
 @login_required
 def outlet_index():
@@ -13,13 +14,6 @@ def outlet_index():
                 title='Outlets',
                 payload=outlets)
 
-@app.route('/outlet/edit')
-@login_required
-def outlet_modify():
-    outlets = Outlet.query.all()
-    return render_template('outlet/edit.html', 
-                title='Edit Outlets',
-                payload=outlets)
 
 @app.route('/outlet/create', methods=['GET','POST'])
 @app.route('/outlet/<pk>/edit', methods=['GET','POST'])

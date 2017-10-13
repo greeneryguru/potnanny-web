@@ -5,18 +5,18 @@
         if (data.state == true) {
             if (! $(self).hasClass("button-primary")) {
                 $(self).addClass("button-primary");
-                $(self).text(data.name + " ON");
+                $(self).text("on");
             }
         } else {
             if ($(self).hasClass("button-primary")) {
                 $(self).removeClass("button-primary");
-                $(self).text(data.name.split(" ")[0]);
+                $(self).text("off");
             }
         }
     }
     $(document).ready(function() {
         setInterval(function(){
-            $(".button").each(function(){
+            $(".button.toggle").each(function(){
                 var pk = this.id.split('-',2)[1];
                 var self = this;
                 $.get("/outlet/" + pk,
@@ -27,7 +27,7 @@
             });
         }, 7000);
 
-        $(".button").on('click', function(){
+        $(".button.toggle").on('click', function(){
             var pk = this.id.split("-")[1];
             var self = this;
             if ($(self).hasClass('button-primary')) {
@@ -50,7 +50,9 @@
     {% for o in payload %}
     <div class="row">    
       <div class="seven columns">
-        <a class="button{% if o.state %} button-primary{% endif %}" id="edit-{{ o.id }}" style="min-width: 180px; width: 100%;">{{ o.name }}{% if o.state %} ON{% endif %}</a>
+        <div class="btn-group" style="width:100%">
+        <a class="button" href="/outlet/{{ o.id }}/edit" style="width: 85%;">{{ o.name }}</a><a class="button toggle" id="toggle-{{ o.id }}" style="width: 15%;">{% if o.state %}on{% else %}off{% endif %}</a>
+        </div>
       </div>
     </div>
     {% endfor %}
@@ -58,7 +60,6 @@
     No data available
 {% endif %}
 <p>
-    <a href="/outlet/edit"><i class="fa fa-edit"></i> edit</a> |
     <a href="/outlet/create"><i class="fa fa-plus"></i> add</a>
 </p>
 {% endblock %}

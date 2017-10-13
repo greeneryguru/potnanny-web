@@ -18,7 +18,8 @@ input[type="reset"].button-primary,
 input[type="button"].button-primary {
   color: #333;
   background-color: #A4C639;
-  border-color: #A4C639; }
+  border-color: #A4C639; 
+  border-radius: 6px; }
 .button.button-primary:hover,
 button.button-primary:hover,
 input[type="submit"].button-primary:hover,
@@ -32,4 +33,29 @@ input[type="button"].button-primary:focus {
   color: #FFF;
   background-color: #86af49;
   border-color: #86af49; }
+
+
+.btn-group .button {
+    cursor: pointer;
+    float: left;
+}
+
+.btn-group .button:not(:last-child) {
+    border-right: none;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    
+}
+.btn-group .button:last-child {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    
+}
+
+.btn-group:after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
 

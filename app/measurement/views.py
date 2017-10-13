@@ -28,7 +28,9 @@ def dashboard_index():
         ).group_by(
             Measurement.date_time
         ).all()
-    
+        if not results:
+            continue
+
         # set latest temp
         dataset[2] = {'value': results[-1][1], 'date_time': results[-1][2]}
         for row in results:
