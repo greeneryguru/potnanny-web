@@ -1,0 +1,5 @@
+GREENERY_WEB=/var/www/greenery
+
+* * * * * $GREENERY_WEB/bin/scripts/scheduler.py
+* * * * * $GREENERY_WEB/bin/scripts/actions.py
+* * * * * $GREENERY_WEB/bin/scripts/poll.py

@@ -1,4 +1,0 @@
-GREENERY_WEB=/var/www/greenery
-
-# scheduler for greenery.guru app
-* * * * * $GREENERY_WEB/scripts/scheduler.py

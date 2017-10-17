@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+    <form action="" method="post" name="edittwilio" class="form">
+        {{ form.hidden_tag() }}
+        <fieldset>
+        <div class="row">
+            <div class="two columns">
+            {{ form.sid.label }}
+            </div>
+            <div class="six columns">
+            {{ form.sid }}
+            {% for err in form.sid.errors %}
+            <span class="message-inline">[{{ err }}]</span>
+            {% endfor %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="two columns">
+            {{ form.token.label }}
+            </div>
+            <div class="six columns">
+            {{ form.token }}
+            {% for err in form.token.errors %}
+            <span class="message-inline">[{{ err }}]</span>
+            {% endfor %}
+            </div>
+        </div>
+       <div class="row">
+            <div class="two columns">
+            {{ form.number.label }}
+            </div>
+            <div class="six columns">
+            {{ form.number }}
+            {% for err in form.number.errors %}
+            <span class="message-inline">[{{ err }}]</span>
+            {% endfor %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="four columns">
+            <button type="submit" class="button-primary">Submit</button>
+            </div>
+        </div>
+        </fieldset>
+    </form>
+{% endblock %}
+
