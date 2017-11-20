@@ -10,6 +10,7 @@ class OneWireTemp(object):
     def __init__(self, id):
         # default path
         self.path = '/sys/bus/w1/devices'
+        self.convert_int = True
 
         if os.path.exists(id):
             self.path = id
@@ -27,15 +28,19 @@ class OneWireTemp(object):
     returns: a dict {'type': 't = temperature', 'value': <float>, 'label': ''}
     """
     def get_temp(self, fahrenheit=False):
+        label = 'C'
         temp = self.temp_from_file(os.path.join(self.path, "w1_slave"))
+        
         if fahrenheit:
-            return {'type': 't',
-                    'value': temp * 9.0 / 5.0 + 32.0,
-                    'label': 'F' }
-        else:
-            return {'type': 't',
-                    'value': temp,
-                    'label': 'C' }
+            label = 'F'
+            temp = temp * 9.0 / 5.0 + 32.0
+
+        if self.convert_int:
+            temp = int(temp)
+
+        return {'type': 't',
+                'value': temp,
+                'label': label }
 
 
     def temp_from_file(self, path):
