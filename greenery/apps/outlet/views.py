@@ -71,12 +71,12 @@ def outlet_toggle(pk):
     if not rval:
         db.session.commit()
 
-    return jsonify(o.simplified())
+    return str(o)
 
 
 @app.route('/outlet/<pk>', methods=['GET'])
 def outlet_status(pk):
     o = Outlet.query.get_or_404(int(pk))
-    return jsonify(o.simplified())
+    return str(o)
 
 

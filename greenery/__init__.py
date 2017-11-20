@@ -21,12 +21,12 @@ csrf = CSRFProtect(app)
 
 
 # import blueprints of individual apps
-from apps.admin import admin
-from apps.outlet import outlet
-from apps.sensor import sensor
-from apps.schedule import schedule
-from apps.measurement import measurement
-from apps.action import action
+from greenery.apps.admin import admin
+from greenery.apps.outlet import outlet
+from greenery.apps.sensor import sensor
+from greenery.apps.schedule import schedule
+from greenery.apps.measurement import measurement
+from greenery.apps.action import action
 
 
 # register blueprints
@@ -39,12 +39,12 @@ app.register_blueprint(action)
 
 
 # import views
-from apps.admin import views
-from apps.outlet import views
-from apps.sensor import views
-from apps.schedule import views
-from apps.measurement import views
-from apps.action import views
+from greenery.apps.admin import views
+from greenery.apps.outlet import views
+from greenery.apps.sensor import views
+from greenery.apps.schedule import views
+from greenery.apps.measurement import views
+from greenery.apps.action import views
 
 
 # import APIs

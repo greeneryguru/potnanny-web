@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-if __name__ == '__main__':
+from greenery import app
 
-    from greenery import app
+if __name__ == '__main__':
     app.run(debug=True)
