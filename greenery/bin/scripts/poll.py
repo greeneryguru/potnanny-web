@@ -44,7 +44,7 @@ def main():
 
         # poll the devices
         sensors = Sensor.query.all()
-        for s in sensor:
+        for s in sensors:
             results = None
             if re.search(r'28-\d+', s.notes):
                 obj = OneWireTemp(s.notes)
