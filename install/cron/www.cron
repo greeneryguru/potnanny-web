@@ -1,6 +1,13 @@
 GREENERY_WEB=/var/www/greenery
 
+# check for scheduled actions
 * * * * * $GREENERY_WEB/bin/scripts/scheduler.py
+
+# check for required threshold actions
 * * * * * $GREENERY_WEB/bin/scripts/actions.py
+
+# poll sensors for data
 * * * * * $GREENERY_WEB/bin/scripts/poll.py
-0 * * * * $GREENERY/bin/scripts/aggregate.py
+
+# hourly aggregate previous hours measurement data
+0 * * * * $GREENERY_WEB/bin/scripts/aggregate.py

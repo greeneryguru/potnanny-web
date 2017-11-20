@@ -26,7 +26,10 @@ class Measurement(db.Model):
     date_time = db.Column(db.DateTime, nullable=False)
     sensor = relationship(Sensor)
 
-    def __init__(self, id, code, value, dt=datetime.datetime.now()):
+    def __init__(self, id, code, value, 
+                    dt=datetime.datetime.now().replace(
+                        second=0, 
+                        microsecond=0)):
         self.sensor_id = id
         self.code = code
         self.value = value
@@ -39,5 +42,34 @@ class Measurement(db.Model):
                 'value': self.value, 
                 'date_time': datetime.datetime.strftime(self.date_time, "%m/%d/%y %H:%M")}
 
+
+class MeasurementAverage(db.Model):
+    __tablename__ = 'measurement_averages'
+    id = db.Column(db.Integer, primary_key=True)
+    sensor_id = db.Column(db.Integer, db.ForeignKey('sensors.id'))
+    avg = db.Column(db.Integer, nullable=False, server_default='0')
+    min = db.Column(db.Integer, nullable=False, server_default='0')
+    max = db.Column(db.Integer, nullable=False, server_default='0')
+    date_time = db.Column(db.DateTime, nullable=False)
+    sensor = relationship(Sensor)
+
+    def __init__(self, id, navg, nmin, nmax, 
+                    dt=datetime.datetime.now().replace(
+                        minute=0, 
+                        second=0, 
+                        microsecond=0)):
+        self.sensor_id = id
+        self.avg = navg
+        self.min = nmin
+        self.max = nmax
+        self.date_time = dt
+
+    def simplified(self):
+        return {'id': self.id, 
+                'sensor_id': self.sensor_id,
+                'avg': self.avg, 
+                'min': self.min,
+                'max': self.max,
+                'date_time': datetime.datetime.strftime(self.date_time, "%m/%d/%y %H:%M")}
 
 
