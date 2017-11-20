@@ -1,4 +1,4 @@
-from flask import Flask, abort
+from flask import Flask, abort, make_response, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager
@@ -45,5 +45,15 @@ from greenery.apps.sensor import views
 from greenery.apps.schedule import views
 from greenery.apps.measurement import views
 from greenery.apps.action import views
+
+
+# import APIs
+# from greenery.apps.outlet import api
+
+
+# 404 error handler for API
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': '404 Not found'}), 404)
 
 

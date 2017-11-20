@@ -21,7 +21,16 @@ sudo apt-get -y install uwsgi
 sudo apt-get -y install uwsgi-plugin-python3
 
 
+# add 1-wire to boot
+# sudo cat /boot/config.txt | grep dtoverlay=w1-gpio
+# catch=$?
+# if (( catch )); then
+#     sudo echo dtoverlay=w1-gpio >>boot/config.txt
+# fi
+
+
 # flask requirements
+sudo pip3 install requests
 sudo pip3 install flask
 sudo pip3 install flask-login
 sudo pip3 install flask-wtf
@@ -85,6 +94,7 @@ if (( catch )); then
 fi
 
 
-
+# reboot
+# sudo reboot
 
 

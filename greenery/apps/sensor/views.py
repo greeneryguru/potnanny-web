@@ -29,7 +29,6 @@ def sensor_index():
 
         payload.append(dataset)
 
-    print(payload)
     return render_template('sensor/index.html', 
                 title='sensors',
                 payload=payload)

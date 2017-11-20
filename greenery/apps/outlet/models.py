@@ -1,8 +1,9 @@
 from greenery import db
 from greenery.lib.rfutils import TXChannelControl
+from greenery.lib.jsonmodel import JsonModel
 import json
 
-class Outlet(db.Model):
+class Outlet(db.Model, JsonModel):
     __tablename__ = 'outlets'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(24), nullable=False, server_default='', unique=True)
@@ -14,13 +15,7 @@ class Outlet(db.Model):
         self.channel = channel
         
     def __repr__(self):
-        return json.dumps(self.simplified())
-
-    def simplified(self):
-        return {'id': self.id, 
-                'name': self.name, 
-                'channel': self.channel, 
-                'state': self.state}
+        return json.dumps(self.as_dict())
 
     def on(self):
         ctrl = TXChannelControl()
@@ -29,7 +24,6 @@ class Outlet(db.Model):
             self.state = 1
 
         return rval
-
 
     def off(self):
         ctrl = TXChannelControl()
