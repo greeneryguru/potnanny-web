@@ -22,11 +22,11 @@ sudo apt-get -y install uwsgi-plugin-python3
 
 
 # add 1-wire to boot
-# sudo cat /boot/config.txt | grep dtoverlay=w1-gpio
-# catch=$?
-# if (( catch )); then
-#     sudo echo dtoverlay=w1-gpio >>boot/config.txt
-# fi
+sudo cat /boot/config.txt | grep dtoverlay=w1-gpio
+catch=$?
+if (( catch )); then
+    sudo echo dtoverlay=w1-gpio >>boot/config.txt
+fi
 
 
 # flask requirements
@@ -67,7 +67,7 @@ sudo ln -s /etc/uwsgi/apps-available/uwsgi.ini /etc/uwsgi/apps-enabled/uwsgi.ini
 sudo ls -l /var/www/greenery/app.db
 catch=$?
 if (( catch )); then
-    sudo cp /var/www/greenery/initial.db /var/www/greenery/app.db
+    sudo cp /var/www/greenery/greenery/initial.db /var/www/greenery/greenery/app.db
     sudo chown www-data /var/www/greenery/app.db
     sudo chgrp www-data /var/www/greenery/app.db
 fi

@@ -10,7 +10,7 @@ server {
     }
     
     location /static/ {
-        root /var/www/greenery/app;
+        root /var/www/greenery/greenery;
     }
     
     location ~ /\.ht {
