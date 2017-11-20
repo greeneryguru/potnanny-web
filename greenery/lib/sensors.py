@@ -18,7 +18,7 @@ class OneWireTemp(object):
             self.id = id
             self.path = self.path + '/' + id
         else:
-            raise IOError('Cant find file for sensor id %s' % id)
+            raise IOError('Cant find path for sensor id %s' % id)
 
     """
     get temperature from a sensor
@@ -27,7 +27,7 @@ class OneWireTemp(object):
     returns: a dict {'type': 't = temperature', 'value': <float>, 'label': ''}
     """
     def get_temp(self, fahrenheit=False):
-        temp = self.temp_from_file(self.path)
+        temp = self.temp_from_file(os.path.join(self.path, "w1_slave"))
         if fahrenheit:
             return {'type': 't',
                     'value': temp * 9.0 / 5.0 + 32.0,
