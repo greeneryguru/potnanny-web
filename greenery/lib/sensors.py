@@ -9,7 +9,7 @@ class OneWireTemp(object):
 
     def __init__(self, id):
         # default path
-        self.path = '/sys/bus/w1/devices/'
+        self.path = '/sys/bus/w1/devices'
 
         if os.path.exists(id):
             self.path = id
