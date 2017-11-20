@@ -46,6 +46,9 @@ def main():
         sensors = Sensor.query.all()
         for s in sensors:
             results = None
+            if not s.notes or s.notes == "":
+                continue
+
             if re.search(r'28-\d+', s.notes):
                 obj = OneWireTemp(s.notes)
                 results = obj.get_temp(fahrenheit)
