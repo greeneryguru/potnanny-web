@@ -27,7 +27,7 @@ class OneWireTemp(object):
     returns: a dict {'type': 't = temperature', 'value': <float>, 'label': ''}
     """
     def get_temp(self, fahrenheit=False):
-        temp = temp_from_file(self.path)
+        temp = self.temp_from_file(self.path)
         if fahrenheit:
             return {'type': 't',
                     'value': temp * 9.0 / 5.0 + 32.0,
@@ -39,10 +39,10 @@ class OneWireTemp(object):
 
 
     def temp_from_file(self, path):
-        lines = read_raw(path)
+        lines = self.read_raw(path)
         if not lines or not re.search(r'YES', lines[0]):
             time.sleep(0.4)
-            lines = read_raw(path)
+            lines = self.read_raw(path)
     
         match = re.search(r't=(\d+)', lines[1])
         if match:
