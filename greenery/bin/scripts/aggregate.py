@@ -31,7 +31,7 @@ def main():
     then = now - datetime.timedelta(hours=1)
 
     sensors = Sensor.query.all()
-    for s in sensor:
+    for s in sensors:
         tally = 0
         avg = None        
         nmin = None
