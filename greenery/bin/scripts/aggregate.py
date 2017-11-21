@@ -36,7 +36,7 @@ def main():
         avg = None        
         nmin = None
         nmax = None
-        results = Measurement.query.filter(Measurement.sensor_id=s.id).filter(Measurement.date_time.between(then, now))
+        results = Measurement.query.filter(Measurement.sensor_id == s.id).filter(Measurement.date_time.between(then, now))
         if not results:
             continue
 
