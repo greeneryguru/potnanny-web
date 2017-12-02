@@ -76,8 +76,8 @@ def main():
                 while True:
                     # returns like; 
                     #   line = "sm,14,22" (code, address, value)
-                    line = ser.readline()
-                    print(line)
+                    line = ser.readline().decode().strip()
+
                     if re.search(r'^ok', line, re.IGNORECASE):
                         # nothing more to read!
                         break;
