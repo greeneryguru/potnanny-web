@@ -31,10 +31,7 @@ from greenery.apps.admin.models import Setting
 from greenery.apps.sensor.models import Sensor
 
 
-logfile = '/var/tmp/greenery.errors.log'
-logging.basicConfig(filename=logfile)
-logger = logging.getLogger('actions')
-logger.setLevel(10)
+
 
 
 # global vars
