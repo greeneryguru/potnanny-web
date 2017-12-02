@@ -52,7 +52,6 @@
                 $("#days").val(a - b);
             }
         });
-        
         $(".button.delete").click(function(){
             var [mode, pk] = this.id.split('-',2);
             if (mode == "delete") {
@@ -165,7 +164,6 @@
             <button type="submit" class="button-primary">Submit</button>
             {% if pk %}<button type="button" class="button delete" id="delete-{{ pk }}">Delete</button>{% endif %}
             </div>
-        
         </div>
         </fieldset>
     </form>

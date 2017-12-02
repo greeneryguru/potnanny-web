@@ -12,7 +12,7 @@ from flask_login import login_required, login_user, logout_user, current_user
 @login_required
 def admin_index():
     return render_template('admin/index.html', 
-                title='Sys Admin')
+                title='Administer System')
 
 
 ## system settings pages ##

@@ -67,7 +67,7 @@
 {% endblock %}
 {% block content %}
 {% if measurement %}
-    high-resolution data
+    high-resolution data (4 hours)
     <div class="gauge" id="gauge-{{ measurement.id }}">
         {{ measurement.name }}
         <div class="measurement" id="measurement-{{ measurement.id }}"></div>
@@ -78,7 +78,7 @@
     </div>
     <p></p>
     {% if sensors %}
-    sensor hourly data
+    sensor hourly data (5 days)
         {% for s in sensors %}
     <div class="gauge" id="avggauge-{{ measurement.id }}-{{ s.id }}">
         {{ s.name }}

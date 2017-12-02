@@ -11,8 +11,8 @@ import datetime
 def sensor_index():
     sensors = Sensor.query.all()
     return render_template('sensor/index.html', 
-                title='sensors',
-                payload=sensors)
+                title='Sensors',
+                sensors=sensors)
 
         
 @app.route('/sensor/create', methods=['GET','POST'])
@@ -20,10 +20,10 @@ def sensor_index():
 @login_required
 def sensor_edit(pk=None):
     obj = None
-    title = 'add sensor'
+    title = 'Add Sensor'
 
     if pk:
-        title = 'edit sensor'
+        title = 'Edit Sensor'
         obj = Sensor.query.get_or_404(int(pk))
         
     form = SensorForm(obj=obj)  

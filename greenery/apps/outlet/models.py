@@ -1,5 +1,4 @@
 from greenery import db
-from greenery.lib.rfutils import TXChannelControl
 from greenery.lib.jsonmodel import JsonModel
 import json
 
@@ -18,18 +17,8 @@ class Outlet(db.Model, JsonModel):
         return json.dumps(self.as_dict())
 
     def on(self):
-        ctrl = TXChannelControl()
-        rval, msg = ctrl.send_control(self.channel, 1)
-        if not rval:
-            self.state = 1
-
-        return rval
+        pass
 
     def off(self):
-        ctrl = TXChannelControl()
-        rval, msg = ctrl.send_control(self.channel, 0)
-        if not rval:
-            self.state = 0
-
-        return rval
+        pass
 

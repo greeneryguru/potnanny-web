@@ -8,7 +8,7 @@ insert into settings ("name","value") values ("rf tx base code", 12066304);
 
 insert into measurement_types("name") values ("temperature");
 insert into measurement_types("name") values ("humidity");
-insert into measurement_types("name") values ("soil moisture");
+insert into measurement_types("name") values ("soil-moisture");
 
 insert into sensors("name", "tags", "address") values ("temp 1", "temperature dht22", 2);
 insert into sensors("name", "tags", "address") values ("soil 1", "soil-moisture", 14);
