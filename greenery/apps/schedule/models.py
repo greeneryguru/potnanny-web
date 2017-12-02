@@ -10,17 +10,26 @@ class Schedule(db.Model):
     outlet_id = db.Column(db.Integer, db.ForeignKey('outlets.id'))
     on_time = db.Column(db.String(16), nullable=False, server_default='')
     off_time = db.Column(db.String(16), nullable=False, server_default='')
-    days = db.Column(db.Integer, nullable=False, server_default='127')
+    days = db.Column(db.Integer, nullable=False, server_default="127")
+    custom = db.Column(db.Integer, nullable=False, server_default="0")
+    
+    outlet = db.relationship("Outlet")
 
+
+    def __init__(self, oid, ontime, offtime, days, cust):
+        self.outlet_id = oid
+        self.on_time = ontime
+        self.off_time = offtime
+        self.days = days
+        self.custom = cust
 
     def __repr__(self):
-        o = Outlet.query.filter(Outlet.id == self.outlet_id).first()
         d = ",".join(self.run_days())
-        return "%s %s/%s (%s)" % (o.name, self.on_time,
+        return "%s %s/%s (%s)" % (self.outlet.name, self.on_time,
                     self.off_time, d)
 
 
-    def simplified(self):
+    def as_dict(self):
         return {'id': self.id, 
                 'outlet_id': self.outlet_id, 
                 'on_time': self.hour,

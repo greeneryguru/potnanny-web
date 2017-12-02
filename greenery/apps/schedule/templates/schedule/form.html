@@ -1,8 +1,26 @@
 {% extends "base.html" %}
 {% block headers %}
     <script>
+    function toggleQuickButtons(obj) {
+        $(".button.quick").each(function(){
+            if ($(this).is(obj)) {
+                if (! $(this).hasClass("button-primary")) {
+                    $(this).addClass("button-primary");
+                }
+            } else {
+                $(this).removeClass("button-primary");
+            }
+            if (obj.id == "custom-schedule") {
+                $("#hideable").css("display","block");
+            } else {
+                $("#hideable").css("display","none");
+            }
+        });
+        return false;
+    }
     $(document).ready(function() {
         $("#days").css("display", "none");
+        $("#hideable").css("display","none");
         $("input:checkbox").each(function(){
   		    var self = this;
             var a = parseInt($("#days").val());
@@ -12,7 +30,18 @@
     	    } else {
       	        $(self).prop("checked", false);
             }
-        });    
+        }); 
+        $(".button.quick").each(function(){
+            if ($("#custom").val() == 0 && this.id == "veg-schedule") {
+                toggleQuickButtons(this);
+            }
+            if ($("#custom").val() == 1 && this.id == "flower-schedule") {
+                toggleQuickButtons(this);
+            }
+            if ($("#custom").val() == 2 && this.id == "custom-schedule") {
+                toggleQuickButtons(this);
+            }
+        });   
         $("input:checkbox").change(function(){
             var self = this;
             var a = parseInt($("#days").val());
@@ -23,6 +52,7 @@
                 $("#days").val(a - b);
             }
         });
+        
         $(".button.delete").click(function(){
             var [mode, pk] = this.id.split('-',2);
             if (mode == "delete") {
@@ -37,6 +67,24 @@
             }
 			return false;
         });
+        $(".button[id*=veg-schedule]").click(function(){
+            toggleQuickButtons(this);
+            $("#custom").val(0);
+            $("#days").val(127);
+            $("#on_time").val("5:00 am");
+            $("#off_time").val("11:00 pm");
+        });
+        $(".button[id*=flower-schedule]").click(function(){
+            toggleQuickButtons(this);
+            $("#custom").val(1);
+            $("#days").val(127);
+            $("#on_time").val("7:00 am");
+            $("#off_time").val("7:00 pm");
+        });
+        $(".button[id*=custom-schedule]").click(function(){
+            toggleQuickButtons(this);
+            $("#custom").val(2);
+        });
     });
     </script>
 {% endblock headers %}
@@ -44,39 +92,80 @@
     <form action="" method="post" name="schedule"  class="pure-form pure-form-aligned">
         {{ form.hidden_tag() }}
         <fieldset>
-        <div class="pure-control-group">
-            {{ form.outlet_id.label }}
-            {{ form.outlet_id }}
-            {% for err in form.outlet_id.errors %}
-            <span class="pure-form-message-inline">[{{ err }}]</span>
-            {% endfor %}
+        <div class="row">
+            <div class="two columns">
+                {{ form.outlet_id.label }}
+            </div>
+            <div class="four columns">
+                {{ form.outlet_id }}
+                {% if form.outlet_id.errors %}
+                {% for err in form.outlet_id.errors %}
+                <span style="color: red;">[{{ err }}]</span>
+                {% endfor %}
+                {% endif %}
+            </div>
         </div>
-        <div class="pure-control-group">
-            {{ form.on_time.label }}
-            {{ form.on_time }}
-            {% for err in form.on_time.errors %}
-            <span class="pure-form-message-inline">[{{ err }}]</span>
-            {% endfor %}
+
+        <div class="row">
+            <div class="two columns">
+                <label>Schedule</label>
+            </div>
+            <div class="four columns">
+            <button type="button" class="button quick" id="veg-schedule">Vegatative</button>
+            <button type="button" class="button quick" id="flower-schedule">Flowering</button>
+            <button type="button" class="button quick" id="custom-schedule">Custom</button>
+            </div>
         </div>
-        <div class="pure-control-group">
-            {{ form.off_time.label }}
-            {{ form.off_time }}
-            {% for err in form.off_time.errors %}
-            <span class="pure-form-message-inline">[{{ err }}]</span>
-            {% endfor %}
+
+        <div id="hideable">
+        <hr>
+        <div class="row">
+            <div class="two columns">
+                {{ form.on_time.label }}
+            </div>
+            <div class="four columns">
+                {{ form.on_time }}
+                {% if form.on_time.errors %}
+                {% for err in form.on_time.errors %}
+                <span style="color: red;">[{{ err }}]</span>
+                {% endfor %}
+                {% endif %}
+            </div>
         </div>
-        <div class="pure-control-group">
-            <label>Days</label>
+        <div class="row">
+            <div class="two columns">
+                {{ form.off_time.label }}
+            </div>
+            <div class="four columns">
+                {{ form.off_time }}
+                {% if form.off_time.errors %}
+                {% for err in form.off_time.errors %}
+                <span style="color: red;">[{{ err }}]</span>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="two columns">
+                <label>Days</label>
+            </div>
+            <div class="four columns">
             {% for d in dow %}
                 <label class="dow" for="cb-{{ d.0 }}" style="display: inline;">
                 <input type="checkbox"  id="cb-{{ d.0 }}" value="{{ d.1 }}">
                 <span class="label-body">{{ d.0 }}</span>
                 </label>
             {% endfor %}
-        
-        <div class="pure-controls">
+            </div>
+        </div>
+        </div>
+        <p></p>
+        <div class="row">
+            <div class="twelve columns">
             <button type="submit" class="button-primary">Submit</button>
             {% if pk %}<button type="button" class="button delete" id="delete-{{ pk }}">Delete</button>{% endif %}
+            </div>
+        
         </div>
         </fieldset>
     </form>

@@ -13,20 +13,13 @@ sudo apt-get -y install sqlite3
 sudo apt-get -y install python3-dev
 sudo apt-get -y install python3-cryptography
 sudo apt-get -y install python3-pip
+sudo apt-get -y install python-smbus
 
 
 # webserver
 sudo apt-get -y install nginx
 sudo apt-get -y install uwsgi
 sudo apt-get -y install uwsgi-plugin-python3
-
-
-# add 1-wire to boot
-sudo cat /boot/config.txt | grep dtoverlay=w1-gpio
-catch=$?
-if (( catch )); then
-    echo 'dtoverlay=w1-gpio' | sudo tee -a /boot/config.txt
-fi
 
 
 # flask requirements
@@ -38,6 +31,7 @@ sudo pip3 install flask-sqlalchemy
 sudo pip3 install wtforms_components
 sudo pip3 install sqlalchemy-migrate
 sudo pip3 install sqlalchemy_utils
+sudo pip3 install pyserial
 sudo pip3 install twilio
 
 
@@ -93,8 +87,5 @@ if (( catch )); then
     sudo -u www-data touch /var/tmp/greenery.errors.log
 fi
 
-
-# reboot
-sudo reboot
 
 

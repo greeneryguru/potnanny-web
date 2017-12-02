@@ -12,25 +12,38 @@
     }
 
     function setMeasurement(id, data) {
-        $("#" + id).text(data.text);
+        vals = [];
+        if (type(data) == 'Array') {
+            for (let d of data) {
+                vals.push(d.text);
+            }   
+        } else {
+            vals.push(data.text);
+        }
+        $("#" + id).text(vals.join(" | "));
         return false;
     }
 
     function setSubtext(id, data) {
-        $("#" + id).text(data.date_time);    
+        if (type(data) == 'Array') {
+            $("#" + id).text(data[0].date_time);
+        } else {
+            $("#" + id).text(data.date_time);
+        }
+            
         return false;
     }
 
     $(document).ready(function() {
         $(".gauge").each(function(){
             var pk = this.id.split("-")[1];
-            $.get("/measurement/type/" + pk + "/latest",
+            $.get("/measurement/sensor/" + pk + "/latest",
                 {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
                 function(data){
                     setMeasurement("measurement-" + pk, data);
                     setSubtext("subtext-" + pk, data);
 	            }, 'json');
-            $.get("/measurement/chart/type/" + pk ,
+            $.get("/measurement/chart/sensor/" + pk ,
                 {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
                 function(data){
                     gaugeCreateChart("chart-" + pk, data, globalChartRefs);
@@ -39,13 +52,13 @@
         setInterval(function(){
             $(".gauge").each(function(){
                 var pk = this.id.split("-")[1];
-                $.get("/measurement/type/" + pk + "/latest",
+                $.get("/measurement/sensor/" + pk + "/latest",
                     {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
                     function(data){
                         setMeasurement("measurement-" + pk, data);
                         setSubtext("subtext-" + pk, data);
 	                }, 'json');
-                $.get("/measurement/chart/type/" + pk,
+                $.get("/measurement/chart/sensor/" + pk,
                     {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
                     function(data){
                         gaugeCreateChart("chart-" + pk, data, globalChartRefs);
@@ -57,17 +70,15 @@
 {% endblock %}
 {% block content %}
 {% if payload %}
-    {% for obj in payload %}
-    <a class="gauge-link" href="/measurement/type/{{ obj.id }}">
-    <div class="gauge" id="gauge-{{ obj.id }}">
-        {{ obj.name }}
-        <div class="measurement" id="measurement-{{ obj.id }}"></div>
+    {% for sensor in payload %}
+    <div class="gauge" id="gauge-{{ sensor.id }}">
+        {{ sensor.name }}
+        <div class="measurement" id="measurement-{{ sensor.id }}"></div>
         <div class="graph">
-            <canvas id="chart-{{ obj.id }}" height="42"></canvas>
+            <canvas id="chart-{{ sensor.id }}" height="40"></canvas>
         </div>
-        <div class="subtext" id="subtext-{{ obj.id }}"></div>
+        <div class="subtext" id="subtext-{{ sensor.id }}"></div>
     </div>
-    </a>
     <p></p>
     {% endfor %}
 {% else %}

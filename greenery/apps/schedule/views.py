@@ -37,11 +37,14 @@ def schedule_edit(pk=None):
         if pk:
             form.populate_obj(obj)
         else:
-            o = Schedule()
-            o.outlet_id = int(form.outlet_id.data)
-            o.on_time = form.on_time.data
-            o.off_time = form.off_time.data
-            o.days = int(form.days.data)
+            o = Schedule(
+                    int(form.outlet_id.data), 
+                    form.on_time.data,
+                    form.off_time.data,
+                    int(form.days.data),
+                    int(form.custom.data)
+            )
+
             db.session.add(o)
     
         db.session.commit()

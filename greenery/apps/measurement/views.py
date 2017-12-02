@@ -3,82 +3,228 @@ from flask import jsonify
 from flask_login import login_required
 from sqlalchemy.sql import func
 from greenery import app, db
-from .models import MeasurementType, Measurement
+from .models import MeasurementType, Measurement, MeasurementAverage
 from greenery.apps.sensor.models import Sensor
+from greenery.lib.utils import ChartColor, CHARTBASE
 import re
 import datetime
+import copy
 
 
 @app.route('/', methods=['GET'])
-@login_required
-def dashboard_index():
-    types = MeasurementType.query.all()
-    
+def measurement_dashboard():
+    mtypes = MeasurementType.query.all()
     return render_template('measurement/index.html', 
-                title='Environment',
-                payload=types)
+                title='Dashboard',
+                payload=mtypes)
 
 
-@app.route('/measurement/type/<pk>/newest/avg', methods=['GET'])
-def measurement_type_latest_avg(pk):
-    mt = MeasurementType.query.get_or_404(int(pk))
+@app.route('/measurement/type/<int:pk>', methods=['GET'])
+def measurement_type(pk):
+    hours = int(request.args.get('hours', default=1))
+    legend_on = int(request.args.get('legend', default=0))
 
-    # build query in multiple parts
-    newest = db.session.query(
-        Measurement.date_time
-    ).filter(
-        Measurement.code == mt.code
-    ).order_by(Measurement.date_time.desc()).first()[0]
-
-    results = db.session.query(
-        Measurement.code,
-        func.avg(Measurement.value).label('average'),
-        Measurement.date_time
-    ).filter(
-        Measurement.code == mt.code,
-        Measurement.date_time == newest
-    ).group_by(
-        Measurement.date_time
-    ).order_by(Measurement.date_time.desc()).first()
-
-    if not results:
-        return None
-
-    return jsonify({
-        'type-id': int(pk), 
-        'type-name': mt.name, 
-        'value': results[1],
-        'date-time': datetime.datetime.strftime(newest, "%m/%d/%y %H:%M")
-    })
-
-
-@app.route('/measurement/type/<pk>/newest/avg/graph', methods=['GET'])
-def measurement_type_latest_graph(pk, minutes=60):
     now = datetime.datetime.now()
-    past = now - datetime.timedelta(minutes=minutes)
-    dataset = {'labels': [], 'data': []}
-
-    mt = MeasurementType.query.get_or_404(int(pk))
+    then = now - datetime.timedelta(hours=hours)
     
-    results = db.session.query(
-        Measurement.code,
-        func.avg(Measurement.value).label('average'),
-        Measurement.date_time
+    mt = MeasurementType.query.get_or_404(pk)
+    title = mt.name.capitalize()
+    ids = sensors_reporting_in_range(pk, then, now)
+    sensors = Sensor.query.filter(
+        Sensor.id.in_(ids)
+    ).all()
+    return render_template('measurement/measurement.html', 
+                title=title,
+                measurement=mt,
+                sensors=sensors)
+
+   
+
+@app.route('/measurement/type/<int:pk>/latest', methods=['GET'])
+def measurement_type_latest(pk):
+    result = Measurement.query.filter(
+        Measurement.type_id == pk
+    ).order_by(
+        Measurement.date_time.desc()
+    ).first()
+
+    return str(result)
+
+
+@app.route('/measurement/type/<int:tid>/sensor/<int:sid>/latest', methods=['GET'])
+def measurement_sensor_latest(tid, sid):
+    result = Measurement.query.filter(
+        Measurement.type_id == tid,
+        Measurement.sensor_id == sid
+    ).order_by(
+        Measurement.date_time.desc()
+    ).first()  
+
+    return str(result)
+
+
+@app.route('/measurement/chart/type/<int:pk>', methods=['GET'])
+def measurement_chart_type(pk):
+    hours = int(request.args.get('hours', default=1))
+    legend_on = int(request.args.get('legend', default=0))
+
+    now = datetime.datetime.now()
+    then = now - datetime.timedelta(hours=hours)
+
+    ids = sensors_reporting_in_range(pk, then, now)
+    chart = copy.deepcopy(CHARTBASE)
+    tracker = {}
+
+    sensors = Sensor.query.filter(Sensor.id.in_(ids)).all()
+    for s in sensors:
+        # keep track of this sensor's position index in the chart dataset
+        if s.name not in tracker:
+            tracker[s.name] = len(tracker)
+
+        if len(chart['data']['datasets']) <= tracker[s.name]:
+            chart['data']['datasets'].append({})
+
+        results = Measurement.query.filter(
+            Measurement.type_id == pk,
+            Measurement.sensor_id == s.id,
+            Measurement.date_time.between(then,now)
+        ).order_by(
+            Measurement.date_time
+        ).all()
+        
+        for row in results:
+            if datetime.datetime.strftime(row.date_time, "%m/%d/%y %H:%M") not in chart['data']['labels']:
+                chart['data']['labels'].append(datetime.datetime.strftime(row.date_time, "%m/%d/%y %H:%M"))
+
+            if 'data' not in chart['data']['datasets'][tracker[s.name]]:
+                chart['data']['datasets'][tracker[s.name]] = {
+                    'label': s.name,
+                    'data': [],
+                    'fill': 'false',
+                    'lineTension': 0.1,
+                    'borderColor': ChartColor(tracker[s.name]).rgb_color(),
+                }
+
+            chart['data']['datasets'][tracker[s.name]]['data'].append(row.value)
+
+    if legend_on:
+        chart['options']['legend']['display'] = True
+
+    return jsonify(chart)
+
+"""
+@app.route('/measurement/chart/type/<int:tid>/sensor/<int:sid>', methods=['GET'])
+def measurement_chart_sensor(tid,sid):
+    hours = int(request.args.get('hours', default=1))
+    now = datetime.datetime.now()
+    then = now - datetime.timedelta(hours=hours)
+    tracker = {}
+
+    chart = copy.deepcopy(CHARTBASE)
+    m = MeasurementType.query.get_or_404(tid)
+    s = Sensor.query.get_or_404(pid)
+    
+    if m.name not in tracker:
+        tracker[m.name] = len(tracker)
+        if len(chart['data']['datasets']) <= tracker[m.name]:
+            chart['data']['datasets'].append({})
+
+    results = Measurement.query.filter(
+        Measurement.sensor_id == pk,
+        Measurement.code == m.code,
+        Measurement.date_time.between(then,now)
+    ).all()
+
+        for row in results:
+            if datetime.datetime.strftime(row.date_time, "%m/%d/%y %H:%M") not in chart['data']['labels']:
+                chart['data']['labels'].append(datetime.datetime.strftime(row.date_time, "%m/%d/%y %H:%M"))
+
+            if 'data' not in chart['data']['datasets'][tracker[m.code]]:
+                chart['data']['datasets'][tracker[m.code]] = {
+                    'label': m.code,
+                    'data': [],
+                    'fill': 'false',
+                    'lineTension': 0.1,
+                    'borderColor': ChartColor(tracker[m.code]).rgb_color(),
+                }
+
+            chart['data']['datasets'][tracker[m.code]]['data'].append(row.value)
+
+    # if len(tracker.items()) > 1:
+    #    chart['options']['legend']['display'] = True
+
+    return jsonify(chart)
+"""
+
+
+@app.route('/measurement/chart/type/<int:tid>/sensor/<int:sid>/avg', methods=['GET'])
+def measurement_chart_sensor_avg(tid,sid):
+    days = int(request.args.get('days', default=1))
+    legend_on = int(request.args.get('legend', default=0))
+    dates_on = int(request.args.get('dateson', default=0))
+
+    now = datetime.datetime.now()
+    then = now - datetime.timedelta(days=days)
+    tracker = {'avg': 0, 'min': 1, 'max': 2}
+
+    # modify the base-chart, to handle avg, min, max datasets
+    chart = copy.deepcopy(CHARTBASE)
+
+    mtype = MeasurementType.query.get_or_404(tid)
+    sensor = Sensor.query.get_or_404(sid)
+
+    results = MeasurementAverage.query.filter(
+        MeasurementAverage.type_id == tid,
+        MeasurementAverage.sensor_id == sid
     ).filter(
-        Measurement.code == mt.code,
-        Measurement.date_time > past
-    ).group_by(
-        Measurement.date_time
+        MeasurementAverage.date_time.between(then,now)
     ).all()
 
     for row in results:
-        dataset['labels'].append(datetime.datetime.strftime(row[2], "%m/%d/%y %H:%M"))
-        dataset['data'].append(row[1])
+        fields = ['avg','min','max']
+        if datetime.datetime.strftime(row.date_time, "%m/%d/%y %H:%M") not in chart['data']['labels']:
+                chart['data']['labels'].append(datetime.datetime.strftime(row.date_time, "%m/%d/%y %H:%M"))
 
-    return jsonify(dataset)
+        for key in fields:
+            if len(chart['data']['datasets']) <= tracker[key]:
+                chart['data']['datasets'].append({})
+
+            if 'data' not in chart['data']['datasets'][tracker[key]]:
+                chart['data']['datasets'][tracker[key]] = {
+                    'label': key,
+                    'data': [],
+                    'fill': 'false',
+                    'lineTension': 0.1,
+                    'borderColor': ChartColor(tracker[key]).rgb_color(),
+                }
+
+            chart['data']['datasets'][tracker[key]]['data'].append(getattr(row, key))
+
+    if legend_on:
+        chart['options']['legend']['display'] = True
+
+    if dates_on:
+        chart['options']['scales']['xAxes'][0]['display'] = True
+
+    return jsonify(chart)
 
 
+def sensors_reporting_in_range(pk, then, now):
+    data = []
+    results = Measurement.query.filter(
+        Measurement.type_id == pk,
+        Measurement.date_time.between(then,now)
+    ).order_by(
+        Measurement.sensor_id
+    ).group_by(
+            Measurement.sensor_id
+    ).distinct(
+        Measurement.sensor_id
+    ).all()
+    for r in results:
+        data.append(r.sensor_id)
 
+    return data
 
 
 

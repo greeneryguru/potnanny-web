@@ -1,41 +1,23 @@
 from flask import render_template, redirect, request, session
+from flask_login import login_required
 from greenery import app, db
 from .models import Sensor
 from .forms import SensorForm
-from greenery.apps.measurement.models import Measurement
 import datetime
 
+
 @app.route('/sensor')
+@login_required
 def sensor_index():
-    payload = None
-    now = datetime.datetime.now()
-    past = now - datetime.timedelta(minutes=60)
     sensors = Sensor.query.all()
-    for s in sensors:
-        dataset = [s.id, s.name, None, [], {}]
-        
-        results = Measurement.query.filter(Measurement.sensor_id == s.id, Measurement.date_time > past).order_by(Measurement.date_time.asc())
-        for r in results:
-            if datetime.datetime.strftime(r.date_time, "%m/%d/%y %H:%M") not in dataset[3]:
-                dataset[3].append(datetime.datetime.strftime(r.date_time, "%m/%d/%y %H:%M"))
-
-            if r.code not in dataset[4]:
-                dataset[4][r.code] = []
-
-            dataset[4][r.code].append(r.value)
-
-        if not payload:
-            payload = []
-
-        payload.append(dataset)
-
     return render_template('sensor/index.html', 
                 title='sensors',
-                payload=payload)
+                payload=sensors)
 
         
 @app.route('/sensor/create', methods=['GET','POST'])
 @app.route('/sensor/<pk>/edit', methods=['GET','POST'])
+@login_required
 def sensor_edit(pk=None):
     obj = None
     title = 'add sensor'
@@ -49,7 +31,7 @@ def sensor_edit(pk=None):
         if pk:
             form.populate_obj(obj)
         else:
-            o = Sensor(form.name.data)
+            o = Sensor(form.name.data, form.address.data, form.tags.data)
             db.session.add(o)
     
         db.session.commit()
@@ -65,6 +47,7 @@ def sensor_edit(pk=None):
 
 
 @app.route('/sensor/<pk>/delete', methods=['POST'])
+@login_required
 def sensor_delete(pk):
     o = Sensor.query.get_or_404(int(pk))
     db.session.delete(o)
@@ -73,5 +56,5 @@ def sensor_delete(pk):
         return redirect(request.args.get("next"))
     else:
         return redirect('/sensor')
-    
+
 

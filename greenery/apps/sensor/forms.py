@@ -20,8 +20,8 @@ def unique_name_check(form, field):
 class SensorForm(FlaskForm):
     id = HiddenField('id')
     name = StringField('name', validators=[InputRequired(), unique_name_check])
-    notes = StringField('notes')
-    profile = StringField('profile')
+    tags = StringField('tags', validators=[InputRequired()])
+    address = IntegerField('address', validators=[InputRequired()])
 
 
 

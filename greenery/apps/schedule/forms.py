@@ -12,6 +12,7 @@ def valid_time_check(form, field):
 
 class ScheduleForm(FlaskForm):
     id = HiddenField('id')
+    custom = HiddenField('custom', default="0")
     days = HiddenField('days', default="127")
     outlet_id = SelectField('Outlet', validators=[DataRequired()])
     on_time = StringField('ON time', 

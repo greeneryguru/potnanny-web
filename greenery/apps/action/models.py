@@ -52,3 +52,4 @@ class ActionTrigger(db.Model):
         self.action_id = a_id
         self.date_time = dt
         self.trigger = message
+

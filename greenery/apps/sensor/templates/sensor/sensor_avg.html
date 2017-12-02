@@ -10,42 +10,33 @@
             $("canvas[id*='chart']").each(function(){
                 var self = this.id
                 var pk = this.id.split('-',2)[1];
-                $.get("/measurement/chart/sensor/" + pk,
+                $.get("/measurement/chart/sensor/" + pk + "/avg",
                     {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
                     function(data){
-                        gaugeCreateChart(self, data, globalChartRefs);
+                        createChart(self, data, globalChartRefs);
 	                }, 'json');
             });
             setInterval(function(){
                 $("canvas[id*='chart']").each(function(){
                     var self = this.id
                     var pk = this.id.split('-',2)[1];
-                    $.get("/measurement/chart/sensor/" + pk,
+                    $.get("/measurement/chart/sensor/" + pk + "/avg",
                         {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
                         function(data){
-                            gaugeCreateChart(self, data, globalChartRefs);
+                            createChart(self, data, globalChartRefs);
 		                }, 'json');
                 });
-            }, 15000);
+            }, 20000);
         });
     </script>
 {% endblock %}
 {% block content %}
-{% if payload %}
-    {% for sensor in payload %}
-    <div class="gauge">
-        {{ sensor.name }}
+    <div class="gauge" id="gauge-{{ sensor.id }}">
+        <div class="sensor" id="sensor-{{ sensor.id }}"></div>
         <div class="graph">
             <canvas id="chart-{{ sensor.id }}" height="60"></canvas>
         </div>
+        <div class="subtext" id="subtext-{{ sensor.id }}"></div>
     </div>
-    <a href="/sensor/{{ sensor.id }}/edit">edit</a> | <a href="#">reports</a>
     <p></p>
-    {% endfor %}
-{% else %}
-    No data available
-{% endif %}
-<p>
-    <a href="/sensor/create"><i class="fa fa-plus"></i> add</a>
-</p>
 {% endblock %}
