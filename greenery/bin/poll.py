@@ -58,12 +58,15 @@ def main():
 
     try:
         ser = serial.Serial(sdevice, 9600, 5)
-        time.sleep(5)
+        if not ser.isOpen:
+            ser.open(sdevice)
+        ser.flushInput()
+        time.sleep(3)
     except Exception as x:
         logger.error(x)
         sys.stderr.write("Error! see log %s\n" % logfile)
         sys.exit(1)
-
+    
     mtypes = MeasurementType.query.all()
     sensors = Sensor.query.all()
     for s in sensors:
@@ -78,6 +81,8 @@ def main():
                     #   line = "sm,14,22" (code, address, value)
                     line = ser.readline()
                     line = line.decode().strip()
+
+                    print(line)
 
                     if re.search(r'^ok', line, re.IGNORECASE):
                         # nothing more to read!
