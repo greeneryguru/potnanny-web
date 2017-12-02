@@ -71,7 +71,10 @@ def main():
     for s in sensors:
         for typ in ('temperature', 'humidity', 'soil'):
             if re.search(typ, s.tags):
+                
                 cmd = "%d%d%d\n" % (cmd_map['get'], cmd_map[typ], s.address)
+                print("command: %s" % cmd)
+
                 ser.write(cmd.encode('UTF-8'))
                 while True:
                     # returns like; 
