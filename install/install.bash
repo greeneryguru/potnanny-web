@@ -88,4 +88,6 @@ if (( catch )); then
 fi
 
 
+# add www-data to group dialout, so /dev/ttyUSB is usable
+sudo adduser www-data dialout
 
