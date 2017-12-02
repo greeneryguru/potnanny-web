@@ -69,9 +69,9 @@ def main():
     mtypes = MeasurementType.query.all()
     sensors = Sensor.query.all()
     for s in sensors:
-        for typ in ('temperature','humidity', 'soil'):
+        for typ in ('temperature', 'humidity', 'soil'):
             if re.search(typ, s.tags):
-                cmd = "%d%d%d" % (cmd_map['get'], cmd_map[type], s.address)
+                cmd = b"%d%d%d" % (cmd_map['get'], cmd_map[type], s.address)
                 ser.write(cmd + "\n")
                 while True:
                     # returns like; 

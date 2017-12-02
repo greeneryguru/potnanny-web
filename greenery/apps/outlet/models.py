@@ -1,6 +1,8 @@
 from greenery import db
 from greenery.lib.jsonmodel import JsonModel
 import json
+import serial
+
 
 class Outlet(db.Model, JsonModel):
     __tablename__ = 'outlets'

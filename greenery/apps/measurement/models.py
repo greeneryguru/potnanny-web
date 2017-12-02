@@ -25,6 +25,9 @@ class Measurement(db.Model):
     text = db.Column(db.String(16), nullable=True)
     date_time = db.Column(db.DateTime, nullable=False)
     
+    measurement_type = db.relationship("MeasurementType")
+    sensor = db.relationship("Sensor")
+
     def __init__(self, tid, sid, val, txt, 
                     dt=datetime.datetime.now().replace(
                         second=0, 
@@ -56,6 +59,9 @@ class MeasurementAverage(db.Model):
     min = db.Column(db.Float, nullable=False, server_default='0')
     max = db.Column(db.Float, nullable=False, server_default='0')
     date_time = db.Column(db.DateTime, nullable=False)
+
+    measurement_type = db.relationship("MeasurementType")
+    sensor = db.relationship("Sensor")
 
     def __init__(self, tid, sid, navg, nmin, nmax, 
                     dt=datetime.datetime.now().replace(
