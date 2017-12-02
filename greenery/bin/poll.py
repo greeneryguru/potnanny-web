@@ -77,6 +77,7 @@ def main():
                     # returns like; 
                     #   line = "sm,14,22" (code, address, value)
                     line = ser.readline()
+                    print(line)
                     if re.search(r'^ok', line, re.IGNORECASE):
                         # nothing more to read!
                         break;
