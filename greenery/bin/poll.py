@@ -73,13 +73,13 @@ def main():
             if re.search(typ, s.tags):
                 
                 cmd = "%d%d%d\n" % (cmd_map['get'], cmd_map[typ], s.address)
-                print("command: %s" % cmd)
-
                 ser.write(cmd.encode('UTF-8'))
+
                 while True:
                     # returns like; 
                     #   line = "sm,14,22" (code, address, value)
-                    line = ser.readline().decode().strip()
+                    line = ser.readline()
+                    line = line.decode().strip()
                     print(line)
 
                     if re.search(r'^ok', line, re.IGNORECASE):
