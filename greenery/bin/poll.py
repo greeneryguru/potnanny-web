@@ -97,6 +97,7 @@ def main():
                         continue;
 
                     code,addr,val = atoms
+                    val = float(val)
                     mt = match_flag_to_object(code, mtypes)
                     if code == 't' and fahrenheit:
                         val = val * 1.8 + 32
