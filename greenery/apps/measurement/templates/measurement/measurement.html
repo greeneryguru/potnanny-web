@@ -44,7 +44,7 @@
             var atoms = this.id.split("-");
             var tid = atoms[1];
             var sid = atoms[2];
-            $.get("/measurement/chart/type/" + tid + "/sensor/" + sid  + "/avg?legend=1&days=5&dateson=1",
+            $.get("/measurement/chart/type/" + tid + "/sensor/" + sid  + "/avg?legend=1&days=5",
                 {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
                 function(data){
                     gaugeCreateChart("chart-" + tid + "-" + sid, data, globalChartRefs);
@@ -55,7 +55,7 @@
                 var atoms = this.id.split("-");
                 var tid = atoms[1];
                 var sid = atoms[2];
-                $.get("/measurement/chart/type/" + tid + "sensor/" + sid + "/avg?legend=1&days=5&dateson=1",
+                $.get("/measurement/chart/type/" + tid + "sensor/" + sid + "/avg?legend=1&days=5",
                     {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
                     function(data){
                         gaugeCreateChart("chart-" + tid + "-" + sid, data, globalChartRefs);

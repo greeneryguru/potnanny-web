@@ -58,6 +58,7 @@ def main():
 
     try:
         ser = serial.Serial(sdevice, 9600, 5)
+        time.sleep(5)
     except Exception as x:
         logger.error(x)
         sys.stderr.write("Error! see log %s\n" % logfile)
@@ -77,7 +78,6 @@ def main():
                     #   line = "sm,14,22" (code, address, value)
                     line = ser.readline()
                     line = line.decode().strip()
-                    print(line)
 
                     if re.search(r'^ok', line, re.IGNORECASE):
                         # nothing more to read!
