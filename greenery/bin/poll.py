@@ -97,8 +97,8 @@ def main():
                         val = val * 1.8 + 32
 
                     success = False
-                    for m in mtypes:
-                        if m.code() == code:
+                    for mt in mtypes:
+                        if mt.code() == code:
                             success = True
                             label = format_label(code, val, fahrenheit)
                             m = Measurement(
