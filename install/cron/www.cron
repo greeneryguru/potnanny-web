@@ -13,5 +13,5 @@ GREENERY_WEB=/var/www/greenery
 0 * * * * $GREENERY_WEB/greenery/bin/aggregate.py
 
 # purge expired measurement data
-0 * * * * $GREENERY_WEB/greenery/bin/purge.py
+5 * * * * $GREENERY_WEB/greenery/bin/purge.py
 

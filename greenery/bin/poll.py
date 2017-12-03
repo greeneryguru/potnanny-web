@@ -100,6 +100,10 @@ def main():
                     code,addr,val = atoms
                     val = float(val)
                     mt = match_flag_to_object(code, mtypes)
+                    if not mt:
+                        logger.warning("could not match MeasurementType object to tag like '%s'" % code)
+                        continue;
+
                     if code == 't' and fahrenheit:
                         val = val * 1.8 + 32
 
@@ -122,7 +126,7 @@ def match_flag_to_object(f, objects):
     elif f == 'h':
         label = 'humidity'
     elif f == 'sm':
-        label = 'soil moisture'
+        label = 'soil-moisture'
     else:
         return None
 
