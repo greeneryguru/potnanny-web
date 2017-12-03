@@ -120,7 +120,7 @@ def main():
 
 def format_label(typ, val, fahrenheit=False):
     if re.search(r'^t', typ):
-        label = str(val) + u'\N{DEGREE SIGN}'
+        label = "%0.1f" % val + u'\N{DEGREE SIGN}'
         if fahrenheit:
             label += "F"
         else:
@@ -129,7 +129,7 @@ def format_label(typ, val, fahrenheit=False):
         return label
             
     if re.search(r'^(h|sm)', typ):
-        label = str(val) + "%"
+        label = "%0.1f" % val + "%"
         return label
 
     return None
