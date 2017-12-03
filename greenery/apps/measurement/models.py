@@ -1,5 +1,6 @@
 import datetime
 import json
+import re
 from greenery import db
 from greenery.apps.sensor.models import Sensor
 
@@ -14,6 +15,13 @@ class MeasurementType(db.Model):
 
     def __repr__(self):
         return self.name
+
+    def code(self):
+        results = ""
+        for s in re.split(r'\W+', self.name):
+            results += s[0]
+
+        return results
 
 
 class Measurement(db.Model):

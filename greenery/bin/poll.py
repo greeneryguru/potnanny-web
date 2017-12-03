@@ -31,9 +31,6 @@ from greenery.apps.admin.models import Setting
 from greenery.apps.sensor.models import Sensor
 
 
-
-
-
 # global vars
 poll = None
 fahrenheit = None
@@ -57,7 +54,6 @@ def main():
     ser = None
 
     try:
-        print("init serial tty")
         ser = serial.Serial(sdevice, 9600, 5)
         time.sleep(3)
         if not ser.isOpen:
@@ -79,11 +75,9 @@ def main():
                 ser.write(cmd.encode('UTF-8'))
 
                 while True:
-                    print("in the true loop")
                     # returns like; 
                     #   line = "sm,14,22" (code, address, value)
                     line = ser.readline().decode().strip()
-                    print(line)
 
                     if re.search(r'^ok', line, re.IGNORECASE):
                         # nothing more to read!
@@ -99,42 +93,29 @@ def main():
 
                     code,addr,val = atoms
                     val = float(val)
-                    mt = match_flag_to_object(code, mtypes)
-                    if not mt:
-                        logger.warning("could not match MeasurementType object to tag like '%s'" % code)
-                        continue;
-
                     if code == 't' and fahrenheit:
                         val = val * 1.8 + 32
 
-                    label = format_label(code, val, fahrenheit)
+                    success = False
+                    for m in mtypes:
+                        if m.code() == code:
+                            success = True
+                            label = format_label(code, val, fahrenheit)
+                            m = Measurement(
+                                    mt.id, 
+                                    s.id, 
+                                    "%0.1f" % float(val), 
+                                    label, 
+                                    now
+                            )
+                            db.session.add(m)
 
-                    # adjust for only one decimal place during write to db
-                    m = Measurement(mt.id, s.id, "%0.1f" % float(val), label, now)
-                    db.session.add(m)
+                    if not success:
+                        logger.warning("could not match MeasurementType object to tag like '%s'" % code)
 
         db.session.commit()
 
     ser.close()
-
-
-def match_flag_to_object(f, objects):
-    label = None
-
-    if f == 't':
-        label = 'temperature'
-    elif f == 'h':
-        label = 'humidity'
-    elif f == 'sm':
-        label = 'soil-moisture'
-    else:
-        return None
-
-    for o in objects:
-        if o.name == label:
-            return o
-
-    return None
 
 
 def format_label(typ, val, fahrenheit=False):
