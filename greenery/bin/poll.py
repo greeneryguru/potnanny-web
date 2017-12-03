@@ -144,7 +144,6 @@ if __name__ == '__main__':
 
     if now.minute % poll.value > 0:
         # not the right time to be running this. exit
-        print("not the right time!")
         sys.exit(0)
     
     fahrenheit = bool(Setting.query.filter(Setting.name == 'store temperature fahrenheit').first().value)
