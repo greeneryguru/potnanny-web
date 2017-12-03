@@ -2,11 +2,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <html>
   <head>
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}" type= "text/css" >
     <link rel="stylesheet" href="{{ url_for('static', filename='css/skeleton.css') }}" type= "text/css" >
     <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.css') }}" type= "text/css" >
     <link rel="stylesheet" href="{{ url_for('static', filename='css/menu.css') }}" type= "text/css" >
-    <link href='//fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
+    
     <link rel="stylesheet" href="{{ url_for('static', filename='css/greenery.css') }}" type= "text/css" >
     <script src="{{ url_for('static',  filename='js/jquery-3.2.1.min.js') }}"></script>
     <script src="{{ url_for('static',  filename='js/menu.js') }}"></script>
@@ -24,7 +25,6 @@
       <a href="javascript:void(0);" class="icon" onclick="myFunction()">&#9776;</a>
     </div> 
     <div class="content">
-        <h1>{{ title }}</h1>
         {% block content %}{% endblock content %}
     </div>
   </body>

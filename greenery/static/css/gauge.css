@@ -13,33 +13,33 @@
 }
 
 .gauge .measurement {
-    font-size: 2.4em;
+    font-size: 2.1em;
     margin-top: 1px;
     margin-bottom: 1px;
 }
 
 a.gauge-link {
-    color: black;
+    color: #333;
     text-decoration: none;
 }
 
 a.gauge-link:link {
-    color: black;
+    color: #333;
     text-decoration: none;
 }
 
 a.gauge-link:visited {
-    color: black;
+    color: #333;
     text-decoration: none;
 }
 
 a.gauge-link:hover {
-    color: black;
+    color: #333;
     text-decoration: none;
 }
 
 a.gauge-link:active {
-    color: black;
+    color: #333;
     text-decoration: none;
 }
 
