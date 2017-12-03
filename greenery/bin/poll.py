@@ -58,10 +58,11 @@ def main():
 
     try:
         ser = serial.Serial(sdevice, 9600, 5)
+        time.sleep(3)
         if not ser.isOpen:
             ser.open(sdevice)
+        
         ser.flushInput()
-        time.sleep(3)
     except Exception as x:
         logger.error(x)
         sys.stderr.write("Error! see log %s\n" % logfile)
