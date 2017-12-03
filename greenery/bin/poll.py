@@ -57,6 +57,7 @@ def main():
     ser = None
 
     try:
+        print("init serial tty")
         ser = serial.Serial(sdevice, 9600, 5)
         time.sleep(3)
         if not ser.isOpen:
@@ -78,11 +79,10 @@ def main():
                 ser.write(cmd.encode('UTF-8'))
 
                 while True:
+                    print("in the true loop")
                     # returns like; 
                     #   line = "sm,14,22" (code, address, value)
-                    line = ser.readline()
-                    line = line.decode().strip()
-
+                    line = ser.readline().decode().strip()
                     print(line)
 
                     if re.search(r'^ok', line, re.IGNORECASE):
