@@ -76,7 +76,8 @@ sudo service nginx restart
 sudo ls -l /var/spool/cron/crontabs/www-data
 catch=$?
 if (( catch )); then
-    sudo cp ./cron/www.cron /var/spool/cron/crontabs/www-data
+    cd /var/www/greenery
+    sudo cp ./install/cron/www.cron /var/spool/cron/crontabs/www-data
 fi
 
 
@@ -91,3 +92,5 @@ fi
 # add www-data to group dialout, so /dev/ttyUSB is usable
 sudo adduser www-data dialout
 
+
+echo "OK!"
