@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block headers %}
-    <link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='css/toggle-switch.css') }}">
+    <link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='css/toggle.css') }}">
     <script>
     $(document).ready(function() {
         function toggleOptionalDivs(){
@@ -115,7 +115,7 @@
             {{ form.action_state.label }}
             </div>
             <div class="two columns">
-            {{ form.action_state }}
+            {{ form.action_state(class_="toggle") }}
             </div>
         </div>
         <div class="row" id="sms-message">
