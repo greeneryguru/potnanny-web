@@ -27,11 +27,11 @@ logfile = '/var/tmp/greenery.errors.log'
 logging.basicConfig(filename=logfile)
 logger = logging.getLogger('actions')
 logger.setLevel(10)
-pause_time = 15
+pause_seconds = 15
 
 
 def main():
-    now = datetime.datetime.now()
+    now = datetime.datetime.now().replace(second=0, microsecond=0)
     poll = Setting.query.filter(Setting.name == 'polling interval minutes').first()
     if not poll:
         logger.error("could not determine polling interval from db")
@@ -43,24 +43,28 @@ def main():
         sys.exit(0)
     else:
         # pause, to let any polling jobs finish, before we begin
-        time.sleep(pause_time)
-        sys.exit(process_actions(now, poll.value))
+        then = now - datetime.timedelta(minutes=poll.value)
+        time.sleep(pause_seconds)
+        sys.exit(process_actions(then, now))
 
 
 """
 process any actions for the latest measurements
 
 params:
-    1. datetime.datetime
-    2. the system polling inverval (int)
+    1. datetime.datetime (then)
+    2. datetime.datetime (now)
 
 returns:
     0 on success, non-zero on failure
 """
-def process_actions(now, poll_interval):
+def process_actions(then, now):
     actions = Action.query.all()
     for a in actions:
-        measurements = latest_measurements(a.type_id, now, poll_interval)
+        measurements = Measurement.query.filter(
+            Measurement.type_id == a.type_id,
+            Measurement.date_time.between(then,now)
+        ).all()
         if not measurements:
             continue
 
@@ -103,18 +107,23 @@ def latest_measurements(id, now, poll_interval):
 
 
 def outlet_switch(action):
-    o = Outlet.query.filter(Outlet.name == action.action_target).first()
+    o = Outlet.query.filter(
+        Outlet.name == action.action_target
+    ).first()
     if not o:
         logger.warning("no outlet with name '%s' found" % action.action_target)
         return
 
-    if action.action_state == 0:
+    val = 0
+    if action.action_state == 'on':
+        val = 1
+    
         rval = o.off()
     else:
         rval = o.on()
 
     if not rval:
-        o.state = action.action_state
+        o.state = val
         db.session.commit()
     else:
         logger.warning("outlet on/off failed with code: %d\n" % rval)
@@ -124,17 +133,11 @@ def outlet_switch(action):
 
 def sms_message(action, measurement):
     m = Messenger()
-    code = 'temperature'
-    if measurement.code == 'h':
-        code = 'humidity' 
-    elif measurement.code == 'sm':
-        code = 'soil moisture'
 
-    body = "GREENERY.GURU: sensor '%s' %s is %d" % (measurement.sensor, code, measurement.value)
-    if code == 'temperature':
-        body += ' degrees'
-    elif code == 'humidity' or code == 'soil moisture':
-        body += ' percent'
+    body = "GREENERY.GURU: sensor '%s' %s is %s" % (
+                measurement.sensor, 
+                measurement.measurement_type.name,
+                measurement.text)
 
     try:
         rval = m.message(action.action_target, body)

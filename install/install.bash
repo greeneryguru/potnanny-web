@@ -13,7 +13,6 @@ sudo apt-get -y install sqlite3
 sudo apt-get -y install python3-dev
 sudo apt-get -y install python3-cryptography
 sudo apt-get -y install python3-pip
-sudo apt-get -y install python-smbus
 
 
 # webserver
@@ -93,4 +92,5 @@ fi
 sudo adduser www-data dialout
 
 
+# success?
 echo "OK!"

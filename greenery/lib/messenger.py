@@ -1,5 +1,5 @@
 import twilio
-from app.admin.models import TwilioAccount
+from greenery.apps.admin.models import TwilioAccount
 from twilio.rest import Client
 
 class Messenger():

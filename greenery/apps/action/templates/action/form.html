@@ -112,10 +112,12 @@
             {% endif %}
             </div>
             <div class="two columns">
-            {{ form.action_state.label }}
-            </div>
-            <div class="two columns">
-            {{ form.action_state(class_="toggle") }}
+            {{ form.action_state }}
+            {% if form.action_state.errors %}
+                {% for err in form.action_state %}
+                <span style="color: red;">[{{ err }}]</span>
+                {% endfor %}
+            {% endif %}
             </div>
         </div>
         <div class="row" id="sms-message">

@@ -2,6 +2,7 @@ from greenery import db
 from greenery.apps.measurement.models import MeasurementType
 import datetime
 
+
 class Action(db.Model):
     __tablename__ = 'actions'
     id = db.Column(db.Integer, primary_key=True)
@@ -12,15 +13,14 @@ class Action(db.Model):
     wait_time = db.Column(db.Integer, nullable=False, server_default='0')
     action = db.Column(db.String(24), nullable=True, server_default='')
     action_target = db.Column(db.String(24), nullable=True, server_default='')
-    action_state = db.Column(db.Boolean(), nullable=True, server_default='1')
+    action_state = db.Column(db.String(4), nullable=True, server_default='on')
 
     measurement = db.relationship("MeasurementType")
 
     def __repr__(self):
         msg = "%s %s %d %s " % (str(self.measurement), self.condition, self.value, self.action.split("-")[0])
         if self.action == 'switch-outlet':
-            state = 'on' if self.action_state else 'off'
-            msg += "%s %s"  % (self.action_target, state)
+            msg += "%s %s"  % (self.action_target, self.action_state)
         elif self.action == 'sms-message':
             msg += "%s" % self.action_target
 

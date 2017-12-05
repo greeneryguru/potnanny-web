@@ -14,7 +14,7 @@ class ActionForm(FlaskForm):
     value = IntegerField('trigger value', validators=[InputRequired()])
     action = SelectField('action', choices=[('switch-outlet', 'switch outlet'), ('sms-message', 'sms message')], validators=[InputRequired()])
     outlet = SelectField('outlet')
-    action_state = BooleanField('state on/off')
+    action_state = SelectField('switch state', choices=[('on','ON'),('off','OFF')], validators=[InputRequired()])
     recipient = StringField('recipient mobile number')
     wait_time = IntegerField('wait minutes', default="5", validators=[InputRequired()])
     active = BooleanField('action is active', default="1")

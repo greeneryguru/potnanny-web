@@ -50,7 +50,7 @@ def action_edit(pk=None):
             o.value = int(form.value.data)
             o.wait_time = int(form.wait_time.data)
             o.action = form.action.data
-            o.action_state = int(form.action_state.data)
+            o.action_state = form.action_state.data
             o.action_target = form.action_target.data
             o.active = int(form.active.data)
             db.session.add(o)

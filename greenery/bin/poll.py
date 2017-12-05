@@ -29,25 +29,13 @@ from greenery import db
 from greenery.apps.measurement.models import MeasurementType, Measurement
 from greenery.apps.admin.models import Setting
 from greenery.apps.sensor.models import Sensor
-
+from greenery.lib.ttycmd import cmd_codes
 
 # global vars
 poll = None
 fahrenheit = None
 sdevice = '/dev/ttyUSB0'
 now = datetime.datetime.now().replace(second=0, microsecond=0)
-
-cmd_map = {
-    # first char
-    'get':          0,
-    'set':          1,
-    'tx':           2,
-
-    # second(*) char for get-mode
-    'temperature':  0,
-    'humidity':     1,
-    'soil':         2,
-}
 
 
 def main():
@@ -71,7 +59,7 @@ def main():
         for typ in ('temperature', 'humidity', 'soil'):
             if re.search(typ, s.tags):
                 
-                cmd = "%d%d%d\n" % (cmd_map['get'], cmd_map[typ], s.address)
+                cmd = "%d%d%d\n" % (cmd_codes['get'], cmd_codes[typ], s.address)
                 ser.write(cmd.encode('UTF-8'))
 
                 while True:
