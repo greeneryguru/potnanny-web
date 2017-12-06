@@ -58,6 +58,8 @@ def rf_transmit(chan, state):
         return 1
 
     cmd = "%d%02d%d\n" % (cmd_codes['tx'], pin, code)
+    if debug:
+        print("command: %s" % cmd)
     ser.write(cmd.encode('UTF-8'))
     line = ser.readline().decode().strip()
     if re.search(r'^ok', line, re.IGNORECASE):
