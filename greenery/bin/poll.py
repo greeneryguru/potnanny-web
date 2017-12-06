@@ -6,14 +6,23 @@
 Poll sensors to get temp/humid/soil-moisture etc...
 
 The Arduino accepts number-based command codes over the usb serial connection.
-Like,
+Commands can have a variable number of characters, depending on the cmd-type,
+measurement-type, sensor or pin type.
+Code-mappings are found in greenery/lib/ttycmd.py {cmd_codes}
+
+Examples,
     
-    002\n   = 0=mode(get),0=measurement(temperature),2=address(digital pin 2)
-    0214\n  = 0=mode(get),2=measurement(soil),14=address(analog pin 14, or A0)
+    0012\n      =   0=mode(get),
+                    0=measurement(temperature),
+                    1=sensor(dht22),
+                    2=pin(2)
+
+    02014\n     =   0=mode(get),
+                    2=measurement(soil-moisture),
+                    0=type(analog),
+                    14=pin(14)
 
 Commands MUST be terminated with '\n'!
-
-See command-map in global vars
 
 """
 
@@ -31,6 +40,7 @@ from greenery.apps.admin.models import Setting
 from greenery.apps.sensor.models import Sensor
 from greenery.lib.ttycmd import cmd_codes
 
+
 # global vars
 poll = None
 fahrenheit = None
@@ -40,7 +50,6 @@ now = datetime.datetime.now().replace(second=0, microsecond=0)
 
 def main():
     ser = None
-
     try:
         ser = serial.Serial(sdevice, 9600, 5)
         time.sleep(3)
@@ -59,7 +68,13 @@ def main():
         for typ in ('temperature', 'humidity', 'soil'):
             if re.search(typ, s.tags):
                 
-                cmd = "%d%d%d\n" % (cmd_codes['get'], cmd_codes[typ], s.address)
+                # build our command sequence based on types
+                cmd = build_sensor_command(s, typ)
+                if not cmd:
+                    logger.warning("sensor '%s' measurement '%s' command-build failed" % (s.name, typ))
+                    continue;
+
+                # send code to serial tty and hope for the best ;)
                 ser.write(cmd.encode('UTF-8'))
 
                 while True:
@@ -104,6 +119,26 @@ def main():
         db.session.commit()
 
     ser.close()
+
+
+def build_sensor_command(sensor, typ):
+    cmd = "%d%d" % (cmd_codes['get'], cmd_codes[typ])
+
+    if typ == 'temperature':
+        devices = ('dht11','dht22')
+        for d in devices:
+            if re.search(d, sensor.tags):
+                cmd += "%d%d\n" % (cmd_codes[d], sensor.address)
+                return cmd
+
+    if typ == 'soil':
+        devices = ('analog','digital')
+        for d in devices:
+            if re.search(d, sensor.tags):
+                cmd += "%d%d\n" % (cmd_codes[d], sensor.address)
+                return cmd
+        
+    return None
 
 
 def format_label(typ, val, fahrenheit=False):

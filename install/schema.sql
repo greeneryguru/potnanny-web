@@ -4,6 +4,7 @@ insert into settings ("name","value") values ("polling interval minutes", 2);
 insert into settings ("name","value") values ("store temperature fahrenheit", 1);
 insert into settings ("name","value") values ("hi-res data retention days", 7);
 insert into settings ("name","value") values ("hourly-avg data retention days", 120);
+insert into settings ("name","value") values ("rf tx pin", 11);
 insert into settings ("name","value") values ("rf tx base code", 12066304);
 
 insert into measurement_types("name") values ("temperature");

@@ -1,8 +1,7 @@
 from greenery import db
 from greenery.lib.jsonmodel import JsonModel
-from greenery.lib.rfutils import tx433
+from greenery.lib.rfutils import rf_transmit
 import json
-import serial
 
 
 class Outlet(db.Model, JsonModel):
@@ -20,7 +19,7 @@ class Outlet(db.Model, JsonModel):
         return json.dumps(self.as_dict())
 
     def on(self):
-        rval = tx433(self.channel, 1)
+        rval = rf_transmit(self.channel, 1)
         if not rval:
             self.state = 1
             db.session.commit()
@@ -28,7 +27,7 @@ class Outlet(db.Model, JsonModel):
         return str(self)
 
     def off(self):
-        rval = tx433(self.channel, 0)
+        rval = rf_transmit(self.channel, 0)
         if not rval:
             self.state = 0
             db.session.commit()

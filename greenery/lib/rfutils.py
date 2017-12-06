@@ -6,17 +6,29 @@ from greenery.lib.ttycmd import cmd_codes
 
 """
 send a code to the serial tty.
-results should be either 'ok' or 'fail'
+response back should be either 'ok' or 'fail'
 
 returns 0 on success. 
 """
-def tx433(chan, state):
+def rf_transmit(chan, state):
     failure = 1
-    base = Setting.query.filter(Setting.name == 'rf tx base code').first().value
+    base = None
+    pin = None
+
+    try:
+        pin = Setting.query.filter(Setting.name == 'rf tx pin').first().value
+        base = Setting.query.filter(Setting.name == 'rf tx base code').first().value
+    except:
+        pass
+
     if not base:
-        raise
-    
-    code = int(self.base_code)
+        logger.error("rf tx pin setting not found")
+        return 1
+    if not pin:
+        logger.error("rf tx base code not found")
+        return 1
+
+    code = int(base)
     code += (chan << 1)
     code += state
 
@@ -31,7 +43,7 @@ def tx433(chan, state):
         logger.error(x)
         return 1
 
-    cmd = "%d%d\n" % (cmd_codes['tx'], code)
+    cmd = "%d%02d%d\n" % (cmd_codes['tx'], pin, code)
     ser.write(cmd.encode('UTF-8'))
     line = ser.readline().decode().strip()
     if re.search(r'^ok', line, re.IGNORECASE):
