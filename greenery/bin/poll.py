@@ -34,7 +34,7 @@ import datetime
 import logging
 import serial
 sys.path.append( os.environ.get('GREENERY_WEB','/var/www/greenery') )
-from greenery import db
+from greenery import db, serial_port
 from greenery.apps.measurement.models import MeasurementType, Measurement
 from greenery.apps.admin.models import Setting
 from greenery.apps.sensor.models import Sensor
@@ -44,17 +44,16 @@ from greenery.lib.ttycmd import cmd_codes
 # global vars
 poll = None
 fahrenheit = None
-sdevice = '/dev/ttyUSB0'
 now = datetime.datetime.now().replace(second=0, microsecond=0)
 
 
 def main():
     ser = None
     try:
-        ser = serial.Serial(sdevice, 9600, 5)
-        time.sleep(3)
+        ser = serial.Serial(serial_port, 9600, 5)
+        time.sleep(2)
         if not ser.isOpen:
-            ser.open(sdevice)
+            ser.open(serial_port)
         
         ser.flushInput()
     except Exception as x:

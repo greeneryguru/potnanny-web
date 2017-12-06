@@ -2,6 +2,7 @@ import re
 import time
 import serial
 import logging
+from greenery import serial_port
 from greenery.apps.admin.models import Setting
 from greenery.lib.ttycmd import cmd_codes
 
@@ -10,8 +11,7 @@ logging.basicConfig(filename=logfile)
 logger = logging.getLogger('actions')
 logger.setLevel(10)
 pause_seconds = 15
-sdevice = '/dev/ttyUSB0'
-debug = True
+debug = False
 
 """
 send a code to the serial tty.
@@ -47,10 +47,10 @@ def rf_transmit(chan, state):
         print("code: %d" % code)
 
     try:
-        ser = serial.Serial(sdevice, 9600, 5)
-        time.sleep(3)
+        ser = serial.Serial(serial_port, 9600, 5)
+        time.sleep(2)
         if not ser.isOpen:
-            ser.open(sdevice)
+            ser.open(serial_port)
         
         ser.flushInput()
     except Exception as x:

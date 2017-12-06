@@ -7,6 +7,7 @@ from config import basedir
 app = Flask(__name__)
 app.config.from_object('config')
 db = SQLAlchemy(app)
+serial_port = '/dev/ttyUSB0'
 
 
 # configure login manager
