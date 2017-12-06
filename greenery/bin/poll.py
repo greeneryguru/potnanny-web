@@ -42,6 +42,11 @@ from greenery.lib.ttycmd import cmd_codes
 
 
 # global vars
+logfile = '/var/tmp/greenery.errors.log'
+logging.basicConfig(filename=logfile)
+logger = logging.getLogger('actions')
+logger.setLevel(10)
+
 poll = None
 fahrenheit = None
 now = datetime.datetime.now().replace(second=0, microsecond=0)
