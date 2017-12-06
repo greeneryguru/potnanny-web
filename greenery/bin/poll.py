@@ -128,14 +128,14 @@ def main():
 def build_sensor_command(sensor, typ):
     cmd = "%d%d" % (cmd_codes['get'], cmd_codes[typ])
 
-    if typ == 'temperature':
+    if re.search(r'temperature', typ):
         devices = ('dht11','dht22')
         for d in devices:
             if re.search(d, sensor.tags):
                 cmd += "%d%d\n" % (cmd_codes[d], sensor.address)
                 return cmd
 
-    if typ == 'soil':
+    if re.search(r'soil', typ):
         devices = ('analog','digital')
         for d in devices:
             if re.search(d, sensor.tags):

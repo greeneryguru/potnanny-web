@@ -11,5 +11,5 @@ cmd_codes = {
     'digital':      1,
 
     'dht11':        0,
-    'dht22':        1
+    'dht22':        1,
 }
