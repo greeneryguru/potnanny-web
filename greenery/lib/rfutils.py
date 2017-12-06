@@ -11,7 +11,7 @@ logger = logging.getLogger('actions')
 logger.setLevel(10)
 pause_seconds = 15
 sdevice = '/dev/ttyUSB0'
-
+debug = True
 
 """
 send a code to the serial tty.
@@ -40,6 +40,11 @@ def rf_transmit(chan, state):
     code = int(base)
     code += (chan << 1)
     code += state
+
+    if debug:
+        print("channel: %d" % chan)
+        print("state: %d" % state)
+        print("code: %d" % code)
 
     try:
         ser = serial.Serial(sdevice, 9600, 5)
