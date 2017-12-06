@@ -24,9 +24,12 @@ from greenery.lib.messenger import Messenger
 
 
 logfile = '/var/tmp/greenery.errors.log'
-logging.basicConfig(filename=logfile)
+logging.basicConfig(
+    filename=logfile,
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)-8s %(message)s',    
+    datefmt='%Y-%m-%d %H:%M:%S')
 logger = logging.getLogger('actions')
-logger.setLevel(10)
 pause_seconds = 15
 
 

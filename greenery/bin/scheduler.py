@@ -19,7 +19,12 @@ from greenery.apps.schedule.models import Schedule
 from greenery.apps.outlet.models import Outlet
 
 
-logging.basicConfig(filename='/var/tmp/greenery.errors.log')
+logfile = '/var/tmp/greenery.errors.log'
+logging.basicConfig(
+    filename=logfile,
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)-8s %(message)s',    
+    datefmt='%Y-%m-%d %H:%M:%S')
 logger = logging.getLogger('scheduler')
 
 

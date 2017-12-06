@@ -43,10 +43,13 @@ from greenery.lib.ttycmd import cmd_codes
 
 # global vars
 logfile = '/var/tmp/greenery.errors.log'
-logging.basicConfig(filename=logfile)
-logger = logging.getLogger('actions')
-logger.setLevel(10)
-
+logging.basicConfig(
+    filename=logfile,
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)-8s %(message)s',    
+    datefmt='%Y-%m-%d %H:%M:%S')
+logger = logging.getLogger('poll')
+debug = False
 poll = None
 fahrenheit = None
 now = datetime.datetime.now().replace(second=0, microsecond=0)
@@ -63,7 +66,7 @@ def main():
         ser.flushInput()
     except Exception as x:
         logger.error(x)
-        sys.stderr.write("Error! see log %s\n" % logfile)
+        sys.stderr.write("Error! see log\n")
         sys.exit(1)
     
     mtypes = MeasurementType.query.all()
@@ -126,22 +129,28 @@ def main():
 
 
 def build_sensor_command(sensor, typ):
+    if debug:
+        print("building sensor command for '%s' type '%s" % (sensor, typ))
+
     cmd = "%d%d" % (cmd_codes['get'], cmd_codes[typ])
 
-    if re.search(r'temperature', typ):
+    if re.search(r'temp', typ):
         devices = ('dht11','dht22')
         for d in devices:
             if re.search(d, sensor.tags):
                 cmd += "%d%d\n" % (cmd_codes[d], sensor.address)
-                return cmd
 
-    if re.search(r'soil', typ):
+    elif re.search(r'soil', typ):
         devices = ('analog','digital')
         for d in devices:
             if re.search(d, sensor.tags):
                 cmd += "%d%d\n" % (cmd_codes[d], sensor.address)
-                return cmd
-        
+    
+    if cmd[-1] == '\n':
+        return cmd
+    else:
+        logger.warning("incomplete poll tty command '%'" % cmd)
+
     return None
 
 

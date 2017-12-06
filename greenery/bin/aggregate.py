@@ -21,9 +21,12 @@ from greenery.apps.sensor.models import Sensor
 
 
 logfile = '/var/tmp/greenery.errors.log'
-logging.basicConfig(filename=logfile)
-logger = logging.getLogger('actions')
-logger.setLevel(10)
+logging.basicConfig(
+    filename=logfile,
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)-8s %(message)s',    
+    datefmt='%Y-%m-%d %H:%M:%S')
+logger = logging.getLogger('aggregate')
 
 
 def main():
