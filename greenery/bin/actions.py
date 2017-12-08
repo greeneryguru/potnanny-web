@@ -74,7 +74,7 @@ def process_actions(then, now):
         for m in measurements:
             rval = is_action_needed(a, now, m)
             if rval:
-                t = ActionTrigger(a.id, now, "sensor='%s', value=%s, thresh='%s %d', action='%s %s %d'" % (m.sensor, m.value, a.condition, a.value, a.action, a.action_target, a.action_state))
+                t = ActionTrigger(a.id, now, "sensor='%s', value=%s, thresh='%s %d', action='%s %s %s'" % (m.sensor, m.value, a.condition, a.value, a.action, a.action_target, a.action_state))
                 p = ActionProcess(a.id, now)
 
                 db.session.add(t)

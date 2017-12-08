@@ -5,7 +5,7 @@ from sqlalchemy.sql import func
 from greenery import app, db
 from .models import MeasurementType, Measurement, MeasurementAverage
 from greenery.apps.sensor.models import Sensor
-from greenery.lib.utils import ChartColor, CHARTBASE
+from greenery.lib.charts import ChartColor, CHARTBASE
 import re
 import datetime
 import copy
@@ -17,7 +17,7 @@ def measurement_dashboard():
     mtypes = MeasurementType.query.all()
     return render_template('measurement/index.html', 
                 title='Dashboard',
-                payload=mtypes)
+                measurements=mtypes)
 
 
 @app.route('/measurement/type/<int:pk>', methods=['GET'])
@@ -31,14 +31,9 @@ def measurement_type(pk):
     
     mt = MeasurementType.query.get_or_404(pk)
     title = mt.name.capitalize()
-    ids = sensors_reporting_in_range(pk, then, now)
-    sensors = Sensor.query.filter(
-        Sensor.id.in_(ids)
-    ).all()
-    return render_template('measurement/measurement.html', 
+    return render_template('measurement/hiresolution.html', 
                 title=title,
-                measurement=mt,
-                sensors=sensors)
+                measurement=mt)
 
    
 
@@ -72,6 +67,7 @@ def measurement_sensor_latest(tid, sid):
 def measurement_chart_type(pk):
     hours = int(request.args.get('hours', default=1))
     legend_on = int(request.args.get('legend', default=0))
+    dates_on = int(request.args.get('dateson', default=0))
 
     now = datetime.datetime.now()
     then = now - datetime.timedelta(hours=hours)
@@ -98,15 +94,15 @@ def measurement_chart_type(pk):
         ).all()
         
         for row in results:
-            if datetime.datetime.strftime(row.date_time, "%m/%d/%y %H:%M") not in chart['data']['labels']:
-                chart['data']['labels'].append(datetime.datetime.strftime(row.date_time, "%m/%d/%y %H:%M"))
+            if datetime.datetime.strftime(row.date_time, "%H:%M") not in chart['data']['labels']:
+                chart['data']['labels'].append(datetime.datetime.strftime(row.date_time, "%H:%M"))
 
             if 'data' not in chart['data']['datasets'][tracker[s.name]]:
                 chart['data']['datasets'][tracker[s.name]] = {
                     'label': s.name,
                     'data': [],
                     'fill': 'false',
-                    'lineTension': 0.1,
+                    'lineTension': 0.3,
                     'borderColor': ChartColor(tracker[s.name]).rgb_color(),
                 }
 
@@ -114,6 +110,9 @@ def measurement_chart_type(pk):
 
     if legend_on:
         chart['options']['legend']['display'] = True
+
+    if dates_on:
+        chart['options']['scales']['xAxes'][0]['display'] = True
 
     return jsonify(chart)
 

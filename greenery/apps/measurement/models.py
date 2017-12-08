@@ -9,12 +9,19 @@ class MeasurementType(db.Model):
     __tablename__ = 'measurement_types'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32), nullable=False, server_default='', unique=True)
+    # enabled = db.Column(db.Boolean, nullable=False, server_default=True)
 
     def __init__(self, name):
         self.name = name
 
     def __repr__(self):
         return self.name
+
+    def as_dict(self):
+        return {'id': self.id,
+                'name': self.name,
+                # 'enabled': self.enabled,
+        }
 
     def code(self):
         results = ""
@@ -55,7 +62,8 @@ class Measurement(db.Model):
                 'sensor_id': self.sensor_id,
                 'value': self.value, 
                 'text': self.text,
-                'date_time': datetime.datetime.strftime(self.date_time, "%m/%d/%y %H:%M")}
+                'date_time': datetime.datetime.strftime(self.date_time, "%m/%d/%y %H:%M"),
+        }
 
 
 class MeasurementAverage(db.Model):
@@ -95,6 +103,7 @@ class MeasurementAverage(db.Model):
                 'avg': self.avg, 
                 'min': self.min,
                 'max': self.max,
-                'date_time': datetime.datetime.strftime(self.date_time, "%m/%d/%y %H:%M")}
+                'date_time': datetime.datetime.strftime(self.date_time, "%m/%d/%y %H:%M"),
+        }
 
 

@@ -1,75 +1,156 @@
+
+.dark-primary-color    { background: #689F38; }
+.default-primary-color { background: #8BC34A; }
+.light-primary-color   { background: #DCEDC8; }
+.text-primary-color    { color: #212121; }
+.accent-color          { background: #FFC107; }
+.primary-text-color    { color: #212121; }
+.secondary-text-color  { color: #757575; }
+.divider-color         { border-color: #BDBDBD; }
+
 body {
-  font-family: "Lato", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: #333;
+    font-size: 1.7em;
+    font-weight: 400;
+    font-family: "Lato", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #222; 
+    margin: 0px;
+    padding: 0px;
+    background-color: #DCEDC8;
+}
+
+.container {
+    margin: 0px;
+    padding: 0px;  
+}
+
+.center {
+    text-align: center;
+}
+
+a.item-link {
+    color: #212121;
+    text-decoration: none;
+}
+
+a.item-link:link {
+    color: #212121;
+    text-decoration: none;
+}
+
+a.item-link:visited {
+    color: #212121;
+    text-decoration: none;
+}
+
+a.item-link:hover {
+    color: #212121;
+    text-decoration: none;
+}
+
+a.item-link:active {
+    color: #212121;
+    text-decoration: none;
+}
+
+.item {
+    margin: 0px 0px 3px 0px;
+    box-shadow: 0px 1px 3px #bbb;
+    background-color: #fff;
+}
+
+.item p {
+    margin: 0px 0px 0px 0px;
+    padding: 10px;
+}
+
+.dashboard {
+    color: #212121;
+    font-size: 2.8em;
+    padding: 0px 0px 0px 0px;
+}
+
+p.dashboard {
+    color: #212121;
+    font-size: 2.8em;
+    padding: 0px 0px 0px 0px;
+}
+
+.dashboard-subtext {
+    font-weight: 300;
+    font-size: .8em;
+    padding: 0px 0px 0px 0px;
+}
+
+p.dashboard-label {
+    font-weight: 300;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding: 0px 0px 0px 0px;
 }
 
 
-.content {
-    max-width: 800px;
-    margin: 15px 15px 15px 15px;
+/******* toggle-switch styles *******/
+.onoffswitch {
+    width: 64px;
+    position: relative; 
+    -webkit-user-select:none; 
+    -moz-user-select:none; 
+    -ms-user-select: none;
 }
 
-h1 { font-size: 3.2rem; letter-spacing: .1rem;}
-h2 { font-size: 3.0rem; letter-spacing: .1rem; }
-h3 { font-size: 2.8rem; letter-spacing: .1rem; }
-
-a { color: #86af49; }
-a:hover { color: #333; }
-
-
-/* button modifications */
-.button,
-button,
-input[type="submit"],
-input[type="reset"],
-input[type="button"] {
-  border-radius: 8px;
+.onoffswitch-checkbox {
+    display: none;
 }
 
-.button.button-primary,
-button.button-primary,
-input[type="submit"].button-primary,
-input[type="reset"].button-primary,
-input[type="button"].button-primary {
-  color: #333;
-  background-color: #A4C639;
-  border-color: #A4C639; }
-.button.button-primary:hover,
-button.button-primary:hover,
-input[type="submit"].button-primary:hover,
-input[type="reset"].button-primary:hover,
-input[type="button"].button-primary:hover,
-.button.button-primary:focus,
-button.button-primary:focus,
-input[type="submit"].button-primary:focus,
-input[type="reset"].button-primary:focus,
-input[type="button"].button-primary:focus {
-  color: #FFF;
-  background-color: #86af49;
-  border-color: #86af49; }
-
-
-/* button groups */
-.btn-group .button {
+.onoffswitch-label {
+    display: block; 
+    overflow: hidden; 
     cursor: pointer;
-    float: left;
+    border: 2px solid #BDBDBD; 
+    border-radius: 0px;
 }
 
-.btn-group .button:not(:last-child) {
-    border-right: none;
-    border-top-right-radius: 0px;
-    border-bottom-right-radius: 0px;
-    
-}
-.btn-group .button:last-child {
-    border-top-left-radius: 0px;
-    border-bottom-left-radius: 0px;
+.onoffswitch-inner {
+    display: block; 
+    width: 200%; 
+    margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
 }
 
-.btn-group:after {
-    content: "";
-    clear: both;
-    display: table;
+.onoffswitch-inner:before, .onoffswitch-inner:after {
+    display: block; 
+    float: left; 
+    width: 50%; 
+    height: 24px; 
+    padding: 0; 
+    line-height: 22px;
+    font-size: 12px; 
+    color: white; 
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    background-clip: padding-box;
 }
 
+.onoffswitch-inner:before {
+    content: "ON";
+    padding-left: 8px;
+    background-color: #FFC107; 
+    color: #212121;
+}
+
+.onoffswitch-inner:after {
+    content: "OFF";
+    padding-right: 8px;
+    background-color: #BDBDBD; 
+    color: #212121;
+    text-align: right;
+}
+
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+    margin-left: 0;
+}
+
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+    right: 0px; 
+}
 

@@ -1,15 +1,7 @@
 {% extends "base.html" %}
 {% block headers %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/gauge.css') }}" type= "text/css" >
     <script src="{{ url_for('static',  filename='js/Chart.bundle.js') }}"></script>
-    <script src="{{ url_for('static',  filename='js/gauge.js') }}"></script>
     <script>
-    var globalChartRefs = {};
-
-    function type(obj) {
-        var text = obj.constructor.toString();
-        return text.match(/function (.*)\(/)[1];
-    }
 
     function setMeasurement(id, data) {
         $("#" + id).text(data.text);
@@ -22,7 +14,7 @@
     }
 
     $(document).ready(function() {
-        $(".gauge").each(function(){
+        $(".dashboard").each(function(){
             var pk = this.id.split("-")[1];
             $.get("/measurement/type/" + pk + "/latest",
                 {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
@@ -30,14 +22,9 @@
                     setMeasurement("measurement-" + pk, data);
                     setSubtext("subtext-" + pk, data);
 	            }, 'json');
-            $.get("/measurement/chart/type/" + pk ,
-                {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
-                function(data){
-                    gaugeCreateChart("chart-" + pk, data, globalChartRefs);
-	            }, 'json');
         });
         setInterval(function(){
-            $(".gauge").each(function(){
+            $(".dashboard").each(function(){
                 var pk = this.id.split("-")[1];
                 $.get("/measurement/type/" + pk + "/latest",
                     {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
@@ -45,30 +32,21 @@
                         setMeasurement("measurement-" + pk, data);
                         setSubtext("subtext-" + pk, data);
 	                }, 'json');
-                $.get("/measurement/chart/type/" + pk,
-                    {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
-                    function(data){
-                        gaugeCreateChart("chart-" + pk, data, globalChartRefs);
-	                }, 'json');
             });
-        }, 60000);
+        }, 20000);
     });
     </script>
 {% endblock %}
 {% block content %}
-{% if payload %}
-    {% for obj in payload %}
-    <a class="gauge-link" href="/measurement/type/{{ obj.id }}">
-    <div class="gauge" id="gauge-{{ obj.id }}">
-        {{ obj.name }}
-        <div class="measurement" id="measurement-{{ obj.id }}"></div>
-        <div class="graph">
-            <canvas id="chart-{{ obj.id }}" height="42"></canvas>
+{% if measurements %}
+    {% for obj in measurements %}
+    <a class="item-link" href="/measurement/type/{{ obj.id }}">
+        <div class="item center dark-primary-color">
+            <p class="dashboard-label">{{ obj.name.upper() }}</p>
+            <p class="dashboard" id="measurement-{{ obj.id }}"></p>
+            <p class="dashboard-subtext" id="subtext-{{ obj.id }}"></p>
         </div>
-        <div class="subtext" id="subtext-{{ obj.id }}"></div>
-    </div>
     </a>
-    <p></p>
     {% endfor %}
 {% else %}
     No data available

@@ -12,12 +12,12 @@ Code-mappings are found in greenery/lib/ttycmd.py {cmd_codes}
 
 Examples,
     
-    0012\n      =   0=mode(get),
+    "0012\n"    =   0=mode(get),
                     0=measurement(temperature),
                     1=sensor(dht22),
                     2=pin(2)
 
-    02014\n     =   0=mode(get),
+    "02014\n"   =   0=mode(get),
                     2=measurement(soil-moisture),
                     0=type(analog),
                     14=pin(14)
@@ -49,7 +49,6 @@ logging.basicConfig(
     format='%(asctime)s %(levelname)-8s %(message)s',    
     datefmt='%Y-%m-%d %H:%M:%S')
 logger = logging.getLogger('poll')
-debug = False
 poll = None
 fahrenheit = None
 now = datetime.datetime.now().replace(second=0, microsecond=0)
@@ -124,14 +123,10 @@ def main():
                         logger.warning("could not match MeasurementType object to tag like '%s'" % code)
 
         db.session.commit()
-
     ser.close()
 
 
 def build_sensor_command(sensor, typ):
-    if debug:
-        print("building sensor command for '%s' type '%s" % (sensor, typ))
-
     cmd = "%d%d" % (cmd_codes['get'], cmd_codes[typ])
 
     if re.search(r'temp', typ):
@@ -172,7 +167,10 @@ def format_label(typ, val, fahrenheit=False):
 
 
 if __name__ == '__main__':
-    poll = Setting.query.filter(Setting.name == 'polling interval minutes').first()
+    poll = Setting.query.filter(
+        Setting.name == 'polling interval minutes'
+    ).first()
+
     if not poll:
         logger.error("could not determine polling interval from db")
         sys.stderr.write("error\n")
@@ -182,7 +180,12 @@ if __name__ == '__main__':
         # not the right time to be running this. exit
         sys.exit(0)
     
-    fahrenheit = bool(Setting.query.filter(Setting.name == 'store temperature fahrenheit').first().value)
+    fahrenheit = bool(
+        Setting.query.filter(
+            Setting.name == 'store temperature fahrenheit'
+        ).first().value
+    )
 
     main()
+
 

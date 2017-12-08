@@ -12,20 +12,20 @@
     <script src="{{ url_for('static',  filename='js/jquery-3.2.1.min.js') }}"></script>
     <script src="{{ url_for('static',  filename='js/menu.js') }}"></script>
     {% block headers %}{% endblock headers %}
-    {% if title %}<title>greenery:{{ title }}</title>{% endif %}
+    {% if title %}<title>{{ title }}</title>{% endif %}
   </head>
   <body>
-    <div class="topnav" id="myTopnav">
-      <a href="/"><i class="fa fa-leaf" style="color: #7CBB00;"></i> dashboard</a>
+    <div class="navbar" id="mynavbar">
+      <a href="/">greenry guru</a>
       <a href="/outlet">outlets</a>
-      <a href="/schedule">schedules</a>
       <a href="/action">actions</a>
-      <a href="/admin">admin</a>
+      <a href="/system">system</a>
       <a href="/logout">logout</a>
-      <a href="javascript:void(0);" class="icon" onclick="myFunction()">&#9776;</a>
+      <a href="javascript:void(0);" class="icon" onclick="menuToggle()">&#9776;</a>
     </div> 
-    <div class="content">
-        {% block content %}{% endblock content %}
+    <div class="container">
+        {% block content %}
+        {% endblock content %}
     </div>
   </body>
 </html>

@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block headers %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/gauge.css') }}" type= "text/css" >
+    <script src="{{ url_for('static',  filename='js/Chart.bundle.js') }}"></script>
+    <script src="{{ url_for('static',  filename='js/gauge.js') }}"></script>
+    <script>
+    var globalChartRefs = {};
+
+    function type(obj) {
+        var text = obj.constructor.toString();
+        return text.match(/function (.*)\(/)[1];
+    }
+
+    function setMeasurement(id, data) {
+        $("#" + id).text(data.text);
+        return false;
+    }
+
+    function setSubtext(id, data) {
+        $("#" + id).text("last hour " + data.date_time);    
+        return false;
+    }
+
+    $(document).ready(function() {
+        $("[id*=gauge-]").each(function(){
+            var pk = this.id.split("-")[1];
+            $.get("/measurement/chart/type/" + pk + "?legend=1&hours=4",
+                {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
+                function(data){
+                    gaugeCreateChart("chart-" + pk, data, globalChartRefs);
+	            }, 'json');
+        });
+        setInterval(function(){
+            $("[id*=gauge-]").each(function(){
+                var pk = this.id.split("-")[1];
+                $.get("/measurement/chart/type/" + pk + "?legend=1&hours=4",
+                    {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
+                    function(data){
+                        gaugeCreateChart("chart-" + pk, data, globalChartRefs);
+	                }, 'json');
+            });
+        }, 60000);
+        $("[id*=avggauge-]").each(function(){
+            var atoms = this.id.split("-");
+            var tid = atoms[1];
+            var sid = atoms[2];
+            $.get("/measurement/chart/type/" + tid + "/sensor/" + sid  + "/avg?legend=1&days=5",
+                {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
+                function(data){
+                    gaugeCreateChart("chart-" + tid + "-" + sid, data, globalChartRefs);
+	            }, 'json');
+        });
+        setInterval(function(){
+            $("[id*=avggauge-]").each(function(){
+                var atoms = this.id.split("-");
+                var tid = atoms[1];
+                var sid = atoms[2];
+                $.get("/measurement/chart/type/" + tid + "sensor/" + sid + "/avg?legend=1&days=5",
+                    {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
+                    function(data){
+                        gaugeCreateChart("chart-" + tid + "-" + sid, data, globalChartRefs);
+	                }, 'json');
+            });
+        }, 60000);
+    });
+    </script>
+{% endblock %}
+{% block content %}
+{% if measurement %}
+    high-resolution data (4 hours)
+    <div class="gauge" id="gauge-{{ measurement.id }}">
+        {{ measurement.name }}
+        <div class="measurement" id="measurement-{{ measurement.id }}"></div>
+        <div class="graph">
+            <canvas id="chart-{{ measurement.id }}" height="80"></canvas>
+        </div>
+        <div class="subtext" id="subtext-{{ measurement.id }}"></div>
+    </div>
+    <p></p>
+    {% if sensors %}
+    sensor hourly data (5 days)
+        {% for s in sensors %}
+    <div class="gauge" id="avggauge-{{ measurement.id }}-{{ s.id }}">
+        {{ s.name }}
+        <div class="measurement" id="measurement-{{ measurement.id }}-{{ s.id }}"></div>
+        <div class="graph">
+            <canvas id="chart-{{ measurement.id }}-{{ s.id }}" height="80"></canvas>
+        </div>
+        <div class="subtext" id="subtext-{{ measurement.id }}-{{ s.id }}"></div>
+    </div>
+    <p></p>
+        {% endfor %}
+    {% endif %}
+    <b>Downloads:</b> 
+    hi-resolution <a href="#"><i class="fa fa-file-excel-o"></i></a> 
+    | 
+    hourly-averages <a href="#"><i class="fa fa-file-excel-o"></i></a>
+{% else %}
+    No data available
+{% endif %}
+{% endblock %}

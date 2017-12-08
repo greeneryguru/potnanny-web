@@ -48,9 +48,26 @@
 {% block content %}
 {% if payload %}
     {% for o in payload %}
+    <div class="item">
+    <p>
+    <div style="margin: 0px 10px 0px 10px; display: inline-block;">
+    <a href="/outlet/{{ o.id }}/edit">
+    <i class="fa fa-edit"></i>
+    </a>
+    </div>
+    {{ o.name }}
+    <div class="onoffswitch" style="float: right; padding-right: 10px;">
+        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch-{{ o.id }}" style="display: none">
+        <label class="onoffswitch-label" for="myonoffswitch">
+            <span class="onoffswitch-inner"></span>
+        </label>
+    </div>
+    </p>
+</div>
+
     <div class="row">    
       <div class="seven columns btn-group">
-        <a class="button" href="/outlet/{{ o.id }}/edit" style="width: 80%;">{{ o.name }}</a><a class="button{% if o.state %} button-primary{% endif %} toggle" id="toggle-{{ o.id }}" style="width: 10%;">{% if o.state %}on{% else %}off{% endif %}</a>
+        <a class="button" " style="width: 80%;">{{ o.name }}</a><a class="button{% if o.state %} button-primary{% endif %} toggle" id="toggle-{{ o.id }}" style="width: 10%;">{% if o.state %}on{% else %}off{% endif %}</a>
       </div>
     </div>
     {% endfor %}

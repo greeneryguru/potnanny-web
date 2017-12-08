@@ -77,6 +77,8 @@ catch=$?
 if (( catch )); then
     cd /var/www/greenery
     sudo cp ./install/cron/www.cron /var/spool/cron/crontabs/www-data
+    sudo chown www-data /var/spool/cron/crontabs/www-data
+    sudo chmod 600 /var/spool/cron/crontabs/www-data
 fi
 
 
@@ -94,3 +96,4 @@ sudo adduser www-data dialout
 
 # success?
 echo "OK!"
+
