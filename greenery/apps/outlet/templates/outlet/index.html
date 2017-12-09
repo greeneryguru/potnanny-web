@@ -1,22 +1,16 @@
 {% extends "base.html" %}
 {% block headers %}
-    <script>
+  <script>
     function setSwitchValid(self, data) {
-        if (data.state == true) {
-            if (! $(self).hasClass("button-primary")) {
-                $(self).addClass("button-primary");
-                $(self).text("on");
-            }
+        if (data.state == 'on') {
+            $(self).checked = true;
         } else {
-            if ($(self).hasClass("button-primary")) {
-                $(self).removeClass("button-primary");
-                $(self).text("off");
-            }
+            $(self).checked = false;
         }
     }
     $(document).ready(function() {
         setInterval(function(){
-            $(".button.toggle").each(function(){
+            $(".onoffswitch-checkbox").each(function(){
                 var pk = this.id.split('-',2)[1];
                 var self = this;
                 $.get("/outlet/" + pk,
@@ -26,55 +20,56 @@
 		        }, 'json');
             });
         }, 10000);
-
-        $(".toggle").on('click', function(){
+        $(".onoffswitch").on('click', function(){
             var pk = this.id.split("-")[1];
-            var self = this;
-            if ($(self).hasClass('button-primary')) {
-                setSwitchValid(self, {"state": false});
+            var obj = $("#outletswitch-" + pk);
+            if ($(obj).checked = true) {
+                setSwitchValid(obj, {"state": "off"});
             } else {
-                setSwitchValid(self, {"state": true});
+                setSwitchValid(obj, {"state": "on"});
             }
             $.post("/outlet/" + pk + "/toggle",
             {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
             function(data){
-                setSwitchValid(self, data);
+                setSwitchValid(obj, data);
 			}, 'json');
 			return false;
         });
     });
-    </script>
+    </script>  
 {% endblock %}
 {% block content %}
-{% if payload %}
-    {% for o in payload %}
+{% if outlets %}
+    {% for o in outlets %}
+    <a href="/outlet/{{ o.id }}/edit" class="item-link">
     <div class="item">
-    <p>
-    <div style="margin: 0px 10px 0px 10px; display: inline-block;">
-    <a href="/outlet/{{ o.id }}/edit">
-    <i class="fa fa-edit"></i>
+        <p>
+        <div style="display: inline-block; padding-left: 10px;">
+        {{ o.name }}
+        </div>
+        <div class="onoffswitch" id="onoffswitch-{{ o.id }}" style="float: right; padding-right: 10px;">
+            <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="outletswitch-{{ o.id }}" style="display: none">
+            <label class="onoffswitch-label" for="outletswitch-{{ o.id }}">
+                <span class="onoffswitch-inner"></span>
+            </label>
+        </div>
+        </p>
+    </div>
     </a>
-    </div>
-    {{ o.name }}
-    <div class="onoffswitch" style="float: right; padding-right: 10px;">
-        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch-{{ o.id }}" style="display: none">
-        <label class="onoffswitch-label" for="myonoffswitch">
-            <span class="onoffswitch-inner"></span>
-        </label>
-    </div>
-    </p>
-</div>
-
-    <div class="row">    
-      <div class="seven columns btn-group">
-        <a class="button" " style="width: 80%;">{{ o.name }}</a><a class="button{% if o.state %} button-primary{% endif %} toggle" id="toggle-{{ o.id }}" style="width: 10%;">{% if o.state %}on{% else %}off{% endif %}</a>
-      </div>
-    </div>
     {% endfor %}
 {% else %}
-    No outlet data available
+    <div class="item">
+    No outlets defined
+    </div>
 {% endif %}
-<p>
-    <a href="/outlet/create"><i class="fa fa-plus"></i> add</a>
-</p>
+<div class="item">
+    <p>
+    <a href="/outlet/create">
+    <span class="fa-stack fa-spin-hover">
+    <i class="fa fa-circle-thin fa-stack-2x"></i>
+    <i class="fa fa-plus fa-stack-1x"></i>
+    </span>
+    </a>
+    </p>
+</div>
 {% endblock %}

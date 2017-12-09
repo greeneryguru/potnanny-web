@@ -36,6 +36,23 @@ def measurement_type(pk):
                 measurement=mt)
 
    
+@app.route('/measurement/type/<int:pk>/avg', methods=['GET'])
+@login_required
+def measurement_type_avg(pk):
+    days = int(request.args.get('hours', default=5))
+    legend_on = int(request.args.get('legend', default=0))
+
+    now = datetime.datetime.now()
+    then = now - datetime.timedelta(days=days)
+    
+    mt = MeasurementType.query.get_or_404(pk)
+    sensors = sensors_reporting_in_range(mt.id, then, now)
+    title = mt.name.capitalize()
+    return render_template('measurement/averages.html', 
+                title=title,
+                measurement=mt,
+                sensors=sensors)
+
 
 @app.route('/measurement/type/<int:pk>/latest', methods=['GET'])
 @login_required
@@ -72,11 +89,10 @@ def measurement_chart_type(pk):
     now = datetime.datetime.now()
     then = now - datetime.timedelta(hours=hours)
 
-    ids = sensors_reporting_in_range(pk, then, now)
+    sensors = sensors_reporting_in_range(pk, then, now)
     chart = copy.deepcopy(CHARTBASE)
     tracker = {}
 
-    sensors = Sensor.query.filter(Sensor.id.in_(ids)).all()
     for s in sensors:
         # keep track of this sensor's position index in the chart dataset
         if s.name not in tracker:
@@ -143,8 +159,8 @@ def measurement_chart_sensor_avg(tid,sid):
 
     for row in results:
         fields = ['avg','min','max']
-        if datetime.datetime.strftime(row.date_time, "%m/%d/%y %H:%M") not in chart['data']['labels']:
-                chart['data']['labels'].append(datetime.datetime.strftime(row.date_time, "%m/%d/%y %H:%M"))
+        if datetime.datetime.strftime(row.date_time, "%m/%d %Hh") not in chart['data']['labels']:
+                chart['data']['labels'].append(datetime.datetime.strftime(row.date_time, "%m/%d %Hh"))
 
         for key in fields:
             if len(chart['data']['datasets']) <= tracker[key]:
@@ -183,7 +199,7 @@ def sensors_reporting_in_range(pk, then, now):
         Measurement.sensor_id
     ).all()
     for r in results:
-        data.append(r.sensor_id)
+        data.append(r.sensor)
 
     return data
 

@@ -27,6 +27,17 @@ body {
     text-align: center;
 }
 
+a {
+    color: #689F38; 
+    text-decoration: none;
+}
+
+a:hover {
+    color: #FFC107; 
+    text-decoration: none;
+}
+
+
 a.item-link {
     color: #212121;
     text-decoration: none;
@@ -54,13 +65,14 @@ a.item-link:active {
 
 .item {
     margin: 0px 0px 3px 0px;
+    padding: 0px 0px 0px 0px;
     box-shadow: 0px 1px 3px #bbb;
     background-color: #fff;
 }
 
 .item p {
     margin: 0px 0px 0px 0px;
-    padding: 10px;
+    padding: 10px 10px 10px 10px;
 }
 
 .dashboard {
@@ -106,7 +118,7 @@ p.dashboard-label {
     display: block; 
     overflow: hidden; 
     cursor: pointer;
-    border: 2px solid #BDBDBD; 
+    border: 1px solid #BDBDBD; 
     border-radius: 0px;
 }
 
@@ -153,4 +165,14 @@ p.dashboard-label {
 .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
     right: 0px; 
 }
+
+/**** add-button logo ****/
+.fa-circle-thin { 
+    margin-top: -0.04em; 
+}
+.fa-plus { 
+    margin-top: -0.1em; 
+    margin-left: 0.03em; 
+}
+
 

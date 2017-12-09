@@ -1,15 +1,27 @@
 {% extends "base.html" %}
 {% block content %}
-{% if payload %}
-    {% for action in payload %}
-    <div class="row">
-        <div class="seven columns">
-            <a class="button" href="/action/{{ action.id }}/edit" style="width: 100%;">{{ action }}</a>
-        </div>
+{% if actions %}
+    {% for action in actions %}
+    <a class="item-link" href="/action/{{ action.id }}/edit">
+    <div class="item">
+        <p>{{ action | upper }}</p>
     </div>
+    </a>
     {% endfor %}
 {% else %}
-    No action data available
+    <div class="item">
+        <p>No actions defined</p>
+    </div>
+    
 {% endif %}
-<p><a href="/action/create"><i class="fa fa-plus"></i> add</a></p>
+<div class="item">
+    <p>
+    <a href="/outlet/create">
+    <span class="fa-stack fa-spin-hover">
+    <i class="fa fa-circle-thin fa-stack-2x"></i>
+    <i class="fa fa-plus fa-stack-1x"></i>
+    </span>
+    </a>
+    </p>
+</div>
 {% endblock %}o

@@ -12,7 +12,7 @@ def outlet_index():
     outlets = Outlet.query.all()
     return render_template('outlet/index.html', 
                 title='Outlets',
-                payload=outlets)
+                outlets=outlets)
 
 
 @app.route('/outlet/create', methods=['GET','POST'])

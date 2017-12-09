@@ -48,10 +48,6 @@ from greenery.apps.measurement import views
 from greenery.apps.action import views
 
 
-# import APIs
-# from greenery.apps.outlet import api
-
-
 # 404 error handler for API
 @app.errorhandler(404)
 def not_found(error):

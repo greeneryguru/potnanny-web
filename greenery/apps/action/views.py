@@ -14,7 +14,7 @@ def action_index():
     return render_template('action/index.html', 
                 title='Actions',
                 subtitle='automation rules',
-                payload=actions)
+                actions=actions)
 
         
 @app.route('/action/create', methods=['GET','POST'])
