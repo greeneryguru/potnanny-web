@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% block headers %}
   <script>
-    function setSwitchValid(self, data) {
-        if (data.state == 'on') {
-            $(self).checked = true;
+    function setSwitchValid(pk, data) {
+        if (data.state == true) {
+            $("#outletswitch-" + pk).prop("checked", true);
         } else {
-            $(self).checked = false;
+            $("#outletswitch-" + pk).prop("checked", false);
         }
     }
     $(document).ready(function() {
@@ -16,24 +16,18 @@
                 $.get("/outlet/" + pk,
                 {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
                 function(data){
-                    setSwitchValid(self, data);
+                    setSwitchValid(pk, data);
 		        }, 'json');
             });
         }, 10000);
-        $(".onoffswitch").on('click', function(){
+        $(".onoffswitch-checkbox").change(function(){
+            alert("changed!");
             var pk = this.id.split("-")[1];
-            var obj = $("#outletswitch-" + pk);
-            if ($(obj).checked = true) {
-                setSwitchValid(obj, {"state": "off"});
-            } else {
-                setSwitchValid(obj, {"state": "on"});
-            }
             $.post("/outlet/" + pk + "/toggle",
-            {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
-            function(data){
-                setSwitchValid(obj, data);
-			}, 'json');
-			return false;
+                {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
+                function(data){
+                    setSwitchValid(pk, data);
+			    }, 'json');
         });
     });
     </script>  
