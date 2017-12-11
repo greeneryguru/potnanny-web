@@ -21,7 +21,6 @@
             });
         }, 10000);
         $(".onoffswitch-checkbox").change(function(){
-            alert("changed!");
             var pk = this.id.split("-")[1];
             $.post("/outlet/" + pk + "/toggle",
                 {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
