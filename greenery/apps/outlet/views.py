@@ -4,6 +4,7 @@ from flask_login import login_required
 from greenery import app, db
 from .models import Outlet
 from .forms import OutletForm
+from greenery.apps.schedule.models import Schedule
 
 
 @app.route('/outlet')
@@ -21,11 +22,15 @@ def outlet_index():
 def outlet_edit(pk=None):
     obj = None
     title = 'Add Outlet'
+    schedules = None
 
     if pk:
         title = 'Edit Outlet'
         obj = Outlet.query.get_or_404(int(pk))
-        
+        schedules = Schedule.query.filter(
+            Schedule.outlet_id == pk
+        ).all()
+
     form = OutletForm(obj=obj)  
     if request.method == 'POST' and form.validate_on_submit():
         if pk:
@@ -43,6 +48,7 @@ def outlet_edit(pk=None):
     return render_template('outlet/form.html', 
         form=form,
         title=title,
+        schedules=schedules,
         pk=pk)    
 
 

@@ -44,6 +44,10 @@
     </script>
 {% endblock %}
 {% block content %}
+    <div class="white padded">
+    {% if title %}
+    <h4>{{ title }}</h4>
+    {% endif %}
     <form action="" method="post" name="action" class="form">
         {{ form.hidden_tag() }}
         <fieldset>
@@ -51,13 +55,13 @@
             <div class="two columns">
             {{ form.type_id.label }}
             </div>
-            <div class="four columns">
-            {{ form.type_id }}
-            {% if form.type_id.errors %}
-                {% for err in form.type_id.errors %}
-                <span style="color: red;">[{{ err }}]</span>
-                {% endfor %}
-            {% endif %}
+            <div class="ten columns">
+                {{ form.type_id }}
+                {% if form.type_id.errors %}
+                    {% for err in form.type_id.errors %}
+                    <span style="color: red;">[{{ err }}]</span>
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
         <div class="row">
@@ -65,12 +69,12 @@
             {{ form.condition.label }}
             </div>
             <div class="four columns">
-            {{ form.condition }}
-            {% if form.condition.errors %}
-                {% for err in form.condition.errors %}
-                <span style="color: red;">[{{ err }}]</span>
-                {% endfor %}
-            {% endif %}
+                {{ form.condition }}
+                {% if form.condition.errors %}
+                    {% for err in form.condition.errors %}
+                    <span style="color: red;">[{{ err }}]</span>
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
         <div class="row">
@@ -78,12 +82,12 @@
             {{ form.value.label }}
             </div>
             <div class="four columns">
-            {{ form.value }}
-            {% if form.value.errors %}
-                {% for err in form.value.errors %}
-                <span style="color: red;">[{{ err }}]</span>
-                {% endfor %}
-            {% endif %}
+                {{ form.value }}
+                {% if form.value.errors %}
+                    {% for err in form.value.errors %}
+                    <span style="color: red;">[{{ err }}]</span>
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
         <div class="row">
@@ -91,12 +95,12 @@
             {{ form.action.label }}
             </div>
             <div class="four columns">
-            {{ form.action }}
-            {% if form.action.errors %}
-                {% for err in form.action.errors %}
-                <span style="color: red;">[{{ err }}]</span>
-                {% endfor %}
-            {% endif %}
+                {{ form.action }}
+                {% if form.action.errors %}
+                    {% for err in form.action.errors %}
+                    <span style="color: red;">[{{ err }}]</span>
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
         <div class="row" id="switch-outlet">
@@ -104,20 +108,20 @@
             {{ form.outlet.label }}
             </div>
             <div class="two columns">
-            {{ form.outlet }}
-            {% if form.outlet.errors %}
-                {% for err in form.outlet.errors %}
-                <span style="color: red;">[{{ err }}]</span>
-                {% endfor %}
-            {% endif %}
+                {{ form.outlet }}
+                {% if form.outlet.errors %}
+                    {% for err in form.outlet.errors %}
+                    <span style="color: red;">[{{ err }}]</span>
+                    {% endfor %}
+                {% endif %}
             </div>
             <div class="two columns">
-            {{ form.action_state }}
-            {% if form.action_state.errors %}
-                {% for err in form.action_state %}
-                <span style="color: red;">[{{ err }}]</span>
-                {% endfor %}
-            {% endif %}
+                {{ form.action_state }}
+                {% if form.action_state.errors %}
+                    {% for err in form.action_state %}
+                    <span style="color: red;">[{{ err }}]</span>
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
         <div class="row" id="sms-message">
@@ -125,12 +129,12 @@
             {{ form.recipient.label }}
             </div>
             <div class="four columns">
-            {{ form.recipient }}
-            {% if form.recipient.errors %}
-                {% for err in form.recipient.errors %}
-                <span style="color: red;">[{{ err }}]</span>
-                {% endfor %}
-            {% endif %}
+                {{ form.recipient }}
+                {% if form.recipient.errors %}
+                    {% for err in form.recipient.errors %}
+                    <span style="color: red;">[{{ err }}]</span>
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
         <div class="row">
@@ -138,12 +142,12 @@
             {{ form.wait_time.label }}
             </div>
             <div class="four columns">
-            {{ form.wait_time }}
-            {% if form.wait_time.errors %}
-                {% for err in form.wait_time.errors %}
-                <span style="color: red;">[{{ err }}]</span>
-                {% endfor %}
-            {% endif %}
+                {{ form.wait_time }}
+                {% if form.wait_time.errors %}
+                    {% for err in form.wait_time.errors %}
+                    <span style="color: red;">[{{ err }}]</span>
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
         <div class="row">
@@ -151,19 +155,21 @@
             {{ form.active.label }}
             </div>
             <div class="four columns">
-            {{ form.active }}
-            {% if form.active.errors %}
-                {% for err in form.active.errors %}
-                <span style="color: red;">[{{ err }}]</span>
-                {% endfor %}
-            {% endif %}
+                {{ form.active }}
+                {% if form.active.errors %}
+                    {% for err in form.active.errors %}
+                    <span style="color: red;">[{{ err }}]</span>
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
 
         <div class="row">
-            <div class="four columns">
+            <div class="twelve columns">
             <button type="submit" class="button-primary">Submit</button>
-            {% if pk %}<button type="button" class="button delete" id="delete-{{ pk }}">Delete</button>{% endif %}
+            {% if pk %}
+            <button type="button" class="button delete" id="delete-{{ pk }}">Delete</button>
+            {% endif %}
             </div>
         </div>
 

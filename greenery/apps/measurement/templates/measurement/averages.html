@@ -35,9 +35,11 @@
 {% if measurement %}
     {% if sensors %}
         {% for s in sensors %}
-    <div class="item center">
-        <p>{{ s.name }} - averages</p>
-        <canvas id="chart-{{ measurement.id }}-{{ s.id }}"></canvas>
+    <div class="row white gap center">
+        <div class="twelve columns">
+            <p class="padded">{{ s.name | upper }} - averages</p>
+            <canvas id="chart-{{ measurement.id }}-{{ s.id }}"></canvas>
+        </div>
     </div>
         {% endfor %}
     {% endif %}

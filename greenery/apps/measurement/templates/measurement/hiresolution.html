@@ -29,10 +29,12 @@
 {% endblock %}
 {% block content %}
 {% if measurement %}
-    <a href="/measurement/type/{{ measurement.id }}/avg" class="item-link">
-    <div class="item center">
-        <p>{{ measurement.name }}</p>
+    <a href="/measurement/type/{{ measurement.id }}/avg" class="row-link">
+    <div class="row white gap center">
+        <div class="twelve columns">
+        <p class="padded">{{ measurement.name | upper}}</p>
         <canvas id="chart-{{ measurement.id }}"></canvas>
+        </div>
     </div>
     </a>
 {% else %}

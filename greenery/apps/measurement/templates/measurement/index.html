@@ -23,6 +23,7 @@
                     setSubtext("subtext-" + pk, data);
 	            }, 'json');
         });
+
         setInterval(function(){
             $(".dashboard").each(function(){
                 var pk = this.id.split("-")[1];
@@ -40,11 +41,15 @@
 {% block content %}
 {% if measurements %}
     {% for obj in measurements %}
-    <a class="item-link" href="/measurement/type/{{ obj.id }}">
-        <div class="item center dark-primary-color">
-            <p class="dashboard-label">{{ obj.name }}</p>
-            <p class="dashboard" id="measurement-{{ obj.id }}"></p>
-            <p class="dashboard-subtext" id="subtext-{{ obj.id }}"></p>
+    <a href="/measurement/type/{{ obj.id }}" class="row-link">
+        <div class="row white gap center">
+            <div class="twelve columns">
+            <p class="padded">
+                <div class="dashboard-label">{{ obj.name | upper }}</div>
+                <div class="dashboard" id="measurement-{{ obj.id }}"></div>
+                <div class="dashboard-subtext" id="subtext-{{ obj.id }}"></div>
+            </p>
+            </div>
         </div>
     </a>
     {% endfor %}

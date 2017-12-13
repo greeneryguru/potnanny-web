@@ -2,37 +2,35 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <html>
   <head>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}" type= "text/css" >
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/skeleton.css') }}" type= "text/css" >
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/greenery.css') }}" type= "text/css" >
+    
     {% block headers %}{% endblock headers %}
-    {% if title %}
     <title>Login</title>
-    {% endif %}
   </head>
   <body>
-    <form action="" method="post" name="login" class="pure-form pure-form-aligned">
+    <form action="" method="post" name="login">
     {{ form.hidden_tag() }}
-    <fieldset>
-    <div class="pure-control-group">
+    <div style="margin: 0 auto; padding: 20px; width: 100%; position: relative;">
+  
+    <div style="margin: 0 auto;">
         {{ form.username.label }}
         {{ form.username }}
         {% for err in form.username.errors %}
-        <span class="pure-form-message-inline">[{{ err }}]</span>
+        <span>[{{ err }}]</span>
         {% endfor %}
     </div>
-    <div class="pure-control-group">
+    <div style="margin: 0 auto;">
         {{ form.password.label }}
         {{ form.password }}
         {% for err in form.password.errors %}
-        <span class="pure-form-message-inline">[{{ err }}]</span>
+        <span>[{{ err }}]</span>
         {% endfor %}
+    </div style="margin: 0 auto;">
+
+    <div style="margin: 0 auto;">
+        <button type="submit">Login</button>
     </div>
 
-    <div class="pure-controls">
-        <button type="submit" class="button-primary">Login</button>
     </div>
-    </fieldset>
     </form>
   </body>
 </html>

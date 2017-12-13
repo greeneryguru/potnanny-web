@@ -9,7 +9,7 @@ import re
 class ActionForm(FlaskForm):
     id = HiddenField('id')
     action_target = HiddenField('action_target')
-    type_id = SelectField('measurement type', validators=[InputRequired()])
+    type_id = SelectField('measurement', validators=[InputRequired()])
     condition = SelectField('condition', choices=[('GT', 'greater than'), ('LT', 'less than'), ('EQ', 'equal to')], validators=[InputRequired()])
     value = IntegerField('trigger value', validators=[InputRequired()])
     action = SelectField('action', choices=[('switch-outlet', 'switch outlet'), ('sms-message', 'sms message')], validators=[InputRequired()])

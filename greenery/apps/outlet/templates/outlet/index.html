@@ -34,35 +34,43 @@
 {% block content %}
 {% if outlets %}
     {% for o in outlets %}
-    <a href="/outlet/{{ o.id }}/edit" class="item-link">
-    <div class="item">
-        <p>
-        <div style="display: inline-block; padding-left: 10px;">
-        {{ o.name }}
+    <a href="/outlet/{{ o.id }}/edit" class="row-link">
+    <div class="row white gap">
+        <div class="twelve rows">
+            <p class="padded">
+            <div style="display: inline-block; padding-left: 10px;">
+            {{ o.name }}
+            </div>
+            <div class="onoffswitch" id="onoffswitch-{{ o.id }}" style="float: right; padding-right: 10px;">
+                <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="outletswitch-{{ o.id }}" style="display: none">
+                <label class="onoffswitch-label" for="outletswitch-{{ o.id }}">
+                    <span class="onoffswitch-inner"></span>
+                </label>
+            </div>
+            </p>
         </div>
-        <div class="onoffswitch" id="onoffswitch-{{ o.id }}" style="float: right; padding-right: 10px;">
-            <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="outletswitch-{{ o.id }}" style="display: none">
-            <label class="onoffswitch-label" for="outletswitch-{{ o.id }}">
-                <span class="onoffswitch-inner"></span>
-            </label>
-        </div>
-        </p>
     </div>
     </a>
     {% endfor %}
 {% else %}
-    <div class="item">
-    No outlets defined
+    <div class="row white gap">
+        <div class="twelve rows">
+            <p class="padded">
+            No outlets defined
+            </p>
+        </div>
     </div>
 {% endif %}
-<div class="item">
-    <p>
-    <a href="/outlet/create">
-    <span class="fa-stack fa-spin-hover">
-    <i class="fa fa-circle-thin fa-stack-2x"></i>
-    <i class="fa fa-plus fa-stack-1x"></i>
-    </span>
-    </a>
-    </p>
+<div class="row white gap">
+    <div class="twelve rows">
+        <p class="padded">
+        <a href="/outlet/create">
+        <span class="fa-stack fa-spin-hover">
+        <i class="fa fa-circle-thin fa-stack-2x"></i>
+        <i class="fa fa-plus fa-stack-1x"></i>
+        </span>
+        </a>
+        </p>
+    </div>
 </div>
 {% endblock %}
