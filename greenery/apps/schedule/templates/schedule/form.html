@@ -58,7 +58,7 @@
                 $.post("/schedule/" + pk + "/delete",
                     {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
                     function(){
-                        window.location.replace("/schedule");
+                        window.location.replace("{{ request.args.get('next', '/') }}");
                     }
                 );
             }

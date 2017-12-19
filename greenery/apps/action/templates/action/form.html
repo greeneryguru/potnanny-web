@@ -1,25 +1,24 @@
 {% extends "base.html" %}
 {% block headers %}
-    <link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='css/toggle.css') }}">
     <script>
     $(document).ready(function() {
         function toggleOptionalDivs(){
-            var self = $("#action");
+            var self = $("#action_type");
             var sval = $(self).find(":selected").val();
-            var opts = ["switch-outlet", "sms-message"];
-            for (i = 0; i < opts.length; i++) {
-                if (opts[i] == sval) {
-                    $("#" + opts[i]).css("display","block");
-                } else {
-                    $("#" + opts[i]).css("display","none");
-                }
+            
+            if (sval == 'switch-outlet') {
+                $("#recipient-toggle").css("display", "none")
+                $("#outlet-toggle").css("display", "block")
+                $("#off-fieldset").css("display", "block")
+                $("#on-condition-label").text("ON condition")
+                $("#on-value-label").text("ON value")
             }
-            var atarg = $("#action_target").val()
-            if (sval == 'switch-outlet' && atarg != "") {
-                $("#outlet").val(atarg)
-            }
-            if (sval == 'sms-message' && atarg != "") {
-                $("#recipient").val(atarg)
+            if (sval == 'sms-message') {
+                $("#recipient-toggle").css("display", "block")
+                $("#outlet-toggle").css("display", "none")
+                $("#off-fieldset").css("display", "none")
+                $("#on-condition-label").text("Message condition")
+                $("#on-value-label").text("Message value")
             }
             return false;
         }
@@ -35,9 +34,8 @@
             }
 			return false;
         });
-        $("#action").each(toggleOptionalDivs); 
-        $("#action").change(function() {
-            $("#action_target").val("");
+        $("#action_type").each(toggleOptionalDivs); 
+        $("#action_type").change(function() {
             toggleOptionalDivs();
         });
     });
@@ -50,120 +48,124 @@
     {% endif %}
     <form action="" method="post" name="action" class="form">
         {{ form.hidden_tag() }}
-        <fieldset>
-        <div class="row">
-            <div class="two columns">
-            {{ form.type_id.label }}
-            </div>
-            <div class="ten columns">
-                {{ form.type_id }}
-                {% if form.type_id.errors %}
-                    {% for err in form.type_id.errors %}
+        <fieldset class="padded" id="summary-fieldset">
+            <div class="row">
+                <div class="six columns">
+                {{ form.name.label }}
+                {{ form.name(class="u-full-width") }}
+                {% if form.name.errors %}
+                    {% for err in form.name.errors %}
                     <span style="color: red;">[{{ err }}]</span>
                     {% endfor %}
                 {% endif %}
-            </div>
-        </div>
-        <div class="row">
-            <div class="two columns">
-            {{ form.condition.label }}
-            </div>
-            <div class="four columns">
-                {{ form.condition }}
-                {% if form.condition.errors %}
-                    {% for err in form.condition.errors %}
+                </div>
+                <div class="six columns">
+                {{ form.measurement_id.label }}
+                {{ form.measurement_id(class="u-full-width") }}
+                {% if form.measurement_id.errors %}
+                    {% for err in form.measurement_id.errors %}
                     <span style="color: red;">[{{ err }}]</span>
                     {% endfor %}
                 {% endif %}
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="two columns">
-            {{ form.value.label }}
-            </div>
-            <div class="four columns">
-                {{ form.value }}
-                {% if form.value.errors %}
-                    {% for err in form.value.errors %}
+            <div class="row">
+                <div class="six columns">
+                {{ form.action_type.label }}
+                {{ form.action_type(class="u-full-width") }}
+                {% if form.action_type.errors %}
+                    {% for err in form.action_type.errors %}
                     <span style="color: red;">[{{ err }}]</span>
                     {% endfor %}
                 {% endif %}
-            </div>
-        </div>
-        <div class="row">
-            <div class="two columns">
-            {{ form.action.label }}
-            </div>
-            <div class="four columns">
-                {{ form.action }}
-                {% if form.action.errors %}
-                    {% for err in form.action.errors %}
+                </div>
+                <div class="six columns" id="outlet-toggle" style="display: none;">
+                {{ form.outlet_id.label }}
+                {{ form.outlet_id(class="u-full-width") }}
+                {% if form.outlet_id.errors %}
+                    {% for err in form.outlet_id.errors %}
                     <span style="color: red;">[{{ err }}]</span>
                     {% endfor %}
                 {% endif %}
-            </div>
-        </div>
-        <div class="row" id="switch-outlet">
-            <div class="two columns">
-            {{ form.outlet.label }}
-            </div>
-            <div class="two columns">
-                {{ form.outlet }}
-                {% if form.outlet.errors %}
-                    {% for err in form.outlet.errors %}
+                </div>
+                <div class="six columns" id="recipient-toggle" style="display: none;">
+                {{ form.sms_recipient.label }}
+                {{ form.sms_recipient(class="u-full-width") }}
+                {% if form.sms_recipient.errors %}
+                    {% for err in form.sms_recipient.errors %}
                     <span style="color: red;">[{{ err }}]</span>
                     {% endfor %}
                 {% endif %}
+                </div>
             </div>
-            <div class="two columns">
-                {{ form.action_state }}
-                {% if form.action_state.errors %}
-                    {% for err in form.action_state %}
+            <div class="row">
+                <div class="six columns">
+                {{ form.wait_minutes.label }}
+                {{ form.wait_minutes(class="u-full-width") }}
+                {% if form.wait_minutes.errors %}
+                    {% for err in form.wait_minutes.errors %}
                     <span style="color: red;">[{{ err }}]</span>
                     {% endfor %}
                 {% endif %}
-            </div>
-        </div>
-        <div class="row" id="sms-message">
-            <div class="two columns">
-            {{ form.recipient.label }}
-            </div>
-            <div class="four columns">
-                {{ form.recipient }}
-                {% if form.recipient.errors %}
-                    {% for err in form.recipient.errors %}
+                </div>
+                <div class="six columns">
+                {{ form.enabled.label }}
+                {{ form.enabled }}
+                {% if form.enabled.errors %}
+                    {% for err in form.enabled.errors %}
                     <span style="color: red;">[{{ err }}]</span>
                     {% endfor %}
                 {% endif %}
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="two columns">
-            {{ form.wait_time.label }}
-            </div>
-            <div class="four columns">
-                {{ form.wait_time }}
-                {% if form.wait_time.errors %}
-                    {% for err in form.wait_time.errors %}
+        </fieldset>     
+        <p></p>
+        <fieldset id="on-fieldset" class="padded">
+            <div class="row">
+                <div class="six columns">
+                {{ form.on_condition.label(id="on-condition-label") }}
+                {{ form.on_condition(class="u-full-width") }}
+                {% if form.on_condition.errors %}
+                    {% for err in form.on_condition.errors %}
                     <span style="color: red;">[{{ err }}]</span>
                     {% endfor %}
                 {% endif %}
-            </div>
-        </div>
-        <div class="row">
-            <div class="two columns">
-            {{ form.active.label }}
-            </div>
-            <div class="four columns">
-                {{ form.active }}
-                {% if form.active.errors %}
-                    {% for err in form.active.errors %}
+                </div>
+                <div class="six columns">
+                {{ form.on_threshold.label(id="on-value-label") }}
+                {{ form.on_threshold(class="u-full-width") }}
+                {% if form.on_threshold.errors %}
+                    {% for err in form.on_threshold.errors %}
                     <span style="color: red;">[{{ err }}]</span>
                     {% endfor %}
                 {% endif %}
+                </div>
             </div>
-        </div>
-
+        </fieldset>
+        <p></p>
+        <fieldset id="off-fieldset" class="padded">
+            <div class="row">
+                <div class="six columns">
+                {{ form.off_condition.label }}
+                {{ form.off_condition(class="u-full-width") }}
+                {% if form.off_condition.errors %}
+                    {% for err in form.off_condition.errors %}
+                    <span style="color: red;">[{{ err }}]</span>
+                    {% endfor %}
+                {% endif %}
+                </div>
+                <div class="six columns">
+                {{ form.off_threshold.label }}
+                {{ form.off_threshold(class="u-full-width") }}
+                {% if form.off_threshold.errors %}
+                    {% for err in form.off_threshold.errors %}
+                    <span style="color: red;">[{{ err }}]</span>
+                    {% endfor %}
+                {% endif %}
+                </div>
+            </div>
+        </fieldset>
+        <p></p>
         <div class="row">
             <div class="twelve columns">
             <button type="submit" class="button-primary">Submit</button>
@@ -172,7 +174,5 @@
             {% endif %}
             </div>
         </div>
-
-        </fieldset>
     </form>
 {% endblock %}

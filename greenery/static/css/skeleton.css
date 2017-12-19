@@ -268,7 +268,7 @@ legend {
   font-weight: 600; }
 fieldset {
   padding: 0;
-  border-width: 0; }
+  border-width: 1; }
 input[type="checkbox"],
 input[type="radio"] {
   display: inline; }

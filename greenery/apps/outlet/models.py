@@ -10,6 +10,7 @@ class Outlet(db.Model, JsonModel):
     name = db.Column(db.String(24), nullable=False, server_default='', unique=True)
     channel = db.Column(db.Integer, nullable=False, server_default='2', unique=True)
     state = db.Column(db.Boolean(), nullable=False, server_default='0')
+    enabled = db.Column(db.Boolean(), nullable=False, server_default='1')
 
     def __init__(self, name, channel):
         self.name = name

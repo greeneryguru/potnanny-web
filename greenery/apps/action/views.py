@@ -2,10 +2,12 @@ from flask import render_template, redirect, request, session
 from flask import jsonify
 from flask_login import login_required
 from greenery import app, db
-from .models import Action
+from .models import Action, ActionProcess
 from .forms import ActionForm
 from greenery.apps.outlet.models import Outlet
 from greenery.apps.measurement.models import MeasurementType
+import re
+
 
 @app.route('/action')
 @login_required
@@ -31,28 +33,40 @@ def action_edit(pk=None):
         
     form = ActionForm(obj=obj)
 
-    # populate options for select fields
-    form.type_id.choices = []
+    # populate options for measurementtype_id select fields
+    form.measurement_id.choices = []
     for n in MeasurementType.query.all():
-        form.type_id.choices.append(("%d" % n.id, n.name))  
+        form.measurement_id.choices.append(("%d" % n.id, n.name))  
 
-    form.outlet.choices = []
+    # populate options for outlet_id select fields
+    form.outlet_id.choices = []
     for n in Outlet.query.all():
-        form.outlet.choices.append((n.name, n.name))
+        form.outlet_id.choices.append(("%d" % n.id, n.name))
 
     if request.method == 'POST' and form.validate_on_submit():
         if pk:
+            if obj.enabled == True and form.enabled.data != True:
+                # Switching an action from enabled to disabled means we need to 
+                # delete any active ActionProcesses belonging to this Action.
+                ActionProcess.query.filter(
+                    ActionProcess.action_id == obj.id
+                ).delete()
+                db.session.commit()
+
             form.populate_obj(obj)
         else:
-            o = Action()
-            o.type_id = int(form.type_id.data)
-            o.condition = form.condition.data
-            o.value = int(form.value.data)
-            o.wait_time = int(form.wait_time.data)
-            o.action = form.action.data
-            o.action_state = form.action_state.data
-            o.action_target = form.action_target.data
-            o.active = int(form.active.data)
+            o = Action(form.name.data, 
+                        form.measurement_id.data, 
+                        form.outlet_id.data, form.action_type.data)
+
+            if re.search(r'sms', form.action_type.data, re.IGNORECASE):
+                o.sms_recipient = form.sms_recipient.data
+                
+            if re.search(r'switch', form.action_type.data, re.IGNORECASE):
+                o.off_condition = form.off_condition.data
+                o.off_threshold = form.off_threshold.data
+
+            o.enabled = int(form.enabled.data)
             db.session.add(o)
     
         db.session.commit()

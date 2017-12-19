@@ -25,13 +25,10 @@
         {% endif %}
         <form action="" method="post" name="outlet" class="form">
             {{ form.hidden_tag() }}
-            <fieldset>
             <div class="row">
-                <div class="two columns">
+                <div class="six columns">
                     {{ form.name.label }}
-                </div>
-                <div class="ten columns">
-                    {{ form.name }}
+                    {{ form.name(class="u-full-width") }}
                     {% if form.name.errors %}
                     {% for err in form.name.errors %}
                     <span style="color: red;">[{{ err }}]</span>
@@ -41,11 +38,9 @@
             </div>
             
             <div class="row">
-                <div class="two columns">
+                <div class="six columns">
                     {{ form.channel.label }}
-                </div>
-                <div class="ten columns">
-                    {{ form.channel }}
+                    {{ form.channel(class="u-full-width") }}
                     {% if form.channel.errors %}
                     {% for err in form.channel.errors %}
                     <span style="color: red;">[{{ err }}]</span>
@@ -61,7 +56,6 @@
                     {% endif %}
                 </div>
             </div>
-            </fieldset>
         </form>
 
         {% if schedules or pk %}

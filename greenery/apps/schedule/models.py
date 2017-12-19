@@ -4,6 +4,7 @@ from greenery.lib.utils import WeekdayMap
 import json
 import re
 
+
 class Schedule(db.Model):
     __tablename__ = 'schedules'
     id = db.Column(db.Integer, primary_key=True)
@@ -12,7 +13,8 @@ class Schedule(db.Model):
     off_time = db.Column(db.String(16), nullable=False, server_default='')
     days = db.Column(db.Integer, nullable=False, server_default="127")
     custom = db.Column(db.Integer, nullable=False, server_default="0")
-    
+    enabled = db.Column(db.Boolean(), nullable=False, server_default='1')
+
     outlet = db.relationship("Outlet")
 
 
@@ -23,6 +25,7 @@ class Schedule(db.Model):
         self.days = days
         self.custom = cust
 
+
     def __repr__(self):
         d = ",".join(self.run_days())
         return "%s %s/%s (%s)" % (self.outlet.name, self.on_time,
@@ -31,10 +34,11 @@ class Schedule(db.Model):
 
     def as_dict(self):
         return {'id': self.id, 
-                'outlet_id': self.outlet_id, 
-                'on_time': self.hour,
-                'off_time': self.minute,
-                'days': self.outlet_state,
+                'outlet': self.outlet, 
+                'on_time': self.on_time,
+                'off_time': self.off_time,
+                'days': self.days,
+                'enabled': self.enabled,
                 }
     
 
