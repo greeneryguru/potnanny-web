@@ -1,5 +1,7 @@
 sqlite.db
+.project
 .DS_Store
+.pydevproject
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
