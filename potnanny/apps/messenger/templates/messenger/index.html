@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row white gap">
+    <div class="twelve columns">
+    {% if title %}
+    <h4 class="padded">{{ title }}</h4>
+    {% endif %}
+    </div>
+</div>
+
+{% if account %}
+    <a href="/messenger/account/{{ account.id }}/edit" class="row-link">
+    <div class="row white gap">
+        <div class="twelve columns">
+            <p class="padded">
+            Edit Twilio account
+            </p>
+        </div>
+    </div>
+    </a>
+    
+    <a href="/messenger/message" class="row-link">
+    <div class="row white gap">
+        <div class="twelve columns">
+            <p class="padded">
+            Send test message
+            </p>
+        </div>
+    </div>
+    </a>
+    
+{% else %}
+    <a href="/messenger/account/create" class="row-link">
+    <div class="row white gap">
+        <div class="twelve columns">
+            <p class="padded">
+            Create Twilio account
+            </p>
+        </div>
+    </div>
+    </a>
+{% endif %}
+{% endblock %}

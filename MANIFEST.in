@@ -1,3 +1,0 @@
-graft greenery/templates
-graft greenery/static
-include greenery/schema.sql

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="white gap">
+        <div class="padded">
+        {% if title %}
+            <h4>{{ title }}</h4>
+        {% endif %}
+            <form action="" method="post" name="sendmessage" class="form">
+            {{ form.hidden_tag() }}
+            <div class="row">
+                <div class="six columns">
+                    {{ form.recipient.label }}
+                    {{ form.recipient(class="u-full-width") }}
+                    {% if form.recipient.errors %}
+                        {% for err in form.recipient.errors %}
+                        <span style="color: red;">[{{ err }}]</span>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="six columns">
+                    {{ form.message.label }}
+                    {{ form.message(class="u-full-width") }}
+                    {% if form.message.errors %}
+                        {% for err in form.message.errors %}
+                        <span style="color: red;">[{{ err }}]</span>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="twelve columns">
+                    <button type="submit" class="button-primary">Submit</button>
+                </div>
+            </div>
+        </form>
+        </div>
+    </div>
+{% endblock %}
+

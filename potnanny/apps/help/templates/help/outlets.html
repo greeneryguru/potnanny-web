@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="white padded">
+<h4>Outlets</h4>
+<h5>Intro</h5>
+<p>
+Pot Nanny uses a 433Mhz wireless transmitter to turn remote power outlets on or off.
+</p>
+<p>
+Up to 254 wireless power outlets can be, theoretically, controlled by the system.
+</p>
+
+<h5>Adding an outlet to the system</h5>
+<p>
+<ol>
+<li>Navigate to the Outlet page.</li>
+<li>Click on the ADD outlet button that looks like a + symbol.</li>
+<li>Give the new Outlet a name. It must be unique from other Outlet names.</li>
+<li>Assign the Outlet a channel. It must also be unique.</li>
+<li>Click Submit.</li>
+</ol>
+</p>
+
+<h5>Pairing the wireless outlet with the application</h5>
+<p>
+<ol>
+<li>Plug a wireless outlet into the wall.</li>
+<li>Hold down the <i>learning</i> button on the outlet for 5 seconds, until the light begins to blink.</li>
+<li>On the main Outlet page of the application, click the on/off button for the new outlet to "on".</li>
+<li>The light on the remote outlet should begin to blink faster.</li>
+<li>On the Outlet page, click the on/off button back to "off".</li>
+</ol>
+<b>The outlet is now paired to the application!</b>
+</p>
+
+<h5>Testing the outlet</h5>
+<p>
+<ol>
+<li>Plug an appliance (like, a light) into the new wireless outlet.</li>
+<li>On the main Outlet page of the application, click the on/off button for the new outlet to "on". The appliance should turn on.</li>
+</ol>
+</p>
+
+<h5>Pairing multiple outlets to the same channel</h5>
+<p>
+<ol>
+<li>Plug in two, or more, outlets, and set them both into <i>learning mode</i>.</li>
+<li>Click the on/off button to "on" to pair the two outlets to the same channel.</li>
+<li>On the Outlet page, click the on/off button back to "off".</li>
+</ol>
+</p>
+
+<h5>Setting up outlet schedules</h5>
+<p>
+<ol>
+<li>From the main Outlet page, click on an outlet name to enter edit mode for the outlet.</i>.</li>
+<li>In the Outlet Schedules section, click the "add" button (+) to add a Schedule.</li>
+<li>There are three Schedule buttons:</li>
+    <ul>
+    <li><span class="button">12 hour ON</span> This is for the <i>flowering</i> light cycle.</li>
+    <li><span class="button">18 hour ON</span> The is for the <i>vegatative</i> growing cycle.</li>
+    <li><span class="button">Custom</span> You decide the on/off times, and what days the schedule will run.</li>
+    </ul>
+</ol>
+</p>
+
+
+</div>
+{% endblock %}

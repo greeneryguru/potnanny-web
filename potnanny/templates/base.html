@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<html>
+  <head>
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}" type= "text/css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/skeleton.css') }}" type= "text/css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}" type= "text/css" >
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type= "text/css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/menu.css') }}" type= "text/css">
+    <script src="{{ url_for('static',  filename='js/jquery-3.2.1.min.js') }}"></script>
+    <script src="{{ url_for('static',  filename='js/menu.js') }}"></script>
+    {% block headers %} {% endblock headers %}
+    {% if title %}<title>{{ title }}</title>{% endif %}
+  </head>
+  <body class="light-primary-color">
+    <div class="container">
+        <div class="navbar" id="mynavbar">
+          <a href="/"><i class="fa fa-leaf"></i> Pot Nanny</a>
+          <a href="/outlet">outlets</a>
+          <a href="/action">actions</a>
+          <a href="/system">system</a>
+          <a href="/logout">logout</a>
+          <a href="javascript:void(0);" class="icon" onclick="menuToggle()">&#9776;</a>
+        </div>
+        {% block content %} {% endblock content %}
+    </div>
+  </body>
+</html>
+
+
+
+
+
+
+

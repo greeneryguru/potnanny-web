@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row white gap">
+    <div class="twelve columns">
+    {% if title %}
+    <h4 class="padded">{{ title }}</h4>
+    {% endif %}
+    </div>
+</div>
+
+{% if actions %}
+    {% for action in actions %}
+    <a href="/action/{{ action.id }}/edit" class="row-link">
+    <div class="row white gap">
+        <div class="twelve rows">
+            <p class="padded">{{ action }}</p>
+        </div>
+    </div>
+    </a>
+    {% endfor %}
+{% else %}
+    <div class="row white gap">
+        <div class="twelve rows">
+            <p class="padded">
+            No actions defined
+            </p>
+        </div>
+    </div>
+    
+{% endif %}
+<div class="row white gap">
+    <div class="twelve rows">
+        <p class="padded">
+        <a href="/action/create">
+        <span class="fa-stack fa-spin-hover">
+        <i class="fa fa-circle-thin fa-stack-2x"></i>
+        <i class="fa fa-plus fa-stack-1x"></i>
+        </span>
+        </a>
+        </p>
+    </div>
+</div>
+{% endblock %}o

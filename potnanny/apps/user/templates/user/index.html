@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row white gap">
+    <div class="twelve columns">
+    {% if title %}
+    <h4 class="padded">{{ title }}</h4>
+    {% endif %}
+    </div>
+</div>
+
+{% if users %}
+    {% for u in users %}
+    <a href="/user/{{ u.id }}/edit" class="row-link">
+    <div class="row white gap">
+        <div class="twelve rows">
+            <p class="padded">{{ u.username }}</p>
+        </div>
+    </div>
+    </a>
+    {% endfor %}
+{% else %}
+    <div class="row white gap">
+        <div class="twelve rows">
+            <p class="padded">No users defined</p>
+        </div>
+    </div>
+{% endif %}
+<div class="row white gap">
+    <div class="twelve rows">
+        <p class="padded">
+        <a href="/user/create">
+        <span class="fa-stack fa-spin-hover">
+        <i class="fa fa-circle-thin fa-stack-2x"></i>
+        <i class="fa fa-plus fa-stack-1x"></i>
+        </span>
+        </a>
+        </p>
+    </div>
+</div>
+{% endblock %}

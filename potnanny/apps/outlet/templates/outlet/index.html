@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block headers %}
+  <script>
+    function setSwitchValid(pk, data) {
+        if (data.state == true) {
+            $("#outletswitch-" + pk).prop("checked", true);
+        } else {
+            $("#outletswitch-" + pk).prop("checked", false);
+        }
+    }
+    $(document).ready(function() {
+        setInterval(function(){
+            $(".onoffswitch-checkbox").each(function(){
+                var pk = this.id.split('-',2)[1];
+                var self = this;
+                $.get("/outlet/" + pk,
+                {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
+                function(data){
+                    setSwitchValid(pk, data);
+		        }, 'json');
+            });
+        }, 5000);
+        $(".onoffswitch-checkbox").change(function(){
+            var pk = this.id.split("-")[1];
+            $.post("/outlet/" + pk + "/toggle",
+                {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
+                function(data){
+                    setSwitchValid(pk, data);
+			    }, 'json');
+        });
+    });
+    </script>  
+{% endblock %}
+{% block content %}
+
+<div class="row white gap">
+    <div class="twelve columns">
+    {% if title %}
+    <h4 class="padded">{{ title }}</h4>
+    {% endif %}
+    </div>
+</div>
+
+{% if outlets %}
+    {% for o in outlets %}
+    <a href="/outlet/{{ o.id }}/edit" class="row-link">
+    <div class="row white gap">
+        <div class="twelve columns">
+            <p class="padded">
+            <div style="display: inline-block; padding-left: 10px;">
+            {{ o.name }}
+            </div>
+            <div class="onoffswitch" id="onoffswitch-{{ o.id }}" style="float: right; padding-right: 10px;">
+                <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="outletswitch-{{ o.id }}" style="display: none">
+                <label class="onoffswitch-label" for="outletswitch-{{ o.id }}">
+                    <span class="onoffswitch-inner"></span>
+                </label>
+            </div>
+            </p>
+        </div>
+    </div>
+    </a>
+    {% endfor %}
+{% else %}
+    <div class="row white gap">
+        <div class="twelve columns">
+            <p class="padded">
+            No outlets defined
+            </p>
+        </div>
+    </div>
+{% endif %}
+<div class="row white gap">
+    <div class="twelve columns">
+        <p class="padded">
+        <a href="/outlet/create">
+        <span class="fa-stack fa-spin-hover">
+        <i class="fa fa-circle-thin fa-stack-2x"></i>
+        <i class="fa fa-plus fa-stack-1x"></i>
+        </span>
+        </a>
+        </p>
+    </div>
+</div>
+{% endblock %}

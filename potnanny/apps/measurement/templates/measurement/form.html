@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block headers %}
+    <script>
+    var csrf_token = "{{ csrf_token() }}";
+    
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+            }
+        }
+    });
+    
+    $(document).ready(function() {
+        $("button.button.delete").click(function(){
+            var [mode, pk] = this.id.split('-',2);
+            if (window.confirm("Are you sure you want to delete this?")) {          
+                $.post("/measurementtype/" + pk + "/delete",
+                    {"csrfmiddlewaretoken": csrf_token},
+                    function(){
+                        window.location.replace("{{ request.args.get('next', '/measurementtype') }}");
+                    }
+                );
+            }
+            return false;
+        });
+    });
+    </script>
+{% endblock %}
+{% block content %}
+    <div class="white padded">
+    {% if title %}
+    <h4>{{ title }}</h4>
+    {% endif %}
+    <form action="" method="post" name="user" class="form">
+        {{ form.hidden_tag() }}
+        <div class="row">
+            <div class="six columns">
+                {{ form.name.label }}
+                {{ form.name(class="u-full-width") }}
+                {% if form.name.errors %}
+                    {% for err in form.name.errors %}
+                    <span style="color: red;">[{{ err }}]</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="six columns">
+                
+                {{ form.active }}
+                {{ form.active.label }}
+                {% if form.active.errors %}
+                    {% for err in form.active.errors %}
+                    <span style="color: red;">[{{ err }}]</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="twelve columns">
+            <button type="submit" class="button-primary">Submit</button>
+            {% if pk %}
+            <button type="button" class="button delete" id="delete-{{ pk }}">Delete</button>
+            {% endif %}
+            </div>
+        </div>
+    </form>
+    </div>
+{% endblock %}

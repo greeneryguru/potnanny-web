@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block headers %}
+    <script>
+    var csrf_token = "{{ csrf_token() }}";
+    
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+            }
+        }
+    });
+    
+    $(document).ready(function() {
+        $("button.button.delete").click(function(){
+            var [mode, pk] = this.id.split('-',2);
+            if (window.confirm("Are you sure you want to delete this?")) {          
+                $.post("/outlet/" + pk + "/delete",
+                    {"csrfmiddlewaretoken": csrf_token},
+                    function(){
+                        window.location.replace("{{ request.args.get('next', '/outlet') }}");
+                    }
+                );
+            }
+			return false;
+        });
+    });
+    </script>
+{% endblock headers %}
+{% block content %}
+    <div class="white gap padded">
+        {% if title %}
+        <h4>{{ title }}</h4>
+        {% endif %}
+        <form action="" method="post" name="outlet" class="form">
+            {{ form.hidden_tag() }}
+            <div class="row">
+                <div class="six columns">
+                    {{ form.name.label }}
+                    {{ form.name(class="u-full-width") }}
+                    {% if form.name.errors %}
+                    {% for err in form.name.errors %}
+                    <span style="color: red;">[{{ err }}]</span>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="six columns">
+                    {{ form.channel.label }}
+                    {{ form.channel(class="u-full-width") }}
+                    {% if form.channel.errors %}
+                    {% for err in form.channel.errors %}
+                    <span style="color: red;">[{{ err }}]</span>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="twelve columns">
+                    <button type="submit" class="button-primary">Submit</button>
+                    {% if pk %}
+                    <button type="button" class="button delete" id="delete-{{ pk }}">Delete</button>
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+
+        {% if schedules or pk %}
+        <p></p>
+        <h4>Outlet Schedules</h4>
+        {% endif %}
+    </div>
+    
+    {% if schedules %}
+        {% for s in schedules %}
+    <a href="/schedule/{{ s.id }}/edit?next={{ request.url }}" class="row-link">
+    <div class="row white gap">   
+        <div class="twelve columns">
+        <p class="padded">{{ s }}</p>
+        </div>
+    </div>
+    </a>
+        {% endfor %}
+    {% endif %}
+
+    {% if pk %}
+    <div class="row white gap">
+        <div class="twelve rows">
+            <p class="padded">
+            <a href="/schedule/create?next={{ request.url }}&outlet={{ pk }}">
+            <span class="fa-stack fa-spin-hover">
+            <i class="fa fa-circle-thin fa-stack-2x"></i>
+            <i class="fa fa-plus fa-stack-1x"></i>
+            </span>
+            </a>
+            </p>
+        </div>
+    </div>
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row white gap">
+    <div class="twelve columns">
+    {% if title %}
+    <h4 class="padded">{{ title }}</h4>
+    {% endif %}
+    </div>
+</div>
+
+<a href="/measurementtype" class="row-link">
+    <div class="row white gap">
+        <div class="twelve columns">
+            <p class="padded">
+            Measurement Types
+            </p>
+        </div>
+    </div>
+</a>
+<a href="/sensor" class="row-link">
+    <div class="row white gap">
+        <div class="twelve columns">
+            <p class="padded">
+            Sensors
+            </p>
+        </div>
+    </div>
+</a>
+<a href="/user" class="row-link">
+    <div class="row white gap">
+        <div class="twelve columns">
+            <p class="padded">
+            Users
+            </p>
+        </div>
+    </div>
+</a>
+<a href="/messenger/account" class="row-link">
+    <div class="row white gap">
+        <div class="twelve columns">
+            <p class="padded">
+            Messenger Setup
+            </p>
+        </div>
+    </div>
+</a>
+<a href="/settings" class="row-link">
+    <div class="row white gap">
+        <div class="twelve columns">
+            <p class="padded">
+            Base Settings
+            </p>
+        </div>
+    </div>
+</a>
+{% endblock %}

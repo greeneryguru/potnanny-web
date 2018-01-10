@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block headers %}
+    <script>
+    var csrf_token = "{{ csrf_token() }}";
+    
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+            }
+        }
+    });
+    
+    $(document).ready(function() {
+        $("button.button.delete").click(function(){
+            var [mode, pk] = this.id.split('-',2);
+            if (window.confirm("Are you sure you want to delete this?")) {          
+                $.post("/messenger/account/" + pk + "/delete",
+                    {"csrfmiddlewaretoken": csrf_token},
+                    function(){
+                        window.location.replace("{{ request.args.get('next', '/messenger/account') }}");
+                    }
+                );
+            }
+            return false;
+        });
+    });
+    </script>
+{% endblock headers %}
+{% block content %}
+    <div class="white gap">
+        <div class="padded">
+        {% if title %}
+            <h4>{{ title }}</h4>
+        {% endif %}
+            <form action="" method="post" name="twilio" class="form">
+            {{ form.hidden_tag() }}
+            <div class="row">
+                <div class="six columns">
+                    {{ form.sid.label }}
+                    {{ form.sid(class="u-full-width") }}
+                    {% if form.sid.errors %}
+                        {% for err in form.sid.errors %}
+                        <span style="color: red;">[{{ err }}]</span>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="six columns">
+                    {{ form.token.label }}
+                    {{ form.token(class="u-full-width") }}
+                    {% if form.token.errors %}
+                        {% for err in form.token.errors %}
+                        <span style="color: red;">[{{ err }}]</span>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="six columns">
+                    {{ form.number.label }}
+                    {{ form.number(class="u-full-width") }}
+                    {% if form.number.errors %}
+                        {% for err in form.number.errors %}
+                        <span style="color: red;">[{{ err }}]</span>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="twelve columns">
+                    <button type="submit" class="button-primary">Submit</button>
+                    {% if pk %}
+                    <button type="button" class="button delete" id="delete-{{ pk }}">Delete</button>
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+        </div>
+    </div>
+{% endblock %}
+
