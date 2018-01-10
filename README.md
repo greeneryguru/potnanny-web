@@ -1,5 +1,7 @@
 # Pot Nanny
+
 *"plant care when you're not there"*
+
 Environment monitoring and automation tool for potted plants and small greenhouses. 
 
 ## Application Overview

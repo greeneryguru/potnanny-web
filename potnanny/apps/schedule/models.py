@@ -13,7 +13,7 @@ class Schedule(db.Model):
     off_time = db.Column(db.String(16), nullable=False, server_default='')
     days = db.Column(db.Integer, nullable=False, server_default="127")
     custom = db.Column(db.Integer, nullable=False, server_default="0")
-    enabled = db.Column(db.Boolean(), nullable=False, server_default='1')
+    active = db.Column(db.Boolean(), nullable=False, server_default='1')
     
     outlet = db.relationship("Outlet", 
                              backref=db.backref("children", 
@@ -37,7 +37,7 @@ class Schedule(db.Model):
                 'on_time': self.on_time,
                 'off_time': self.off_time,
                 'days': self.days,
-                'enabled': self.enabled,
+                'active': self.active,
                 }
     
     def run_days(self):
