@@ -17,7 +17,7 @@ measurement = Blueprint('measurement', __name__,
 
 @measurement.route('/', methods=['GET'])
 def measurement_dashboard():
-    sensors = Sensor.query.all().order_by(Sensor.address, Sensor.name)
+    sensors = Sensor.query.order_by(Sensor.address, Sensor.name)
     return render_template('measurement/index.html', 
                 title='Dashboard',
                 sensors=sensors)
