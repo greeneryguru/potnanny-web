@@ -1,57 +1,15 @@
 {% extends "base.html" %}
-{% block headers %}
-    <script src="{{ url_for('static',  filename='js/Chart.bundle.js') }}"></script>
-    <script>
 
-    function setMeasurement(id, data) {
-        $("#" + id).text(data.text);
-        return false;
-    }
-
-    function setSubtext(id, data) {
-        $("#" + id).text(data.date_time);    
-        return false;
-    }
-
-    $(document).ready(function() {
-        $(".dashboard").each(function(){
-            var pk = this.id.split("-")[1];
-            $.get("/measurement/type/" + pk + "/latest",
-                {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
-                function(data){
-                    setMeasurement("measurement-" + pk, data);
-                    setSubtext("subtext-" + pk, data);
-	            }, 'json');
-        });
-
-        setInterval(function(){
-            $(".dashboard").each(function(){
-                var pk = this.id.split("-")[1];
-                $.get("/measurement/type/" + pk + "/latest",
-                    {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
-                    function(data){
-                        setMeasurement("measurement-" + pk, data);
-                        setSubtext("subtext-" + pk, data);
-	                }, 'json');
-            });
-        }, 20000);
-    });
-    </script>
-{% endblock %}
 {% block content %}
-{% if measurements %}
-    {% for obj in measurements %}
-    <a href="/measurement/type/{{ obj.id }}" class="row-link">
+{% if sensors %}
+    {% for obj in sensors %}
         <div class="row white gap center">
             <div class="twelve columns">
             <p class="padded">
-                <div class="dashboard-label">{{ obj.name | upper }}</div>
-                <div class="dashboard" id="measurement-{{ obj.id }}"></div>
-                <div class="dashboard-subtext" id="subtext-{{ obj.id }}"></div>
+                <div class="dashboard-label">{{ obj.name }}</div>
             </p>
             </div>
         </div>
-    </a>
     {% endfor %}
 {% else %}
     No data available

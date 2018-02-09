@@ -6,7 +6,7 @@ from .extensions import db, csrf, login_manager
 from .utils import INSTANCE_FOLDER_PATH, BASEDIR
 
 
-__all__ = ['create_app','initialize_database']
+__all__ = ['create_app', 'initialize_database']
 
 
 def create_app(config=None, app_name=None, init_db=True):
@@ -27,7 +27,6 @@ def create_app(config=None, app_name=None, init_db=True):
     
     
     # import all required views
-    from potnanny.apps.user import views
     from potnanny.apps.sensor import views
     from potnanny.apps.measurement import views
     from potnanny.apps.outlet import views
@@ -37,6 +36,7 @@ def create_app(config=None, app_name=None, init_db=True):
     from potnanny.apps.settings import views
     from potnanny.apps.system import views
     from potnanny.apps.help import views
+    from potnanny.apps.vesync import views
     
     return app
 
@@ -50,7 +50,6 @@ def configure_app(app, config=None):
 
 
 def configure_blueprints(app):
-    from potnanny.apps.user import user
     from potnanny.apps.sensor import sensor
     from potnanny.apps.measurement import measurement
     from potnanny.apps.outlet import outlet
@@ -60,8 +59,8 @@ def configure_blueprints(app):
     from potnanny.apps.settings import settings
     from potnanny.apps.system import system
     from potnanny.apps.help import help
+    from potnanny.apps.vesync import vesync
     
-    app.register_blueprint(user)
     app.register_blueprint(sensor)
     app.register_blueprint(measurement)
     app.register_blueprint(outlet)
@@ -71,6 +70,7 @@ def configure_blueprints(app):
     app.register_blueprint(settings)
     app.register_blueprint(system)
     app.register_blueprint(help)
+    app.register_blueprint(vesync)
     
 def configure_extensions(app):
     db.init_app(app)

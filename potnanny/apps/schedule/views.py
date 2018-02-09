@@ -3,7 +3,6 @@ from flask import render_template, redirect, request, session, \
 from potnanny.extensions import db
 from potnanny.utils import WeekdayMap
 from potnanny.apps.outlet.models import Outlet
-from flask_login import login_required
 from .models import Schedule
 from .forms import ScheduleForm
 
@@ -13,7 +12,6 @@ schedule = Blueprint('schedule', __name__,
 
 
 @schedule.route('/schedule')
-@login_required
 def schedule_index():
     schedules = Schedule.query.all()
     return render_template('schedule/index.html', 
@@ -24,7 +22,6 @@ def schedule_index():
         
 @schedule.route('/schedule/create', methods=['GET','POST'])
 @schedule.route('/schedule/<int:pk>/edit', methods=['GET','POST'])
-@login_required
 def schedule_edit(pk=None):
     obj = None
     title = 'Add Schedule'
@@ -65,7 +62,6 @@ def schedule_edit(pk=None):
 
 
 @schedule.route('/schedule/<int:pk>/delete', methods=['POST'])
-@login_required
 def schedule_delete(pk):
     o = Schedule.query.get_or_404(pk)
     db.session.delete(o)

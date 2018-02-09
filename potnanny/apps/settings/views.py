@@ -1,5 +1,4 @@
 from flask import render_template, redirect, request, session, Blueprint
-from flask_login import login_required
 from potnanny.extensions import db
 from .models import Setting
 from .forms import SettingForm
@@ -11,7 +10,6 @@ settings = Blueprint('settings', __name__,
 ## system settings pages ##
 ###########################
 @settings.route('/settings')
-@login_required
 def index():
     results = Setting.query.all()
     return render_template('settings/index.html', 
@@ -20,7 +18,6 @@ def index():
 
 
 @settings.route('/settings/<int:pk>/edit', methods=['GET','POST'])
-@login_required
 def edit(pk):
     title = 'Edit Setting'
     obj = Setting.query.get_or_404(pk)    
@@ -36,4 +33,3 @@ def edit(pk):
         pk=pk,
         setting=obj,
         name=obj.name)
-

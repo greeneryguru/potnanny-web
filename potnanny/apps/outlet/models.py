@@ -1,5 +1,5 @@
 from potnanny.extensions import db
-from potnanny.utils import rf_transmit
+# from potnanny.utils import rf_transmit
 import json
 
 

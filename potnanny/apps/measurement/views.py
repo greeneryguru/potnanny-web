@@ -1,6 +1,5 @@
 from flask import render_template, redirect, request, session, Blueprint, \
     jsonify
-from flask_login import login_required
 from sqlalchemy.sql import func
 from potnanny.extensions import db
 from potnanny.apps.sensor.models import Sensor
@@ -17,16 +16,14 @@ measurement = Blueprint('measurement', __name__,
 
 
 @measurement.route('/', methods=['GET'])
-@login_required
 def measurement_dashboard():
-    mtypes = MeasurementType.query.all()
+    sensors = Sensor.query.all().order_by(Sensor.address, Sensor.name)
     return render_template('measurement/index.html', 
                 title='Dashboard',
-                measurements=mtypes)
+                sensors=sensors)
 
 
 @measurement.route('/measurementtype', methods=['GET'])
-@login_required
 def mtype_index():
     types = MeasurementType.query.all()
     return render_template('measurement/types.html',
@@ -36,7 +33,6 @@ def mtype_index():
 
 @measurement.route('/measurementtype/create', methods=['GET','POST'])
 @measurement.route('/measurementtype/<int:pk>/edit', methods=['GET','POST'])
-@login_required
 def mtype_edit(pk=None):
     obj = None
     title = 'Add Measurement Type'
@@ -64,7 +60,6 @@ def mtype_edit(pk=None):
 
 
 @measurement.route('/measurementtype/<int:pk>/delete', methods=['POST'])
-@login_required
 def mtype_delete(pk):
     o = MeasurementType.query.get_or_404(pk)
     db.session.delete(o)
@@ -74,7 +69,6 @@ def mtype_delete(pk):
     
 
 @measurement.route('/measurement/type/<int:pk>', methods=['GET'])
-@login_required
 def measurement_type(pk):
     hours = int(request.args.get('hours', default=1))
     legend_on = int(request.args.get('legend', default=0))
@@ -90,7 +84,6 @@ def measurement_type(pk):
 
    
 @measurement.route('/measurement/type/<int:pk>/avg', methods=['GET'])
-@login_required
 def measurement_type_avg(pk):
     days = int(request.args.get('hours', default=5))
     legend_on = int(request.args.get('legend', default=0))
@@ -108,7 +101,6 @@ def measurement_type_avg(pk):
 
 
 @measurement.route('/measurement/type/<int:pk>/latest', methods=['GET'])
-@login_required
 def measurement_type_latest(pk):
     result = Measurement.query.filter(
         Measurement.type_id == pk
@@ -120,7 +112,6 @@ def measurement_type_latest(pk):
 
 
 @measurement.route('/measurement/type/<int:tid>/sensor/<int:sid>/latest', methods=['GET'])
-@login_required
 def measurement_sensor_latest(tid, sid):
     result = Measurement.query.filter(
         Measurement.type_id == tid,
@@ -133,7 +124,6 @@ def measurement_sensor_latest(tid, sid):
 
 
 @measurement.route('/measurement/chart/type/<int:pk>', methods=['GET'])
-@login_required
 def measurement_chart_type(pk):
     hours = int(request.args.get('hours', default=1))
     legend_on = int(request.args.get('legend', default=0))
@@ -187,7 +177,6 @@ def measurement_chart_type(pk):
 
 
 @measurement.route('/measurement/chart/type/<int:tid>/sensor/<int:sid>/avg', methods=['GET'])
-@login_required
 def measurement_chart_sensor_avg(tid,sid):
     days = int(request.args.get('days', default=1))
     legend_on = int(request.args.get('legend', default=0))

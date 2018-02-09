@@ -1,6 +1,5 @@
 from flask import render_template, redirect, request, session, \
     Blueprint, jsonify
-from flask_login import login_required
 from potnanny.extensions import db
 from .models import TwilioAccount
 from .forms import TwilioForm, TestMessageForm
@@ -11,7 +10,6 @@ messenger = Blueprint('messenger', __name__,
 
 
 @messenger.route('/messenger/account', methods=['GET'])
-@login_required
 def twilio_index():
     account = TwilioAccount.query.first()
     return render_template('messenger/index.html', 
@@ -21,7 +19,6 @@ def twilio_index():
     
 @messenger.route('/messenger/account/<int:pk>/edit', methods=['GET','POST'])
 @messenger.route('/messenger/account/create', methods=['GET','POST'])
-@login_required
 def twilio_edit(pk=None):
     obj = None
     title = 'Add Twilio Account'
@@ -47,7 +44,6 @@ def twilio_edit(pk=None):
         pk=pk)
     
 @messenger.route('/messenger/account/<int:pk>/delete', methods=['POST'])
-@login_required
 def twilio_delete(pk):
     o = TwilioAccount.query.get_or_404(pk)
     db.session.delete(o)
@@ -55,7 +51,6 @@ def twilio_delete(pk):
     return redirect(request.args.get("next", "/messenger/account"))
 
 @messenger.route('/messenger/message', methods=['GET','POST'])
-@login_required
 def send_message():
     title = 'Send Test Message'
 

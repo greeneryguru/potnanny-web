@@ -1,5 +1,6 @@
 from potnanny.extensions import db
 
+
 class Setting(db.Model):
     __tablename__ = 'settings'
     id = db.Column(db.Integer, primary_key=True)
@@ -15,4 +16,3 @@ class Setting(db.Model):
 
     def __repr__(self):
         return "%s  value %d" % (self.name, self.value)
-

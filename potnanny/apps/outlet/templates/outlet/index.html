@@ -1,29 +1,46 @@
 {% extends "base.html" %}
 {% block headers %}
   <script>
+    var csrf_token = "{{ csrf_token() }}";
+    
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+            }
+        }
+    });
+    
     function setSwitchValid(pk, data) {
-        if (data.state == true) {
+        if (data.relay == 'open') {
             $("#outletswitch-" + pk).prop("checked", true);
         } else {
             $("#outletswitch-" + pk).prop("checked", false);
         }
     }
     $(document).ready(function() {
+        $(".onoffswitch-checkbox").each(function(){
+            var pk = this.id.split('-').slice(1,).join('-');
+            $.get("/outlet/" + pk,
+            {'csrfmiddlewaretoken': csrf_token},
+            function(data){
+                setSwitchValid(pk, data);
+            }, 'json');
+        });
         setInterval(function(){
             $(".onoffswitch-checkbox").each(function(){
-                var pk = this.id.split('-',2)[1];
-                var self = this;
+                var pk = this.id.split('-').slice(1,).join('-');
                 $.get("/outlet/" + pk,
-                {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
+                {'csrfmiddlewaretoken': csrf_token},
                 function(data){
                     setSwitchValid(pk, data);
 		        }, 'json');
             });
-        }, 5000);
+        }, 10000);
         $(".onoffswitch-checkbox").change(function(){
-            var pk = this.id.split("-")[1];
+            var pk = this.id.split('-').slice(1,).join('-');
             $.post("/outlet/" + pk + "/toggle",
-                {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
+                {'csrfmiddlewaretoken': csrf_token},
                 function(data){
                     setSwitchValid(pk, data);
 			    }, 'json');
@@ -41,14 +58,13 @@
     </div>
 </div>
 
-{% if outlets %}
-    {% for o in outlets %}
-    <a href="/outlet/{{ o.id }}/edit" class="row-link">
+{% if payload %}
+    {% for o in payload %}
     <div class="row white gap">
         <div class="twelve columns">
             <p class="padded">
             <div style="display: inline-block; padding-left: 10px;">
-            {{ o.name }}
+            {{ o.deviceName }}
             </div>
             <div class="onoffswitch" id="onoffswitch-{{ o.id }}" style="float: right; padding-right: 10px;">
                 <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="outletswitch-{{ o.id }}" style="display: none">
@@ -59,27 +75,14 @@
             </p>
         </div>
     </div>
-    </a>
     {% endfor %}
 {% else %}
     <div class="row white gap">
         <div class="twelve columns">
             <p class="padded">
-            No outlets defined
+            No outlets defined in Vesync app
             </p>
         </div>
     </div>
 {% endif %}
-<div class="row white gap">
-    <div class="twelve columns">
-        <p class="padded">
-        <a href="/outlet/create">
-        <span class="fa-stack fa-spin-hover">
-        <i class="fa fa-circle-thin fa-stack-2x"></i>
-        <i class="fa fa-plus fa-stack-1x"></i>
-        </span>
-        </a>
-        </p>
-    </div>
-</div>
 {% endblock %}

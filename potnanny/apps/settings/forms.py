@@ -48,4 +48,3 @@ class SettingForm(FlaskForm):
             return False
 
         return True
-

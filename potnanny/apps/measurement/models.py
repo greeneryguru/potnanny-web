@@ -10,7 +10,6 @@ class MeasurementType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32), nullable=False, server_default='', 
                      unique=True)
-    active = db.Column(db.Boolean, nullable=False, server_default='1')
 
     def __init__(self, name):
         self.name = name
@@ -19,43 +18,26 @@ class MeasurementType(db.Model):
         return self.name
 
     def as_dict(self):
-        return {'id': self.id,
-                'name': self.name,
-                'active': self.active,
-        }
-
-    def code(self):
-        results = ""
-        for s in re.split(r'\W+|\s+', self.name):
-            results += s[0].lower()
-
-        return results
+        return {'id': self.id, 'name': self.name, }
 
 
 class Measurement(db.Model):
     __tablename__ = 'measurements'
     id = db.Column(db.Integer, primary_key=True)
-    type_id = db.Column(db.Integer, db.ForeignKey('measurement_types.id'))
-    sensor_id = db.Column(db.Integer, db.ForeignKey('sensors.id'))
+    sensor = db.Column(db.String(24), nullable=False)
+    type_m = db.Column(db.String(24), nullable=False)
     value = db.Column(db.Float, nullable=False, server_default='0')
-    text = db.Column(db.String(16), nullable=True)
     date_time = db.Column(db.DateTime, nullable=False)
-    
-    measurement_type = db.relationship("MeasurementType",
-                                       backref=db.backref("measurements",
-                                       cascade="all, delete"))
-    sensor = db.relationship("Sensor",
-                             backref=db.backref("measurements",
-                             cascade="all, delete"))
 
-    def __init__(self, tid, sid, val, txt, 
-                    dt=datetime.datetime.now().replace(
-                        second=0, 
-                        microsecond=0)):
-        self.type_id = tid
-        self.sensor_id = sid
+    def __init__(self, 
+                 address, 
+                 type_m, 
+                 val, 
+                 dt=datetime.datetime.now().replace(second=0,microsecond=0)):
+        
+        self.sensor = address
+        self.type_m = type_m
         self.value = val
-        self.text = txt
         self.date_time = dt
 
     def __repr__(self):
@@ -64,10 +46,9 @@ class Measurement(db.Model):
     def as_dict(self):
         return {
             'id': self.id,
-            'type_id': self.type_id,
-            'sensor_id': self.sensor_id,
+            'sensor': self.sensor,
+            'type': self.type_m,
             'value': self.value, 
-            'text': self.text,
             'date_time': datetime.datetime.strftime(self.date_time, 
                                                     "%m/%d/%y %H:%M"),
         }

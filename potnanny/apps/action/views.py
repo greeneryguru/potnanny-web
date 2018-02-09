@@ -1,6 +1,5 @@
 from flask import render_template, redirect, request, session, \
     Blueprint, jsonify
-from flask_login import login_required
 from potnanny.extensions import db
 from .models import Action, ActionProcess
 from .forms import ActionForm
@@ -12,7 +11,6 @@ action = Blueprint('action', __name__,
                         template_folder='templates')
 
 @action.route('/action')
-@login_required
 def action_index():
     actions = Action.query.all()
     return render_template('action/index.html', 
@@ -22,7 +20,6 @@ def action_index():
         
 @action.route('/action/create', methods=['GET','POST'])
 @action.route('/action/<int:pk>/edit', methods=['GET','POST'])
-@login_required
 def action_edit(pk=None):
     obj = None
     title = 'Add Action'
@@ -80,7 +77,6 @@ def action_edit(pk=None):
 
 
 @action.route('/action/<int:pk>/delete', methods=['POST'])
-@login_required
 def action_delete(pk):
     o = Action.query.get_or_404(pk)
     db.session.delete(o)

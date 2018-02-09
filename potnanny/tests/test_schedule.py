@@ -19,6 +19,7 @@ class ScheduleTest(BaseTestCase):
         self.assertTrue(s.on_time == '7:00am')
         self.assertTrue(s.off_time == '7:00pm')
         self.assertTrue(s.run_days()[0] == 'Every Day')
+        self.assertTrue(s.active)
         
         s.days = 7
         self.assertTrue(re.search(r'th', " ".join(s.run_days()), 

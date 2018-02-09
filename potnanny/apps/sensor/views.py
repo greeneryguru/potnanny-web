@@ -1,5 +1,4 @@
 from flask import render_template, redirect, request, session, Blueprint
-from flask_login import login_required
 from potnanny.extensions import db
 from .models import Sensor
 from .forms import SensorForm
@@ -9,7 +8,6 @@ sensor = Blueprint('sensor', __name__, template_folder='templates')
 
 
 @sensor.route('/sensor')
-@login_required
 def sensor_index():
     sensors = Sensor.query.all()
     return render_template('sensor/index.html', 
@@ -19,7 +17,6 @@ def sensor_index():
         
 @sensor.route('/sensor/create', methods=['GET','POST'])
 @sensor.route('/sensor/<pk>/edit', methods=['GET','POST'])
-@login_required
 def sensor_edit(pk=None):
     obj = None
     title = 'Add Sensor'
@@ -33,7 +30,7 @@ def sensor_edit(pk=None):
         if pk:
             form.populate_obj(obj)
         else:
-            o = Sensor(form.name.data, form.address.data, form.tags.data)
+            o = Sensor(form.name.data, form.address.data)
             db.session.add(o)
     
         db.session.commit()
@@ -49,7 +46,6 @@ def sensor_edit(pk=None):
 
 
 @sensor.route('/sensor/<pk>/delete', methods=['POST'])
-@login_required
 def sensor_delete(pk):
     o = Sensor.query.get_or_404(int(pk))
     db.session.delete(o)
