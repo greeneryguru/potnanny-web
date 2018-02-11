@@ -2,7 +2,8 @@ import requests
 import hashlib
 import json
 from potnanny.extensions import db
-from flake8 import api
+# from flake8 import api
+
 requests.packages.urllib3.disable_warnings()
 
 
