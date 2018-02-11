@@ -3,13 +3,28 @@
 {% block content %}
 {% if sensors %}
     {% for obj in sensors %}
-        <div class="row white gap center">
-            <div class="twelve columns">
+    <div class="row white gap center">
+        <div class="twelve columns">
             <p class="padded">
-                <div class="dashboard-label">{{ obj.name }}</div>
+                <div class="sensor-widget" id="{{ obj.address }}">
+                    <div class="battery measurement">
+                        <i class="fas fa-battery-full" id="battery.icon.{{ obj.address }}"></i>
+                    </div>
+                    <p>
+                        {{ obj.name }}
+                    </p>
+                    <div class="measurement-widget">
+                        <i class="fas fa-thermometer-half"></i>
+                        <div id="temperature.value.{{ obj.address }}">92&deg;F</div>
+                    </div>
+                    <div class="measurement-widget">
+                        <i class="fas fa-cloud"></i>
+                        <div id="humidity.value.{{ obj.address }}">47%</div>
+                    </div>
+                </div>
             </p>
-            </div>
         </div>
+    </div>
     {% endfor %}
 {% else %}
     No data available

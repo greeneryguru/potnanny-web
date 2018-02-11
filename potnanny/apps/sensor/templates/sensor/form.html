@@ -51,32 +51,10 @@
         </div>
         <div class="row">
             <div class="six columns">
-                {{ form.tags.label }}
-                {{ form.tags(class="u-full-width") }}
-                {% if form.tags.errors %}
-                {% for err in form.tags.errors %}
-                <span style="color: red;">[{{ err }}]</span>
-                {% endfor %}
-                {% endif %}
-            </div>
-        </div>
-        <div class="row">
-            <div class="six columns">
                 {{ form.address.label }}
                 {{ form.address(class="u-full-width") }}
                 {% if form.address.errors %}
                 {% for err in form.address.errors %}
-                <span style="color: red;">[{{ err }}]</span>
-                {% endfor %}
-                {% endif %}
-            </div>
-        </div>
-        <div class="row">
-            <div class="six columns">
-                {{ form.active.label }}
-                {{ form.active }}
-                {% if form.active.errors %}
-                {% for err in form.active.errors %}
                 <span style="color: red;">[{{ err }}]</span>
                 {% endfor %}
                 {% endif %}

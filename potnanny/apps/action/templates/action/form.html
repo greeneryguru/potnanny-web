@@ -62,7 +62,7 @@
         {{ form.hidden_tag() }}
         <fieldset class="padded" id="summary-fieldset">
             <div class="row">
-                <div class="six columns">
+                <div class="twelve columns">
                 {{ form.name.label }}
                 {{ form.name(class="u-full-width") }}
                 {% if form.name.errors %}
@@ -71,16 +71,8 @@
                     {% endfor %}
                 {% endif %}
                 </div>
-                <div class="six columns">
-                {{ form.measurement_id.label }}
-                {{ form.measurement_id(class="u-full-width") }}
-                {% if form.measurement_id.errors %}
-                    {% for err in form.measurement_id.errors %}
-                    <span style="color: red;">[{{ err }}]</span>
-                    {% endfor %}
-                {% endif %}
-                </div>
             </div>
+            
             <div class="row">
                 <div class="six columns">
                 {{ form.action_type.label }}
@@ -110,7 +102,8 @@
                 {% endif %}
                 </div>
             </div>
-            <div class="row">
+            
+            <div class="row">                
                 <div class="six columns">
                 {{ form.wait_minutes.label }}
                 {{ form.wait_minutes(class="u-full-width") }}
@@ -130,7 +123,31 @@
                 {% endif %}
                 </div>
             </div>
-        </fieldset>     
+            
+        </fieldset>
+        <p></p>
+        <fieldset class="padded" id="meas-fieldset">            
+            <div class="row">
+                <div class="six columns">
+                {{ form.measurement_type.label }}
+                {{ form.measurement_type(class="u-full-width") }}
+                {% if form.measurement_type.errors %}
+                    {% for err in form.measurement_type.errors %}
+                    <span style="color: red;">[{{ err }}]</span>
+                    {% endfor %}
+                {% endif %}
+                </div>
+                <div class="six columns">
+                {{ form.sensor_address.label }}
+                {{ form.sensor_address(class="u-full-width") }}
+                {% if form.sensor_address.errors %}
+                    {% for err in form.sensor_address.errors %}
+                    <span style="color: red;">[{{ err }}]</span>
+                    {% endfor %}
+                {% endif %}
+                </div>
+            </div>
+        </fieldset>
         <p></p>
         <fieldset id="on-fieldset" class="padded">
             <div class="row">
@@ -187,4 +204,5 @@
             </div>
         </div>
     </form>
+    </div>
 {% endblock %}

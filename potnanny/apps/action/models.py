@@ -10,8 +10,9 @@ class Action(db.Model):
     __tablename__ = 'actions'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(24), nullable=False)
-    measurement_id = db.Column(db.Integer, db.ForeignKey('measurement_types.id'))
-    outlet_id = db.Column(db.Integer, db.ForeignKey('outlets.id'))
+    measurement_type = db.Column(db.String(24), nullable=False)
+    sensor_address = db.Column(db.String(24), nullable=False, unique=True)
+    outlet_id = db.Column(db.String(128), nullable=True)
     action_type = db.Column(db.String(24), nullable=False, server_default='sms-message')
     sms_recipient = db.Column(db.String(24), nullable=True)
     
@@ -27,19 +28,13 @@ class Action(db.Model):
 
     wait_minutes = db.Column(db.Integer, nullable=False, server_default='10')
     active = db.Column(db.Boolean(), nullable=False, server_default='1')
-
-    outlet = db.relationship("Outlet",
-                             backref=db.backref("actions", 
-                                                cascade="all,delete"))
-    measurement = db.relationship("MeasurementType",
-                                  backref=db.backref("actions", 
-                                                cascade="all,delete"))
     
 
-    def __init__(self, name, mid, oid, atype):
+    def __init__(self, name, mid, oid, addr, atype):
         self.name = name
-        self.measurement_id = mid
+        self.measurement_type = mid
         self.outlet_id = oid
+        self.sensor_address = addr
         self.action_type = atype
 
     def __repr__(self):
@@ -52,8 +47,9 @@ class Action(db.Model):
         return {
             'id': self.id,
             'name': self.name,
-            'measurement': self.measurement,
-            'outlet': self.outlet,
+            'measurement_type': self.measurement_type,
+            'outlet_id': self.outlet_id,
+            'sensor_address': self.sensor_address,
             'on_condition': self.on_condition,
             'on_threshold': self.on_threshold,
             'off_condition': self.off_condition,
@@ -112,36 +108,103 @@ Also, Switching outlets on/off, or sending sms messages when required.
 """
 class ActionManager(object):
     
-    def init_action(self, action, then=None, now=None):                    
-        """
-        evaluate measurements for an action within a timeframe,
-        and process anything that requires an action
-        
-        params:
-            1. Action obj. eval Measurements related to this object.
-            2. Datetime obj. beginning of the time range to eval
-            3. Datetime obj. end of the time range to eval 
-        returns:
-            None
-        """
-        if not now:
-            now = datetime.datetime.now().replace(second=0, microsecond=0)
-            
-        if not then:
-            then = now - datetime.timedelta(minutes=1)
-            
-        measurements = Measurement.query.filter(
-            Measurement.type_id == action.measurement_id,
-            Measurement.date_time.between(then,now)
-        ).all()
+    def __init__(self):
+        self.actions = list(
+            Action.query.filter(
+                Action.active == True
+            )
+        )                
     
-        if not measurements:
+    """
+    evaluate a measurement against all available actions to see if they are
+    compatible/related.
+    
+    If they are related, the measurement will be evaluated against the action
+    thresholds to see if any action is necessary.
+    If so, an Action and ActionProcess will be initiated.
+    
+    params:
+        a Measurement object
+    returns:
+        None
+    """
+    def eval_measurement(self, m):
+        for action in self.actions:
+            # evaluate measurement values against action criteria and skip
+            # any pairs that are completely unrelated.
+            if action.sensor_address == 'any':
+                if action.measurement_type != m.type_m:
+                    continue
+            else:
+                if action.sensor_address != m.sensor:
+                    continue
+            
+            self.handle_action_measurement(action, m) 
+            
+          
+    def handle_action_measurement(self, action, measurement):
+        trigger = self.measurement_tripped(self.action, measurement)
+        if trigger is None:
             return
-
-        for m in measurements:
-            self.handle_action_measurement(action, m)
-
-
+        
+        process = self.get_process(action, trigger)
+        if not process:
+            return
+        
+        if self.process_locked(process):
+            if self.process_expired(process):
+                # close this one down, and get a fresh one
+                self.close_process(process)
+                process = self.get_process(action, trigger)
+                if not process:
+                    return
+            else:
+                # an active process is still in progress. do nothing
+                return
+        
+        if trigger == 'on' and process.on_datetime is not None:
+            # this process already triggered 'on', now we will only 
+            # accept 'off' option. skip
+                return
+        
+        # SMS-MESSAGE action handler
+        if re.search('sms', action.action_type, re.IGNORECASE):
+            process.assign_datetime('on_datetime', datetime.datetime.now())
+            process.assign_datetime('off_datetime', datetime.datetime.now())
+            process.on_trigger = "%d-%s-%d" % (
+                measurement.value, 
+                action.on_condition, 
+                action.on_threshold)
+            db.session.commit()
+            self.action_message(action, measurement)
+            
+        # SWITCH-OUTLET action handler
+        elif re.search('switch', action.action_type, re.IGNORECASE):
+            process.assign_datetime("%s_datetime" % trigger,
+                                    datetime.datetime.now())
+            setattr(process, "%s_trigger" % trigger, "%d-%s-%d" % (
+                    measurement.value,
+                    getattr(action, "%s_condition" % trigger),
+                    getattr(action, "%s_threshold" % trigger)
+                )
+            )
+            db.session.commit()
+            
+            # set state of an Outlet
+            try:
+                mgr = VesyncManager()
+                if trigger == 'on':
+                
+                    rval = mgr.api.turn_on(action.outlet_id) 
+                else:
+                    rval = mgr.api.turn_off(action.outlet_id) 
+            except:
+                # need an error log here!
+                pass
+            
+            
+            
+             
     def get_process(self, action, trigger=None):
         """
         get the active ActionProcess for an Action, if one exists.
@@ -164,7 +227,7 @@ class ActionManager(object):
                 # we don't create new processes for an initial 'off' trigger
                 return None
             
-            process = ActionProcess(action.id)
+            process = ActionProcess(self.action.id)
             db.session.add(process)
             db.session.commit()
             
@@ -234,61 +297,8 @@ class ActionManager(object):
     
         return False
 
-              
-    def handle_action_measurement(self, action, measurement):
-        trigger = self.measurement_tripped(action, measurement)
-        if trigger is None:
-            return
-        
-        process = self.get_process(action, trigger)
-        if not process:
-            return
-        
-        if self.process_locked(process):
-            if self.process_expired(process):
-                # close this one down, and get a fresh one
-                self.close_process(process)
-                process = self.get_process(action, trigger)
-                if not process:
-                    return
-            else:
-                # an active process is still in progress. do nothing
-                return
-        
-        if trigger == 'on' and process.on_datetime is not None:
-            # this process already triggered 'on', now we will only 
-            # accept 'off' option. skip
-                return
-        
-        # SMS-MESSAGE action handler
-        if re.search('sms', action.action_type, re.IGNORECASE):
-            process.assign_datetime('on_datetime', datetime.datetime.now())
-            process.assign_datetime('off_datetime', datetime.datetime.now())
-            process.on_trigger = "%d-%s-%d" % (
-                measurement.value, 
-                action.on_condition, 
-                action.on_threshold)
-            db.session.commit()
-            self.action_message(action, measurement)
-            
-        # SWITCH-OUTLET action handler
-        elif re.search('switch', action.action_type, re.IGNORECASE):
-            process.assign_datetime("%s_datetime" % trigger,
-                                    datetime.datetime.now())
-            setattr(process, "%s_trigger" % trigger, "%d-%s-%d" % (
-                    measurement.value,
-                    getattr(action, "%s_condition" % trigger),
-                    getattr(action, "%s_threshold" % trigger)
-                )
-            )
-            db.session.commit()
-            
-            # set state of an Outlet
-            if trigger == 'on':
-                rval = action.outlet.on()
-            else:
-                rval = action.outlet.off()
-            
+    
+    
     
     def action_message(self, action, measurement):
         m = Messenger()

@@ -3,8 +3,10 @@ from flask import render_template, redirect, request, session, \
 from potnanny.extensions import db
 from .models import Action, ActionProcess
 from .forms import ActionForm
-from potnanny.apps.outlet.models import Outlet
-from potnanny.apps.measurement.models import MeasurementType
+from sqlalchemy.orm import load_only
+from potnanny.apps.vesync.models import VesyncManager
+from potnanny.apps.measurement.models import Measurement
+from potnanny.apps.sensor.models import Sensor
 import re
 
 action = Blueprint('action', __name__,
@@ -25,22 +27,41 @@ def action_edit(pk=None):
     title = 'Add Action'
     measurements = None
     outlets = None
+    has_outlets = False
     if pk:
         title = 'Edit Action'
         obj = Action.query.get_or_404(pk)
         
     form = ActionForm(obj=obj)
 
-    # populate options for measurementtype_id select fields
-    form.measurement_id.choices = []
-    for n in MeasurementType.query.all():
-        form.measurement_id.choices.append(("%d" % n.id, n.name))  
+    # populate options for measurement type select fields
+    form.measurement_type.choices = []
+    measurements = Measurement.query.group_by(
+            Measurement.type_m).options(
+                load_only("type_m")).distinct("type_m").all()
+            
+    for m in measurements:
+        form.measurement_type.choices.append(("%d" % m.type_m, m.type_m))  
 
-    # populate options for outlet_id select fields
+    # populate options for outlet select fields
     form.outlet_id.choices = []
-    for n in Outlet.query.all():
-        form.outlet_id.choices.append(("%d" % n.id, n.name))
-
+    try:
+        mgr = VesyncManager()
+        for d in mgr.api.get_devices():
+            has_outlets = True
+            form.outlet_id.choices.append((d['id'], d['deviceName']))
+    except:
+        pass
+    
+    # populate sensor data choices
+    for s in list(Sensor.query.all()):
+        form.sensor_address.choices.append((s['address'],s['name']))
+    
+    # populate options for action-types
+    form.action_type.choices = [('sms-message', 'send message')]
+    if has_outlets:
+        form.action_type.choices.append(('switch-outlet', 'control outlet'))
+    
     if request.method == 'POST' and form.validate_on_submit():
         if pk:
             if obj.active == True and form.active.data != True:
@@ -54,8 +75,8 @@ def action_edit(pk=None):
             form.populate_obj(obj)
         else:
             o = Action(form.name.data, 
-                        form.measurement_id.data, 
-                        form.outlet_id.data, form.action_type.data)
+                        form.measurement.data, 
+                        form.outlet.data, form.action_type.data)
 
             if re.search(r'sms', form.action_type.data, re.IGNORECASE):
                 o.sms_recipient = form.sms_recipient.data

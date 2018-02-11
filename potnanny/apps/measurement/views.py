@@ -23,12 +23,39 @@ def measurement_dashboard():
                 sensors=sensors)
 
 
+@measurement.route('/measurement-icons')
+def icons():
+    """
+    returns mappings for measurement-type, to the font-awesome classes used
+    for an icon for that type
+    """
+    data = {
+        'temperature': ['fas', 'fa-thermometer-half'],
+        'humidity': ['fas', 'fa-cloud'],
+        'soil-moisture': ['fas', 'fa-tint'],
+        'soil-fertility': ['fas', 'fa-flask'],
+        'ambient-light': ['fas', 'fa-sun'],
+        'battery': ['fas', 'fa-battery-full'],
+        'co2-ppm': ['fas', 'fa-brille'],  
+    }
+    return jsonify(data)
+
+
 @measurement.route('/measurementtype', methods=['GET'])
 def mtype_index():
     types = MeasurementType.query.all()
     return render_template('measurement/types.html',
                 title='Measurement Types',
                 types=types)
+
+
+@measurement.route('/measurement/sensor/<address>', methods=['GET'])
+def latest_sensor():
+    values = Measurement.query.filter(
+        Measurement.sensor == address
+    )
+    return jsonify(data)
+
 
 
 @measurement.route('/measurementtype/create', methods=['GET','POST'])

@@ -9,16 +9,17 @@ import re
 
 class ActionForm(FlaskForm):
     id = HiddenField('id')
-    name = StringField('name', validators=[InputRequired()])
-    measurement_id = SelectField('measurement', validators=[InputRequired()])
-    outlet_id = SelectField('outlet', validators=[InputRequired()])
-    action_type = SelectField('action', choices=[('switch-outlet', 'control outlet'), ('sms-message', 'send message')], validators=[InputRequired()])
-    sms_recipient = StringField('mobile number', validators=[Optional()])
+    name = StringField('action name', validators=[InputRequired()])
+    measurement_type = SelectField('action triggered by measurement', validators=[InputRequired()])
+    sensor_address = SelectField('triggered by sensor', choices=[('any', 'Any')], validators=[InputRequired()])
+    outlet_id = SelectField('power outlet', validators=[Optional()])
+    action_type = SelectField('action type', validators=[InputRequired()])
+    sms_recipient = StringField('message recipient mobile number', validators=[Optional()])
     on_condition = SelectField('ON condition', choices=[('GT', 'greater than'), ('LT', 'less than'), ('EQ', 'equal to')])
     on_threshold = IntegerField('ON value')
     off_condition = SelectField('OFF condition', choices=[('GT', 'greater than'), ('LT', 'less than'), ('EQ', 'equal to')])
     off_threshold = IntegerField('OFF value', validators=[Optional()])
-    wait_minutes = IntegerField('wait minutes', default="5", validators=[InputRequired()])
+    wait_minutes = IntegerField('wait minutes after completion', default="5", validators=[InputRequired()])
     active = BooleanField('action is enabled', default="1")
 
     def validate(self):
@@ -28,7 +29,7 @@ class ActionForm(FlaskForm):
 
         if re.search(r'switch', self.action_type.data, re.IGNORECASE):
             failures = 0
-            if not self.outlet_id.data or self.outlet_id.data == "":
+            if not self.outlet.data or self.outlet.data == "":
                 self.outlet_id.errors.append("must select an outlet")
                 failures += 1
 

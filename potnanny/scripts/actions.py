@@ -16,8 +16,8 @@ sys.path.append( os.environ.get('FLASK_APP','/var/www/potnanny') )
 from potnanny.application import create_app
 from potnanny.extensions import db
 from potnanny.apps.action.models import Action, ActionProcess
-from potnanny.apps.outlet.models import Outlet
-from potnanny.apps.measurement.models import MeasurementType, Measurement
+# from potnanny.apps.outlet.models import Outlet
+from potnanny.apps.measurement.models import Measurement
 from potnanny.apps.admin.models import Setting
 from potnanny.lib.messenger import Messenger
 

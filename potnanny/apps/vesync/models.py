@@ -2,6 +2,7 @@ import requests
 import hashlib
 import json
 from potnanny.extensions import db
+from flake8 import api
 requests.packages.urllib3.disable_warnings()
 
 
@@ -19,6 +20,33 @@ class VesyncUser(db.Model):
         return self.username
 
 
+"""
+Small convenience class to make accessing the VesyncApi a bit easier,
+because this will fetch username and password for you.
+
+All VesyncApi methods are called via self.api. Like;
+    obj.api.get_devices()
+
+If Vesync username or password are not found in database, or they are declined,
+this will throw an Exception.
+"""
+class VesyncManager(object):
+    def __init__(self, user=None, passwd=None):
+        if not user or not passwd:
+            u = VesyncUser.query.get(1)
+            if not u:
+                raise ValueError("VeSync user not defined in database")
+            
+            user = u.username
+            passwd = u.password
+             
+        api = VesyncApi(user, passwd)
+        if not api:
+            raise InputError("Vesync username or password not accepted")
+        
+        self.api = api
+           
+ 
 class VesyncApi(object):
     
     """

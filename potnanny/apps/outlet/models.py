@@ -1,5 +1,5 @@
 from potnanny.extensions import db
-# from potnanny.utils import rf_transmit
+from potnanny.apps.vesync.models import VesyncUser, VesyncApi
 import json
 
 

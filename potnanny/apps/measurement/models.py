@@ -24,8 +24,8 @@ class MeasurementType(db.Model):
 class Measurement(db.Model):
     __tablename__ = 'measurements'
     id = db.Column(db.Integer, primary_key=True)
-    sensor = db.Column(db.String(24), nullable=False)
-    type_m = db.Column(db.String(24), nullable=False)
+    sensor = db.Column(db.String(24), nullable=False, index=True)
+    type_m = db.Column(db.String(24), nullable=False, index=True)
     value = db.Column(db.Float, nullable=False, server_default='0')
     date_time = db.Column(db.DateTime, nullable=False)
 
