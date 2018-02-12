@@ -115,16 +115,14 @@ if __name__ == '__main__':
     app = create_app()
     app.app_context().push()
     
-    poll = Setting.query.filter(
-        Setting.name == 'polling interval minutes'
-    ).first()
+    poll = Setting.query.get(1)
 
     if not poll:
         # logger.error("could not determine polling interval from db")
         sys.stderr.write("error. could not determine polling interval from db\n")
         sys.exit(1)
 
-    if now.minute % poll.value > 0:
+    if now.minute % poll.interval > 0:
         # not the right time to be running this. exit
         sys.exit(0)
 
