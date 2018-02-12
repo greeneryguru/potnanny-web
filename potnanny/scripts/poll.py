@@ -19,9 +19,8 @@ from potnanny.application import create_app
 from potnanny.extensions import db
 from potnanny.apps.measurement.models import Measurement
 from potnanny.apps.settings.models import Setting
-from potnanny.apps.vesync.models import VesyncManager
 from potnanny.apps.sensor.models import Sensor
-from potnanny.apps.action.models import Action, ActionProcess, ActionManager
+from potnanny.apps.action.models import ActionManager
 from miflora.backends.bluepy import BluepyBackend
 from miflora.miflora_poller import MiFloraPoller
 from miflora.miflora_poller import MI_CONDUCTIVITY, MI_MOISTURE, MI_LIGHT, \
@@ -53,12 +52,14 @@ def main():
             results = flower_care(addr)
             if results:
                 measurement_queue += results
-        
 
-    # send all measurements that came in, off to be checked for needed actions
-    mgr = ActionManager()
+    # create an ActionManager with appropriate Celsius/Fahrenheit setting
+    setting = Setting.query.get(1)
+    mgr = ActionManager(re.search('c', setting.temperature) is not None)
+    
+    # pass all new measurements to manager for Action checking
     for m in measurement_queue:
-        mgr.handle_measurement(m)
+        mgr.eval_measurement(m)
         
     
 """

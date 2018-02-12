@@ -3,9 +3,8 @@ from flask import render_template, redirect, request, session, Blueprint, \
 from sqlalchemy.sql import func
 from potnanny.extensions import db
 from potnanny.apps.sensor.models import Sensor
-from .models import MeasurementType, Measurement, MeasurementAverage
+from .models import Measurement
 from .utils import ChartColor, CHARTBASE
-from .forms import MeasurementTypeForm
 import re
 import datetime
 import copy
@@ -40,102 +39,13 @@ def icons():
     }
     return jsonify(data)
 
-
-@measurement.route('/measurementtype', methods=['GET'])
-def mtype_index():
-    types = MeasurementType.query.all()
-    return render_template('measurement/types.html',
-                title='Measurement Types',
-                types=types)
-
-
+"""
 @measurement.route('/measurement/sensor/<address>', methods=['GET'])
 def latest_sensor():
     values = Measurement.query.filter(
         Measurement.sensor == address
     )
     return jsonify(data)
-
-
-
-@measurement.route('/measurementtype/create', methods=['GET','POST'])
-@measurement.route('/measurementtype/<int:pk>/edit', methods=['GET','POST'])
-def mtype_edit(pk=None):
-    obj = None
-    title = 'Add Measurement Type'
-    schedules = None
-
-    if pk:
-        title = 'Edit Measurement Type'
-        obj = MeasurementType.query.get_or_404(pk)
-
-    form = MeasurementTypeForm(obj=obj)  
-    if request.method == 'POST' and form.validate_on_submit():
-        if pk:
-            form.populate_obj(obj)
-        else:
-            o = MeasurementType(form.name.data)
-            db.session.add(o)
-    
-        db.session.commit()
-        return redirect(request.args.get("next", "/measurementtype"))
-
-    return render_template('measurement/form.html', 
-                            form=form,
-                            title=title,
-                            pk=pk)   
-
-
-@measurement.route('/measurementtype/<int:pk>/delete', methods=['POST'])
-def mtype_delete(pk):
-    o = MeasurementType.query.get_or_404(pk)
-    db.session.delete(o)
-    db.session.commit()
-    return redirect(request.args.get("next", "/measurementtype"))
-    
-    
-
-@measurement.route('/measurement/type/<int:pk>', methods=['GET'])
-def measurement_type(pk):
-    hours = int(request.args.get('hours', default=1))
-    legend_on = int(request.args.get('legend', default=0))
-
-    now = datetime.datetime.now()
-    then = now - datetime.timedelta(hours=hours)
-    
-    mt = MeasurementType.query.get_or_404(pk)
-    title = mt.name.capitalize()
-    return render_template('measurement/hiresolution.html', 
-                title=title,
-                measurement=mt)
-
-   
-@measurement.route('/measurement/type/<int:pk>/avg', methods=['GET'])
-def measurement_type_avg(pk):
-    days = int(request.args.get('hours', default=5))
-    legend_on = int(request.args.get('legend', default=0))
-
-    now = datetime.datetime.now()
-    then = now - datetime.timedelta(days=days)
-    
-    mt = MeasurementType.query.get_or_404(pk)
-    sensors = sensors_reporting_in_range(mt.id, then, now)
-    title = mt.name.capitalize()
-    return render_template('measurement/averages.html', 
-                title=title,
-                measurement=mt,
-                sensors=sensors)
-
-
-@measurement.route('/measurement/type/<int:pk>/latest', methods=['GET'])
-def measurement_type_latest(pk):
-    result = Measurement.query.filter(
-        Measurement.type_id == pk
-    ).order_by(
-        Measurement.date_time.desc()
-    ).first()
-
-    return str(result)
 
 
 @measurement.route('/measurement/type/<int:tid>/sensor/<int:sid>/latest', methods=['GET'])
@@ -253,24 +163,6 @@ def measurement_chart_sensor_avg(tid,sid):
         chart['options']['scales']['xAxes'][0]['display'] = True
 
     return jsonify(chart)
-
-
-def sensors_reporting_in_range(pk, then, now):
-    data = []
-    results = Measurement.query.filter(
-        Measurement.type_id == pk,
-        Measurement.date_time.between(then,now)
-    ).order_by(
-        Measurement.sensor_id
-    ).group_by(
-            Measurement.sensor_id
-    ).distinct(
-        Measurement.sensor_id
-    ).all()
-    for r in results:
-        data.append(r.sensor)
-
-    return data
-
+"""
 
 

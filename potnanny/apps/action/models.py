@@ -1,5 +1,5 @@
 from potnanny.extensions import db
-from potnanny.apps.measurement.models import MeasurementType, Measurement
+from potnanny.apps.measurement.models import Measurement
 from potnanny.apps.outlet.models import Outlet
 from potnanny.apps.messenger.models import Messenger
 import datetime
@@ -108,12 +108,21 @@ Also, Switching outlets on/off, or sending sms messages when required.
 """
 class ActionManager(object):
     
-    def __init__(self):
+    def __init__(self, celsius=True):
+        self.celsius = celsius    
         self.actions = list(
             Action.query.filter(
                 Action.active == True
             )
         )                
+    
+    
+    """
+    convert celsius to F
+    """
+    def c_to_f(self, c):
+        return (9.0/5.0 * c) + 32
+    
     
     """
     evaluate a measurement against all available actions to see if they are
@@ -139,40 +148,28 @@ class ActionManager(object):
                 if action.sensor_address != m.sensor:
                     continue
             
-            self.handle_action_measurement(action, m) 
+            self.handle_measurement(action, m) 
             
           
-    def handle_action_measurement(self, action, measurement):
-        trigger = self.measurement_tripped(self.action, measurement)
-        if trigger is None:
+    def handle_measurement(self, action, measurement):
+        trigger = self.measurement_tripped(action, measurement)
+        if not trigger:
             return
         
         process = self.get_process(action, trigger)
         if not process:
             return
-        
-        if self.process_locked(process):
-            if self.process_expired(process):
-                # close this one down, and get a fresh one
-                self.close_process(process)
-                process = self.get_process(action, trigger)
-                if not process:
-                    return
-            else:
-                # an active process is still in progress. do nothing
-                return
-        
-        if trigger == 'on' and process.on_datetime is not None:
-            # this process already triggered 'on', now we will only 
-            # accept 'off' option. skip
-                return
-        
+            
         # SMS-MESSAGE action handler
         if re.search('sms', action.action_type, re.IGNORECASE):
+            mvalue = measurement.value
+            if measurement.type_m == 'temperature' and not self.celsius:
+                mvalue = self.c_to_f(mvalue)
+                
             process.assign_datetime('on_datetime', datetime.datetime.now())
             process.assign_datetime('off_datetime', datetime.datetime.now())
             process.on_trigger = "%d-%s-%d" % (
-                measurement.value, 
+                mvalue, 
                 action.on_condition, 
                 action.on_threshold)
             db.session.commit()
@@ -180,10 +177,14 @@ class ActionManager(object):
             
         # SWITCH-OUTLET action handler
         elif re.search('switch', action.action_type, re.IGNORECASE):
+            mvalue = measurement.value
+            if measurement.type_m == 'temperature' and not self.celsius:
+                mvalue = self.c_to_f(mvalue)
+                
             process.assign_datetime("%s_datetime" % trigger,
                                     datetime.datetime.now())
             setattr(process, "%s_trigger" % trigger, "%d-%s-%d" % (
-                    measurement.value,
+                    mvalue,
                     getattr(action, "%s_condition" % trigger),
                     getattr(action, "%s_threshold" % trigger)
                 )
@@ -203,9 +204,7 @@ class ActionManager(object):
                 pass
             
             
-            
-             
-    def get_process(self, action, trigger=None):
+    def get_process(self, action, trigger):
         """
         get the active ActionProcess for an Action, if one exists.
         if not, create a new one.
@@ -217,20 +216,32 @@ class ActionManager(object):
         returns:
             ActionProcess obj (None on error)
         """
+        need_new = False
+        
         process = ActionProcess.query.filter(
             ActionProcess.active == True,
             ActionProcess.action_id == action.id
         ).first()
     
-        if not process:
-            if trigger and trigger == 'off':
-                # we don't create new processes for an initial 'off' trigger
-                return None
+        if process:
+            if self.process_locked(process):
+                if self.process_expired(process):
+                    # close this one down, and get a fresh one
+                    self.close_process(process)
+                else:
+                    return None
+            else:
+                if getattr(process, "%s_datetime" % trigger) is not None:
+                    # the trigger we are dealing with has already been set
+                    # in this process. we cant re-use it.
+                        return None
+                
+                return process    
             
-            process = ActionProcess(self.action.id)
-            db.session.add(process)
-            db.session.commit()
-            
+        
+        process = ActionProcess(action.id)
+        db.session.add(process)
+        db.session.commit()            
         return process
 
 
@@ -244,8 +255,7 @@ class ActionManager(object):
                 
     def process_locked(self, process):
         """
-        check if a process is in a completed state, but is waiting
-        for wait_time to expire
+        check if a process is in an incomplete state
         """
         if not process.on_datetime or not process.off_datetime:
             return False
@@ -298,8 +308,6 @@ class ActionManager(object):
         return False
 
     
-    
-    
     def action_message(self, action, measurement):
         m = Messenger()
 
@@ -317,19 +325,24 @@ class ActionManager(object):
         """
         does this measurement trigger one of the conditions of an action?
         """
+        
+        mvalue = measurement.value
+        if measurement.type_m == 'temperature' and not self.celsius:
+            mvalue = self.c_to_f(mvalue)
+            
         if re.search('sms', action.action_type, re.IGNORECASE):
-            if self.meets_condition(measurement.value, 
+            if self.meets_condition(mvalue, 
                                         action.on_condition, 
                                         action.on_threshold):
                 return 'on'
             
         elif re.search('switch', action.action_type, re.IGNORECASE):
-            if self.meets_condition(measurement.value, 
+            if self.meets_condition(mvalue, 
                                         action.on_condition, 
                                         action.on_threshold):
                 return 'on'
             
-            elif self.meets_condition(measurement.value, 
+            elif self.meets_condition(mvalue, 
                                         action.off_condition, 
                                         action.off_threshold):
                 return 'off'

@@ -7,19 +7,10 @@ settings = Blueprint('settings', __name__,
                         template_folder='templates')
 
 
-## system settings pages ##
-###########################
-@settings.route('/settings')
-def index():
-    results = Setting.query.all()
-    return render_template('settings/index.html', 
-                title='System Settings',
-                payload=results)
-
-
+@settings.route('/settings', methods=['GET','POST'])
 @settings.route('/settings/<int:pk>/edit', methods=['GET','POST'])
-def edit(pk):
-    title = 'Edit Setting'
+def edit(pk=1):
+    title = 'System Settings'
     obj = Setting.query.get_or_404(pk)    
     form = SettingForm(obj=obj)  
     if request.method == 'POST' and form.validate_on_submit():
@@ -30,6 +21,4 @@ def edit(pk):
     return render_template('settings/form.html', 
         form=form,
         title=title,
-        pk=pk,
-        setting=obj,
-        name=obj.name)
+        pk=pk)

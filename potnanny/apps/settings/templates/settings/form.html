@@ -5,15 +5,15 @@
         {{ form.hidden_tag() }}
         <div class="row">
             <div class="twelve columns">
-            <h4>{{ name }}</h4>
+            <h4>{{ title }}</h4>
             </div>
         </div>
         <div class="row">
             <div class="six columns">
-            {{ form.value.label }}
-            {{ form.value(class="u-full-width") }}
-            {% if form.value.errors %}
-                {% for err in form.value.errors %}
+            {{ form.temperature.label }}
+            {{ form.temperature(class="u-full-width") }}
+            {% if form.temperature.errors %}
+                {% for err in form.temperature.errors %}
                 <span style="color: red;">[{{ err }}]</span>
                 {% endfor %}
             {% endif %}
@@ -21,14 +21,15 @@
         </div>
         <div class="row">
             <div class="six columns">
-            {{ form.notes.label }}
-            {{ form.notes(class="u-full-width", readonly="true") }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="six columns">
-            <input type="submit" value="Save" class="button-primary">
+            {{ form.interval.label }}
+            {{ form.interval(class="u-full-width") }}
+            {% if form.interval.errors %}
+                {% for err in form.interval.errors %}
+                <span style="color: red;">[{{ err }}]</span>
+                {% endfor %}
+            {% endif %}
             </div>
         </div>
     </form>
+    </div>
 {% endblock %}
