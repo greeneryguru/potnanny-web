@@ -55,7 +55,7 @@ def action_edit(pk=None):
     
     # populate sensor data choices
     for s in list(Sensor.query.all()):
-        form.sensor_address.choices.append((s['address'],s['name']))
+        form.sensor_address.choices.append((s.address, s.name))
     
     # populate options for action-types
     form.action_type.choices = [('sms-message', 'send message')]
