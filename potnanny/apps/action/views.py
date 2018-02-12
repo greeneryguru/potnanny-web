@@ -75,8 +75,10 @@ def action_edit(pk=None):
             form.populate_obj(obj)
         else:
             o = Action(form.name.data, 
-                        form.measurement.data, 
-                        form.outlet.data, form.action_type.data)
+                        form.measurement_type.data, 
+                        form.outlet_id.data, 
+                        form.sensor_address.data,
+                        form.action_type.data)
 
             if re.search(r'sms', form.action_type.data, re.IGNORECASE):
                 o.sms_recipient = form.sms_recipient.data
