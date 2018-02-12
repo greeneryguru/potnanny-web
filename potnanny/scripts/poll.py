@@ -79,16 +79,20 @@ def flower_care(address):
         'soil-fertility': MI_CONDUCTIVITY,
         'battery': MI_BATTERY,
     }
-    poller = MiFloraPoller(address, BluepyBackend)
+    try:
+        poller = MiFloraPoller(address, BluepyBackend)
     
-    for key, value in readings.items():
-        result = poller.parameter_value(value)
-        if result is not None:
-            obj = Measurement(address, key, result, now)
-            db.session.add(obj)
-            measurements.append(obj)
+        for key, value in readings.items():
+            result = poller.parameter_value(value)
+            if result is not None:
+                obj = Measurement(address, key, result, now)
+                db.session.add(obj)
+                measurements.append(obj)
     
-    db.session.commit()
+                db.session.commit()
+    except:
+        pass
+    
     return measurements
 
 
