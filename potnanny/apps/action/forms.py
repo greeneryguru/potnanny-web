@@ -29,7 +29,7 @@ class ActionForm(FlaskForm):
 
         if re.search(r'switch', self.action_type.data, re.IGNORECASE):
             failures = 0
-            if not self.outlet.data or self.outlet.data == "":
+            if not self.outlet_id.data or self.outlet_id.data == "":
                 self.outlet_id.errors.append("must select an outlet")
                 failures += 1
 
