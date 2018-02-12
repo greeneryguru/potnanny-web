@@ -41,7 +41,7 @@ def action_edit(pk=None):
                 load_only("type_m")).distinct("type_m").all()
             
     for m in measurements:
-        form.measurement_type.choices.append(("%d" % m.type_m, m.type_m))  
+        form.measurement_type.choices.append((m.type_m, m.type_m))  
 
     # populate options for outlet select fields
     form.outlet_id.choices = []
