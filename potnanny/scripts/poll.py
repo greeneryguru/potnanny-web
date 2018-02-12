@@ -80,7 +80,6 @@ def flower_care(address):
         'battery': MI_BATTERY,
     }
     poller = MiFloraPoller(address, BluepyBackend)
-    data['name'] = poller.name()
     
     for key, value in readings.items():
         result = poller.parameter_value(value)

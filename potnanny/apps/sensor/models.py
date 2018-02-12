@@ -5,7 +5,6 @@ class Sensor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(48), nullable=False, unique=False)
     address = db.Column(db.String(24), nullable=False, unique=True)
-    battery = db.Column(db.Integer, nullable=False, default=100)
     
     def __init__(self, name, address):
         self.name = name
