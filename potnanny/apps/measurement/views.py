@@ -8,7 +8,7 @@ from .utils import ChartColor, CHARTBASE
 import re
 import datetime
 import copy
-
+import json
 
 measurement = Blueprint('measurement', __name__,
                         template_folder='templates')
@@ -52,7 +52,8 @@ def latest_sensor(address):
     data = Measurement.query.filter(
         Measurement.sensor == address).group_by(
             Measurement.type_m).all()
-    print(data)       
+    
+    print(json.dumps(data))      
     return jsonify(data)
 
 """
