@@ -46,22 +46,16 @@ def icons(measurement=None):
     
     return jsonify(data)
 
-"""
+
 @measurement.route('/measurement/sensor/<address>', methods=['GET'])
 def latest_sensor(address):
     data = Measurement.query.filter(
-        Measurement.sensor == address).join(
-            Measurement.sensor).filter(
-                
-
-        Measurement.sensor).filter(
+        Measurement.sensor == address).group_by(
+            Measurement.type_m).all()
             
-            ).order_by(
-                Measurement.date_time.desc().first()
-                
     return jsonify(data)
 
-
+"""
 @measurement.route('/measurement/type/<int:tid>/sensor/<int:sid>/latest', methods=['GET'])
 def measurement_sensor_latest(tid, sid):
     result = Measurement.query.filter(
