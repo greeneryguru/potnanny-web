@@ -8,7 +8,8 @@
                 $.each(data, function(i,o){
                     var tags = ["." + o.type, "." + o.sensor].join(" ");
                     var myid = ["value",o.type,o.sensor].join(".");
-                    if(! $("#" + o.sensor + ".sensor-widget").length) {
+                    
+                    if(! $('[id=o.sensor]').length) {
                         $(o.sensor).append("<div id='" + myid + "'>" + o.type + " = " + o.value + "</div>");
                     } 
                 });
