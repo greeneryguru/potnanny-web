@@ -43,16 +43,16 @@ def icons(measurement=None):
         else:
             return jsonify(['fas', 'fa-question'])
     
-    return data
+    return jsonify(data)
 
 
 @measurement.route('/measurement/sensor/<address>', methods=['GET'])
 def latest_sensor(address):
-    data = list(Measurement.query.filter(
+    results = Measurement.query.filter(
         Measurement.sensor == address).group_by(
-            Measurement.type_m))
-       
-    return data
+            Measurement.type_m).all()
+    
+    return jsonify(results)
 
 """
 @measurement.route('/measurement/type/<int:tid>/sensor/<int:sid>/latest', methods=['GET'])
