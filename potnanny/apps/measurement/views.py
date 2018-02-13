@@ -22,8 +22,9 @@ def measurement_dashboard():
                 sensors=sensors)
 
 
-@measurement.route('/measurement-icons')
-def icons():
+@measurement.route('/measurement-icons', methods=['GET'])
+@measurement.route('/measurement-icons/<measurement>', methods=['GET'])
+def icons(measurement=None):
     """
     returns mappings for measurement-type, to the font-awesome classes used
     for an icon for that type
@@ -37,14 +38,27 @@ def icons():
         'battery': ['fas', 'fa-battery-full'],
         'co2-ppm': ['fas', 'fa-brille'],  
     }
+    if measurement:
+        if measurement in data.keys():
+            return jsonify(data[measurement])
+        else:
+            return jsonify(['fas', 'fa-question'])
+    
     return jsonify(data)
 
 """
 @measurement.route('/measurement/sensor/<address>', methods=['GET'])
-def latest_sensor():
-    values = Measurement.query.filter(
-        Measurement.sensor == address
-    )
+def latest_sensor(address):
+    data = Measurement.query.filter(
+        Measurement.sensor == address).join(
+            Measurement.sensor).filter(
+                
+
+        Measurement.sensor).filter(
+            
+            ).order_by(
+                Measurement.date_time.desc().first()
+                
     return jsonify(data)
 
 

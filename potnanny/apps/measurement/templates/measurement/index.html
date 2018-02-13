@@ -2,13 +2,13 @@
 
 {% block content %}
 {% if sensors %}
-    {% for obj in sensors %}
+    {% for s in sensors %}
     <div class="row white gap center">
         <div class="twelve columns">
             <p class="padded">
-                <div class="sensor-widget" id="{{ obj.address }}">
+                <div class="sensor-widget" id="{{ s.address }}">
                     <div class="battery measurement">
-                        <i class="fas fa-battery-full" id="battery.icon.{{ obj.address }}"></i>
+                        <i class="fas fa-battery-full" id="battery.icon.{{ s.address }}"></i>
                     </div>
                     <p>
                         {{ obj.name }}
