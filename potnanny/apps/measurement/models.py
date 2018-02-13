@@ -3,7 +3,7 @@ import json
 import re
 from potnanny.extensions import db
 from potnanny.apps.sensor.models import Sensor
-
+    
 
 class Measurement(db.Model):
     __tablename__ = 'measurements'

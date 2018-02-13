@@ -14,6 +14,11 @@ measurement = Blueprint('measurement', __name__,
                         template_folder='templates')
 
 
+def datetime_converter(o):
+    if isinstance(o, datetime.datetime):
+        return o.__str__()
+
+
 @measurement.route('/', methods=['GET'])
 def measurement_dashboard():
     sensors = Sensor.query.order_by(Sensor.address, Sensor.name)
@@ -44,7 +49,7 @@ def icons(measurement=None):
         else:
             return jsonify(['fas', 'fa-question'])
     
-    return jsonify(data)
+    return json.dumps(data, default=datetime_converter)
 
 
 @measurement.route('/measurement/sensor/<address>', methods=['GET'])
