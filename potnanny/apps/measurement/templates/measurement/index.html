@@ -5,8 +5,8 @@
         $.get("/measurement/sensor/" + id,
             {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
                 function(data){
-                alert(data);
                 $.each(data, function(i,o){
+                    alert(o)
                     var tags = ["." + o.type, "." + o.sensor].join(" ");
                     var myid = ["value",o.type,o.sensor].join(".");
                     
