@@ -1,28 +1,43 @@
 {% extends "base.html" %}
-
+{% block headers %}
+    <script>
+    function updateMeasurement(id) {
+        $.get("/measurement/sensor/" + id,
+            {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
+                function(data){
+                $.each(data, function(i,o){
+                    var tags = ["." + o.type_m, "." + o.sensor].join(" ");
+                    var myid = ["value",o.type_m,o.sensor].join(".");
+                    if(! $("#" + tags).length) {
+                        $(o.sensor).append("<div id='" + myid + "'>" + o.type_m + " = " + o.value + "</div>";
+                    } 
+                });
+            }, 
+        'json');    
+    }
+    
+    $(document).ready(function() {
+        setInterval(function(){
+            $(".sensor-widget").each(function() {
+                var id = this.id;
+                updateMeasurement(id);                
+            });
+        }, 30000);
+    });
+    </script>
+{% endblock headers %}
 {% block content %}
 {% if sensors %}
     {% for s in sensors %}
-    <div class="row white gap center">
+    <div class="row white gap">
         <div class="twelve columns">
-            <p class="padded">
-                <div class="sensor-widget" id="{{ s.address }}">
-                    <div class="battery measurement">
-                        <i class="fas fa-battery-full" id="battery.icon.{{ s.address }}"></i>
-                    </div>
-                    <p>
-                        {{ obj.name }}
-                    </p>
-                    <div class="measurement-widget">
-                        <i class="fas fa-thermometer-half"></i>
-                        <div id="temperature.value.{{ obj.address }}">92&deg;F</div>
-                    </div>
-                    <div class="measurement-widget">
-                        <i class="fas fa-cloud"></i>
-                        <div id="humidity.value.{{ obj.address }}">47%</div>
-                    </div>
+            <div class="sensor-widget padded" id="{{ s.address }}">
+                <div class="battery measurement">
+                    <i class="fas fa-battery-full" id="battery.icon.{{ s.address }}"></i>
                 </div>
-            </p>
+                <p>{{ s.name | upper }}</p>
+                
+            </div>
         </div>
     </div>
     {% endfor %}

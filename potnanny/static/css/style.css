@@ -195,17 +195,12 @@ a.row-link:active {
 
 /* ********************************** */
 /* ** new sensor info widgets      ** */
-.sensor-widget {
-    margin: 0;
-}
 
-.sensor-widget .battery {
-    display: inline; 
+.battery {
     float:right;
 }
 
 .sensor-widget p {
-    color: red;
     padding: 0;
     margin: 0;
     margin-bottom: 5px;

@@ -58,6 +58,9 @@ def latest_sensor(address):
     results = Measurement.query.filter(
         Measurement.sensor == address).group_by(
             Measurement.type_m).all()
+    
+    # this is a hack, to get around the problems where datetime objects
+    # are not json serializable.
     for r in results:
         data.append(r.as_dict())
         
