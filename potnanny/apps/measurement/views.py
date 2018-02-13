@@ -52,7 +52,7 @@ def latest_sensor(address):
     data = Measurement.query.filter(
         Measurement.sensor == address).group_by(
             Measurement.type_m).all()
-            
+    print(data)       
     return jsonify(data)
 
 """
