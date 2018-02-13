@@ -6,7 +6,7 @@
             {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
                 function(data){
                 $.each(data, function(i,o){
-                    alert(JSON.stringify(o));
+                    alert([o.sensor, o.type, o.value, o.
                     var tags = ["." + o.type, "." + o.sensor].join(" ");
                     var myid = ["value",o.type,o.sensor].join(".");
                     
@@ -19,12 +19,17 @@
     }
     
     $(document).ready(function() {
+        $(".sensor-widget").each(function() {
+            var id = this.id;
+            updateMeasurement(id);                
+        });
         setInterval(function(){
             $(".sensor-widget").each(function() {
                 var id = this.id;
                 updateMeasurement(id);                
             });
         }, 30000);
+         
     });
     </script>
 {% endblock headers %}
