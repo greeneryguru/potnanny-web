@@ -53,7 +53,7 @@ def latest_sensor(address):
         Measurement.sensor == address).group_by(
             Measurement.type_m).all()
        
-    return jsonify({'data': data})
+    return jsonify(data)
 
 """
 @measurement.route('/measurement/type/<int:tid>/sensor/<int:sid>/latest', methods=['GET'])

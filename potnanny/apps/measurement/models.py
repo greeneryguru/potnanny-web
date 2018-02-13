@@ -31,7 +31,7 @@ class Measurement(db.Model):
         return {
             'id': self.id,
             'sensor': self.sensor,
-            'type_m': self.type_m,
+            'type': self.type_m,
             'value': self.value, 
             'date_time': datetime.datetime.strftime(self.date_time, 
                                                     "%m/%d/%y %H:%M"),
