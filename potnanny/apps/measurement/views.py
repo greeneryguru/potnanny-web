@@ -16,7 +16,7 @@ measurement = Blueprint('measurement', __name__,
 
 def datetime_converter(o):
     if isinstance(o, datetime.datetime):
-        return o.__str__()
+        return datetime.datetime.strftime(o, "%m/%d/%y %H:%M")
 
 
 @measurement.route('/', methods=['GET'])
@@ -49,7 +49,7 @@ def icons(measurement=None):
         else:
             return jsonify(['fas', 'fa-question'])
     
-    return json.dumps(data, default=datetime_converter)
+    return jsonify(data)
 
 
 @measurement.route('/measurement/sensor/<address>', methods=['GET'])
@@ -58,7 +58,7 @@ def latest_sensor(address):
         Measurement.sensor == address).group_by(
             Measurement.type_m).all()
     
-    return json.dumps(results)
+    return json.dumps(results, default=datetime_converter)
 
 """
 @measurement.route('/measurement/type/<int:tid>/sensor/<int:sid>/latest', methods=['GET'])
