@@ -6,12 +6,11 @@
             {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
                 function(data){
                 $.each(data, function(i,o){
-                    alert([o.sensor, o.type, o.value].join(","));
-                    var tags = ["." + o.type, "." + o.sensor].join(" ");
-                    var myid = ["value",o.type,o.sensor].join(".");
-                    
-                    if(! $(document.getElementById(o.sensor)).length) {
-                        $(o.sensor).append("<div id='" + myid + "'>" + o.type + " = " + o.value + "</div>");
+                    var tag = [o.type, o.sensor].join(".");
+                    if(! $(document.getElementById(tag)).length) {
+                        $(document.getElementById(o.sensor)).append(
+                            '<div class="measurement-widget" id=tag>' + o.type + " = " + o.value + "</div>"
+                        );
                     } 
                 });
             }, 
@@ -39,7 +38,7 @@
     <div class="row white gap">
         <div class="twelve columns">
             <div class="sensor-widget padded" id="{{ s.address }}">
-                <div class="battery measurement">
+                <div class="battery measurement" id="battery.{{ s.address }}">
                     <i class="fas fa-battery-full" id="battery.icon.{{ s.address }}"></i>
                 </div>
                 <p>{{ s.name | upper }}</p>
