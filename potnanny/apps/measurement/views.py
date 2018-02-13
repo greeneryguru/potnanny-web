@@ -8,6 +8,7 @@ from .utils import ChartColor, CHARTBASE
 import re
 import datetime
 import copy
+import json
 
 measurement = Blueprint('measurement', __name__,
                         template_folder='templates')
@@ -43,7 +44,7 @@ def icons(measurement=None):
         else:
             return jsonify(['fas', 'fa-question'])
     
-    return jsonify(data)
+    return json.dumps(data)
 
 
 @measurement.route('/measurement/sensor/<address>', methods=['GET'])
