@@ -59,7 +59,7 @@ def latest_sensor(address):
         Measurement.sensor == address).group_by(
             Measurement.type_m).all()
     for r in results:
-        data.append(r.as_dict)
+        data.append(r.as_dict())
         
     return jsonify(data)
 
