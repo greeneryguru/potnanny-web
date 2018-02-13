@@ -12,7 +12,7 @@
                             '<div class="measurement-widget" id=' + tag + '>' + o.type + " = " + o.value + "</div>"
                         );
                     } else {
-                        $(document.getElementById(o.sensor)).val(o.type + " = " + o.value);
+                        $(document.getElementById(tag)).val(o.type + " = " + o.value);
                     }
                 });
             }, 
