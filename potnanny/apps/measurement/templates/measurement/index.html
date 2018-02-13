@@ -6,7 +6,7 @@
             {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
                 function(data){
                 $.each(data, function(i,o){
-                    alert(o)
+                    alert(JSON.stringify(o));
                     var tags = ["." + o.type, "." + o.sensor].join(" ");
                     var myid = ["value",o.type,o.sensor].join(".");
                     
