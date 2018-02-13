@@ -52,9 +52,8 @@ def latest_sensor(address):
     data = Measurement.query.filter(
         Measurement.sensor == address).group_by(
             Measurement.type_m).all()
-    
-    print(json.dumps(data))      
-    return jsonify(data)
+       
+    return jsonify({'data': data})
 
 """
 @measurement.route('/measurement/type/<int:tid>/sensor/<int:sid>/latest', methods=['GET'])
