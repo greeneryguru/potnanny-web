@@ -9,9 +9,11 @@
                     var tag = [o.type, o.sensor].join(".");
                     if(! $(document.getElementById(tag)).length) {
                         $(document.getElementById(o.sensor)).append(
-                            '<div class="measurement-widget" id=tag>' + o.type + " = " + o.value + "</div>"
+                            '<div class="measurement-widget" id=' + tag + '>' + o.type + " = " + o.value + "</div>"
                         );
-                    } 
+                    } else {
+                        $(document.getElementById(o.sensor)).val(o.type + " = " + o.value);
+                    }
                 });
             }, 
         'json');    
