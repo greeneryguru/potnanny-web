@@ -54,11 +54,14 @@ def icons(measurement=None):
 
 @measurement.route('/measurement/sensor/<address>', methods=['GET'])
 def latest_sensor(address):
+    data = []
     results = Measurement.query.filter(
         Measurement.sensor == address).group_by(
             Measurement.type_m).all()
-    
-    return json.dumps(results, default=datetime_converter)
+    for r in results:
+        data.append(r.as_dict)
+        
+    return jsonify(data)
 
 """
 @measurement.route('/measurement/type/<int:tid>/sensor/<int:sid>/latest', methods=['GET'])
