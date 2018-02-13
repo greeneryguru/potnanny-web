@@ -9,7 +9,7 @@
                     var tags = ["." + o.type_m, "." + o.sensor].join(" ");
                     var myid = ["value",o.type_m,o.sensor].join(".");
                     if(! $("#" + tags).length) {
-                        $(o.sensor).append("<div id='" + myid + "'>" + o.type_m + " = " + o.value + "</div>";
+                        $(o.sensor).append("<div id='" + myid + "'>" + o.type_m + " = " + o.value + "</div>");
                     } 
                 });
             }, 
