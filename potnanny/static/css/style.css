@@ -212,6 +212,10 @@ a.row-link:active {
   margin-right: 12px; 
 }
 
+.measurement-value {
+  display: inline-block;
+}
+
 
 
 

@@ -21,7 +21,7 @@
                         } else {
                             var payload = '<div class="measurement-widget" id=' + tag + '>';
                             payload += '<i class="' + ICON_MAP[o.type].join(" ") + '"></i>';
-                            payload += '<div id="value.' + tag + '">';
+                            payload += '<div class="measurement-value" id="value.' + tag + '">';
                             payload += o.value;
                             payload += "</div>"; 
                             $("#" + scrubID(o.sensor)).append(payload);
