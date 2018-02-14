@@ -65,9 +65,9 @@
     {% for s in sensors %}
     <div class="row white gap">
         <div class="twelve columns">
-            <div class="sensor-widget padded" id="{{ s.address }}">
-                <div class="battery measurement" id="battery.{{ s.address }}">
-                    <i class="fas fa-battery-full" id="battery.icon.{{ s.address }}"></i>
+            <div class="sensor-widget padded" id="{{ s.address | replace(':', '\\:') }}">
+                <div class="battery measurement" id="battery.{{ s.address | replace(':', '\\:') }}">
+                    <i class="fas fa-battery-full" id="battery.icon.{{ s.address | replace(':', '\\:') }}"></i>
                 </div>
                 <p>{{ s.name | upper }}</p>
                 
