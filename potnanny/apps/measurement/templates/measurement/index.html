@@ -59,6 +59,7 @@
         setInterval(function() {
             $(".sensor-widget").each(function() {
                 var id = this.id;
+                alert("ID: " + id);
                 updateMeasurement(id);                
             });
         }, 15000);
