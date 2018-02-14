@@ -23,7 +23,7 @@ def datetime_converter(o):
 @measurement.route('/', methods=['GET'])
 def measurement_dashboard():
     sensors = Sensor.query.order_by(Sensor.address, Sensor.name)
-    settings = Setting.query.get(1)
+    settings = Setting.query.one()
     return render_template('measurement/index.html', 
                 title='Dashboard',
                 sensors=sensors,

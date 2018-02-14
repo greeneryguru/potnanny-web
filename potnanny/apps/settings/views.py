@@ -16,7 +16,7 @@ def edit(pk=1):
     if request.method == 'POST' and form.validate_on_submit():
         form.populate_obj(obj)
         db.session.commit()
-        return redirect(request.args.get("next", "/settings"))
+        return redirect(request.args.get("next", "/"))
     
     return render_template('settings/form.html', 
         form=form,

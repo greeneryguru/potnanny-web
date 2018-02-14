@@ -46,7 +46,7 @@ def flower_care(address):
     readings = {
         'temperature': random.randint(18,23),
         'soil-moisture': random.randint(12,20),
-        'ambient-light': random.randint(7000,9000),
+        'ambient-light': random.randint(9000,11000),
         'soil-fertility': random.randint(200,500),
         'battery': random.randint(25,100),
     }

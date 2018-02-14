@@ -2,14 +2,20 @@
 {% block headers %}
     <script>
     var ICON_MAP = {};
+    var TEMPERATURE = "{{ temperature }}";
     
+    function celsiusToFahrenheit(v) {
+        var f = 9.0/5.0 * v + 32;
+        return f.toFixed(1);
+    }
+     
     function measurementSuffix(m) {
         var s = {
             "temperature": "&deg;",
             "humidity": "&percnt;",
             "soil-moisture": "&percnt;",
             "co2-ppm": "ppm",
-            "battery": "&percnt;",
+            "battery": "&percnt;"
         }
         if (m in s) {
             return s[m];
@@ -30,18 +36,26 @@
     
     function populateMeasurement(data) {
         $.each(data, function(i, o){
-            suffix = measurementSuffix(o.type);
+            var suffix = measurementSuffix(o.type);
+            var myvalue = o.value;
+            
+            if (o.type == "temperature" && TEMPERATURE == "f") {
+                myvalue = celsiusToFahrenheit(myvalue);
+            }
+            
+            myvalue = myvalue.toString() + suffix;
+            
             if (o.type == "battery") {
                 var foo = 1;
             } else {
                 var tag = [o.type, o.sensor].join(".");
                 if ($(document.getElementById(tag)).length) {
-                    $(document.getElementById("#" + ["value",tag].join("."))).text(o.value.toString() + suffix);
+                    $(document.getElementById(["value",tag].join("."))).html(" " + myvalue);
                 } else {
                     var x = '<div class="measurement-widget" id="' + tag + '">';
-                    x += '<i class="' + ICON_MAP[o.type].join(" ") + '"></i>';
-                    x += '<div class="measurement-value" id="value.' + tag + '"> ';
-                    x += o.value.toString() + suffix;
+                    x += '<i style="color: #777;" class="' + ICON_MAP[o.type].join(" ") + '"></i>';
+                    x += '<div class="measurement-value" id="' + ["value",tag].join(".") + '"> ';
+                    x += myvalue;
                     x += "</div>";
                     x += "</div>";
                     $(document.getElementById(o.sensor)).append(x);
@@ -69,7 +83,7 @@
                 var id = this.id;
                 updateMeasurement(id);                
             });
-        }, 10000);
+        }, 15000);
     });
     
     </script>
@@ -84,7 +98,6 @@
                     <i class="fas fa-battery-full" id="icon.battery.{{ s.address }}"></i>
                 </div>
                 <p>{{ s.name | upper }}</p>
-                
             </div>
         </div>
     </div>
