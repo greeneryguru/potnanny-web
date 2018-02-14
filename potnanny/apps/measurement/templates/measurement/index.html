@@ -7,29 +7,33 @@
         return id.replace(/:/g, "\\:");
     }
     
+    function populateMeasurement(id, data) {
+        $.each(data, function(i, o){
+            if (o.type == "battery") {
+                var foo = 1;
+            } else {
+                var tag = scrubID([o.type, o.sensor].join("."));
+                if($("#" + tag).length) {
+                    $("#value." + tag).text(o.value);
+                } else {
+                    var x = '<div class="measurement-widget" id=' + tag + '>';
+                    x += '<i class="' + ICON_MAP[o.type].join(" ") + '"></i>';
+                    x += '<div class="measurement-value" id="value.' + tag + '">';
+                    x += o.value;
+                    x += "</div>";
+                    alert(x);
+                    $("#" + scrubID(o.sensor)).append(x);
+                }
+            }
+        });
+    }
+    
     function updateMeasurement(id) {
         $.get("/measurement/sensor/" + id,
             {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
-            function(data){
-                $.each(data, function(i, o){
-                    if (o.type == "battery") {
-                        var foo = 1;
-                    } else {
-                        var tag = scrubID([o.type, o.sensor].join("."));
-                        if($("#" + tag).length) {
-                            $("#value." + tag).text(o.value);
-                        } else {
-                            var payload = '<div class="measurement-widget" id=' + tag + '>';
-                            payload += '<i class="' + ICON_MAP[o.type].join(" ") + '"></i>';
-                            payload += '<div class="measurement-value" id="value.' + tag + '">';
-                            payload += o.value;
-                            payload += "</div>"; 
-                            $("#" + scrubID(o.sensor)).append(payload);
-                        }
-                    }
-                });
-            }, 
-        'json');    
+            populateMeasurement(id, data),
+            'json'
+        );    
     }
     
     $(document).ready(function() {
