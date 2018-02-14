@@ -13,7 +13,7 @@
             function(data){
                 $.each(data, function(i, o){
                     if (o.type == "battery") {
-                        continue;
+                        var foo = 1;
                     } else {
                         var tag = scrubID([o.type, o.sensor].join("."));
                         if($("#" + tag).length) {
