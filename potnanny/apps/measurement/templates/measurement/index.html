@@ -3,12 +3,19 @@
     <script>
     var ICON_MAP = {};
     
-    function escapeColons(val) {
-        return val.replace(/:/g, "\\:");
-    }
-    
-    function unEscapeColons(val) {
-        return val.replace(/\\:/g, ":");
+    function measurementSuffix(m) {
+        var s = {
+            "temperature": "&deg;",
+            "humidity": "&percnt;",
+            "soil-moisture": "&percnt;",
+            "co2-ppm": "ppm",
+            "battery": "&percnt;",
+        }
+        if (m in s) {
+            return s[m];
+        } else {
+            return "";
+        }
     }
     
     function updateMeasurement(id) {
@@ -23,20 +30,21 @@
     
     function populateMeasurement(data) {
         $.each(data, function(i, o){
+            suffix = measurementSuffix(o.type);
             if (o.type == "battery") {
                 var foo = 1;
             } else {
                 var tag = [o.type, o.sensor].join(".");
-                if($("#" + escapeColons(tag)).length) {
-                    $("#value." + escapeColons(tag)).text(o.value);
+                if ($(document.getElementById(tag)).length) {
+                    $(document.getElementById("#value." + tag)).text(o.value.toString() + suffix);
                 } else {
                     var x = '<div class="measurement-widget" id="' + tag + '">';
                     x += '<i class="' + ICON_MAP[o.type].join(" ") + '"></i>';
                     x += '<div class="measurement-value" id="value.' + tag + '"> ';
-                    x += o.value;
+                    x += o.value.toString() + suffix;
                     x += "</div>";
                     x += "</div>";
-                    $("#" + escapeColons(o.sensor)).append(x);
+                    $(document.getElementById(o.sensor)).append(x);
                 }
             }
         });

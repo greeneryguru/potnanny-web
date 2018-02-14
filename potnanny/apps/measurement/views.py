@@ -3,6 +3,7 @@ from flask import render_template, redirect, request, session, Blueprint, \
 from sqlalchemy.sql import func
 from potnanny.extensions import db
 from potnanny.apps.sensor.models import Sensor
+from potnanny.apps.settings.models import Setting
 from .models import Measurement
 from .utils import ChartColor, CHARTBASE
 import re
@@ -22,9 +23,11 @@ def datetime_converter(o):
 @measurement.route('/', methods=['GET'])
 def measurement_dashboard():
     sensors = Sensor.query.order_by(Sensor.address, Sensor.name)
+    settings = Setting.query.get(1)
     return render_template('measurement/index.html', 
                 title='Dashboard',
-                sensors=sensors)
+                sensors=sensors,
+                temperature=settings.temperature)
 
 
 @measurement.route('/measurement-icons', methods=['GET'])

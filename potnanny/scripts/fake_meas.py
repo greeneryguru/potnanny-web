@@ -1,68 +1,82 @@
 #!/usr/bin/env python3
 
+
 """
 
-inserts fake random measurements into tables
+Create fake sensors data.
 
 """
 
 import os
 import sys
 import re
+import time
 import datetime
+import json
 import random
 sys.path.append( os.environ.get('FLASK_APP','/var/www/potnanny') )
 from potnanny.application import create_app
 from potnanny.extensions import db
-from potnanny.apps.measurement.models import MeasurementType, Measurement
+from potnanny.apps.measurement.models import Measurement
+from potnanny.apps.settings.models import Setting
 from potnanny.apps.sensor.models import Sensor
 
+
+# global vars
+now = datetime.datetime.now().replace(second=0, microsecond=0)
+
 def main():
-    fahrenheit = True
-    now = datetime.datetime.now().replace(second=0, microsecond=0)
-    mtypes = MeasurementType.query.all()
-    sensors = Sensor.query.all()
-    for s in sensors:
-        tid = None
-
-        if re.search(r'temp', s.tags):
-            tid = match_names('temp', mtypes)
-            if not tid:
-                continue
-            val = random.randint(72, 79)
-            
-            m1 = Measurement(tid, s.id, val, u'%d\N{DEGREE SIGN}F' % val, now)
-            db.session.add(m1)
-
-        if re.search(r'soil', s.tags):
-            tid = match_names('soil', mtypes)
-            if not tid:
-                continue
-            val = random.randint(28,34)
-            m2 = Measurement(tid, s.id, val, "%d%%" % val, now)
-            db.session.add(m2)
-
-        if re.search(r'humid', s.tags):
-            tid = match_names('humid', mtypes)
-            if not tid:
-                continue
-            val = random.randint(40,50)
-            m3 = Measurement(tid, s.id, val, "%d%%" % val, now)
-            db.session.add(m3)
-      
-        db.session.commit()
+    sensors = Sensor.query.all()  
+    for sensor in sensors:
+        flower_care(sensor.address)
         
+    
+"""
+Poll a Mi Flower Care bluetooth sensor for data.
 
-def match_names(txt, obj):
-    for o in obj:
-        if re.search(txt, o.name):
-            return o.id
-        
-    return None
+params:
+    a device address
+returns:
+    a list of Measurment objects
+    
+"""
+def flower_care(address):
+    count = 0
+    measurements = []
+    readings = {
+        'temperature': random.randint(18,23),
+        'soil-moisture': random.randint(12,20),
+        'ambient-light': random.randint(7000,9000),
+        'soil-fertility': random.randint(200,500),
+        'battery': random.randint(25,100),
+    }
+    
+    for key, value in readings.items():
+        obj = Measurement(address, key, value, now)
+        db.session.add(obj)
+        measurements.append(obj)
 
+    db.session.commit()
+    
+    return
+    
 
 if __name__ == '__main__':
+    
     app = create_app()
     app.app_context().push()
+    
+    poll = Setting.query.get(1)
+
+    if not poll:
+        # logger.error("could not determine polling interval from db")
+        sys.stderr.write("error. could not determine polling interval from db\n")
+        sys.exit(1)
+
+    if now.minute % poll.interval > 0:
+        # not the right time to be running this. exit
+        sys.exit(0)
+
     main()
+
 
