@@ -12,8 +12,7 @@
     }
     
     function updateMeasurement(id) {
-        var nid = unEscapeColons(id);
-        $.get("/measurement/sensor/" + nid,
+        $.get("/measurement/sensor/" + id,
             {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
             function(data){
                 populateMeasurement(data);
@@ -27,9 +26,9 @@
             if (o.type == "battery") {
                 var foo = 1;
             } else {
-                var tag = escapeColons([o.type, o.sensor].join("."));
-                if($("#" + tag).length) {
-                    $("#value." + tag).text(o.value);
+                var tag = [o.type, o.sensor].join(".");
+                if($("#" + escapeColons(tag)).length) {
+                    $("#value." + escapeColons(tag)).text(o.value);
                 } else {
                     var x = '<div class="measurement-widget" id="' + tag + '">';
                     x += '<i class="' + ICON_MAP[o.type].join(" ") + '"></i>';
@@ -71,9 +70,9 @@
     {% for s in sensors %}
     <div class="row white gap">
         <div class="twelve columns">
-            <div class="sensor-widget padded" id="{{ s.address | replace(':', '\\:') }}">
-                <div class="battery measurement" id="battery.{{ s.address | replace(':', '\\:') }}">
-                    <i class="fas fa-battery-full" id="icon.battery.{{ s.address | replace(':', '\\:') }}"></i>
+            <div class="sensor-widget padded" id="{{ s.address }}">
+                <div class="battery measurement" id="battery.{{ s.address }}">
+                    <i class="fas fa-battery-full" id="icon.battery.{{ s.address }}"></i>
                 </div>
                 <p>{{ s.name | upper }}</p>
                 
