@@ -3,8 +3,12 @@
     <script>
     var ICON_MAP = {};
     
-    function scrubID(id) {
-        return id.replace(/:/g, "\\:");
+    function escapeColons(val) {
+        return val.replace(/:/g, "\\:");
+    }
+    
+    function unEscapeColons(val) {
+        return val.replace(/\\:/g, ":");
     }
     
     function populateMeasurement(data, id) {
@@ -28,8 +32,7 @@
     }
     
     function updateMeasurement(id) {
-        alert("updating for " + id);
-        $.get("/measurement/sensor/" + id,
+        $.get("/measurement/sensor/" + unEscapeColons(id),
             {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
             function(data){
                 populateMeasurement(data, id);
@@ -68,7 +71,7 @@
         <div class="twelve columns">
             <div class="sensor-widget padded" id="{{ s.address | replace(':', '\\:') }}">
                 <div class="battery measurement" id="battery.{{ s.address | replace(':', '\\:') }}">
-                    <i class="fas fa-battery-full" id="battery.icon.{{ s.address | replace(':', '\\:') }}"></i>
+                    <i class="fas fa-battery-full" id="icon.battery.{{ s.address | replace(':', '\\:') }}"></i>
                 </div>
                 <p>{{ s.name | upper }}</p>
                 
