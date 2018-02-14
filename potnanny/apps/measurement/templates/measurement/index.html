@@ -33,6 +33,7 @@
             {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
             function(data){
                 ICON_MAP = data;
+                alert(ICON_MAP);
             },
             'json'
         );
