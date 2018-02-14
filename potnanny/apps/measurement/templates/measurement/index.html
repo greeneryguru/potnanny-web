@@ -37,7 +37,8 @@
             function(data){
                 JSON.stringify(data);
                 populateMeasurement(data, id);
-            },'json'
+            },
+            'json'
         );    
     }
     
@@ -60,7 +61,7 @@
                 var id = this.id;
                 updateMeasurement(id);                
             });
-        }, 10000);
+        }, 15000);
     });
     
     </script>
