@@ -16,12 +16,11 @@
                 if($("#" + tag).length) {
                     $("#value." + tag).text(o.value);
                 } else {
-                    var x = '<div class="measurement-widget" id=' + tag + '>';
+                    var x = '<div class="measurement-widget" id="' + tag + '">';
                     x += '<i class="' + ICON_MAP[o.type].join(" ") + '"></i>';
                     x += '<div class="measurement-value" id="value.' + tag + '">';
                     x += o.value;
                     x += "</div>";
-                    alert(x);
                     $("#" + scrubID(o.sensor)).append(x);
                 }
             }
