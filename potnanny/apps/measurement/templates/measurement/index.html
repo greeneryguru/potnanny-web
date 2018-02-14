@@ -31,8 +31,9 @@
     function updateMeasurement(id) {
         $.get("/measurement/sensor/" + id,
             {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
-            populateMeasurement(data, id),
-            'json'
+            function(data){
+                populateMeasurement(data, id);
+            },'json'
         );    
     }
     
