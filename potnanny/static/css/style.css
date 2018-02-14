@@ -213,7 +213,7 @@ a.row-link:active {
 }
 
 .measurement-value {
-  display: inline-block;
+  display: inline;
 }
 
 

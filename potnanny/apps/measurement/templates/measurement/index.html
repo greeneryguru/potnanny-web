@@ -11,6 +11,17 @@
         return val.replace(/\\:/g, ":");
     }
     
+    function updateMeasurement(id) {
+        var nid = unEscapeColons(id);
+        $.get("/measurement/sensor/" + nid,
+            {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
+            function(data){
+                populateMeasurement(data);
+            },
+            'json'
+        );    
+    }
+    
     function populateMeasurement(data) {
         $.each(data, function(i, o){
             if (o.type == "battery") {
@@ -24,23 +35,11 @@
                     x += '<i class="' + ICON_MAP[o.type].join(" ") + '"></i>';
                     x += '<div class="measurement-value" id="value.' + tag + '">';
                     x += o.value;
-                    x += "</div>";
-                    alert(x);
+                    x += "</div></div>";
                     $("#" + escapeColons(o.sensor)).append(x);
                 }
             }
         });
-    }
-    
-    function updateMeasurement(id) {
-        var nid = unEscapeColons(id);
-        $.get("/measurement/sensor/" + nid,
-            {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
-            function(data){
-                populateMeasurement(data);
-            },
-            'json'
-        );    
     }
     
     $(document).ready(function() {
