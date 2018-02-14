@@ -36,7 +36,7 @@
             } else {
                 var tag = [o.type, o.sensor].join(".");
                 if ($(document.getElementById(tag)).length) {
-                    $(document.getElementById("#value." + tag)).text(o.value.toString() + suffix);
+                    $(document.getElementById("#" + ["value",tag].join("."))).text(o.value.toString() + suffix);
                 } else {
                     var x = '<div class="measurement-widget" id="' + tag + '">';
                     x += '<i class="' + ICON_MAP[o.type].join(" ") + '"></i>';
@@ -69,7 +69,7 @@
                 var id = this.id;
                 updateMeasurement(id);                
             });
-        }, 15000);
+        }, 10000);
     });
     
     </script>

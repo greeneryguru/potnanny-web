@@ -209,7 +209,7 @@ a.row-link:active {
 .measurement-widget {
   display: inline-block;
   float: left;
-  margin-right: 16px;
+  margin-right: 20px;
   font-size: 1.3em;
 }
 
