@@ -12,6 +12,7 @@
     }
     
     function populateMeasurement(data) {
+        alert("populating measurements!");
         $.each(data, function(i, o){
             if (o.type == "battery") {
                 var foo = 1;
@@ -32,9 +33,8 @@
     }
     
     function updateMeasurement(id) {
-        var newid = unEscapeColons(id);
-        alert("New id: " + newid);
-        $.get("/measurement/sensor/" + newid,
+        var nid = unEscapeColons(id);
+        $.get("/measurement/sensor/" + nid,
             {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
             function(data){
                 populateMeasurement(data);
