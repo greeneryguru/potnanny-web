@@ -16,7 +16,7 @@
             if (o.type == "battery") {
                 var foo = 1;
             } else {
-                var tag = scrubID([o.type, o.sensor].join("."));
+                var tag = escapeColons([o.type, o.sensor].join("."));
                 if($("#" + tag).length) {
                     $("#value." + tag).text(o.value);
                 } else {
@@ -25,7 +25,7 @@
                     x += '<div class="measurement-value" id="value.' + tag + '">';
                     x += o.value;
                     x += "</div>";
-                    $("#" + scrubID(o.sensor)).append(x);
+                    $("#" + escapeColons(o.sensor)).append(x);
                 }
             }
         });
