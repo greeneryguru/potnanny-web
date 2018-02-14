@@ -27,14 +27,15 @@
                 var foo = 1;
             } else {
                 var tag = [o.type, o.sensor].join(".");
-                if($("#" + escapeColons(tag)).length) {
+                if($('"#' + escapeColons(tag) + '"').length) {
                     $("#value." + escapeColons(tag)).text(o.value);
                 } else {
                     var x = '<div class="measurement-widget" id="' + tag + '">';
                     x += '<i class="' + ICON_MAP[o.type].join(" ") + '"></i>';
-                    x += '<div class="measurement-value" id="value.' + tag + '">';
+                    x += '<div class="measurement-value" id="value.' + tag + '"> ';
                     x += o.value;
-                    x += "</div></div>";
+                    x += "</div>";
+                    x += "</div>";
                     $("#" + escapeColons(o.sensor)).append(x);
                 }
             }
