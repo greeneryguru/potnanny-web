@@ -1,18 +1,27 @@
 {% extends "base.html" %}
 {% block headers %}
     <script>
+    var ICON_MAP = {};
+    
+    function scrubID(id) {
+        return id.replace(":", "\\:");
+    }
+    
     function updateMeasurement(id) {
         $.get("/measurement/sensor/" + id,
             {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
-                function(data){
+            function(data){
                 $.each(data, function(i,o){
-                    var tag = [o.type, o.sensor].join(".");
-                    if(! $(document.getElementById(tag)).length) {
-                        $(document.getElementById(o.sensor)).append(
-                            '<div class="measurement-widget" id=' + tag + '>' + o.type + " = " + o.value + "</div>"
-                        );
+                    tag = scrubID([o.type, o.sensor].join("."));
+                    if(! $("#" + tag).length) {
+                        $("#" + scrubID(o.sensor)).append(
+                            '<div class="measurement-widget" id=' + tag + '>');
+                        $("#" + scrubID(o.sensor)).append(
+                            '<i class="' + ICON_MAP.o.type.join(" ") + '"></i>');    
+                        $("#" + scrubID(o.sensor)).append(o.value);
+                        $("#" + scrubID(o.sensor)).append("</div>");
                     } else {
-                        $(document.getElementById(tag)).val(o.type + " = " + o.value);
+                        $("#" + tag).text(o.value);
                     }
                 });
             }, 
@@ -20,18 +29,27 @@
     }
     
     $(document).ready(function() {
+        $.get("/measurement-icons",
+            {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
+            function(data){
+                ICON_MAP = data;
+            },
+            'json'
+        );
+                
         $(".sensor-widget").each(function() {
             var id = this.id;
             updateMeasurement(id);                
         });
+        
         setInterval(function() {
             $(".sensor-widget").each(function() {
                 var id = this.id;
                 updateMeasurement(id);                
             });
-        }, 3000);
-         
+        }, 10000);
     });
+    
     </script>
 {% endblock headers %}
 {% block content %}
