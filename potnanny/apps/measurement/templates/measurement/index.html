@@ -11,7 +11,7 @@
         return val.replace(/\\:/g, ":");
     }
     
-    function populateMeasurement(data, id) {
+    function populateMeasurement(data) {
         $.each(data, function(i, o){
             if (o.type == "battery") {
                 var foo = 1;
@@ -32,11 +32,13 @@
     }
     
     function updateMeasurement(id) {
-        $.get("/measurement/sensor/" + unEscapeColons(id),
+        var newid = unEscapeColons(id);
+        alert("New id: " + newid);
+        $.get("/measurement/sensor/" + newid,
             {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
             function(data){
                 JSON.stringify(data);
-                populateMeasurement(data, id);
+                populateMeasurement(data);
             },
             'json'
         );    
@@ -59,7 +61,6 @@
         setInterval(function() {
             $(".sensor-widget").each(function() {
                 var id = this.id;
-                alert("ID: " + id);
                 updateMeasurement(id);                
             });
         }, 15000);
