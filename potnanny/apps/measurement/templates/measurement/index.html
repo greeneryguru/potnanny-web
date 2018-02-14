@@ -12,12 +12,12 @@
     }
     
     function populateMeasurement(data) {
-        alert("populating measurements!");
         $.each(data, function(i, o){
             if (o.type == "battery") {
                 var foo = 1;
             } else {
                 var tag = escapeColons([o.type, o.sensor].join("."));
+                alert(tag);
                 if($("#" + tag).length) {
                     $("#value." + tag).text(o.value);
                 } else {
