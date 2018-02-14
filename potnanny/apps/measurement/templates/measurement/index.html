@@ -4,7 +4,7 @@
     var ICON_MAP = {};
     
     function scrubID(id) {
-        return id.replace(":", "\\:");
+        return id.replace(/:/g, "\\:");
     }
     
     function updateMeasurement(id) {
