@@ -12,17 +12,20 @@
             {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
             function(data){
                 $.each(data, function(i, o){
-                    tag = scrubID([o.type, o.sensor].join("."));
-                    alert(tag);
-                    if(! $("#" + tag).length) {
-                        $("#" + scrubID(o.sensor)).append(
-                            '<div class="measurement-widget" id=' + tag + '>');
-                        $("#" + scrubID(o.sensor)).append(
-                            '<i class="' + ICON_MAP[o.type].join(" ") + '"></i>');    
-                        $("#" + scrubID(o.sensor)).append(o.value);
-                        $("#" + scrubID(o.sensor)).append("</div>");
+                    if (o.type == "battery") {
+                        continue;
                     } else {
-                        $("#" + tag).text(o.value);
+                        var tag = scrubID([o.type, o.sensor].join("."));
+                        if($("#" + tag).length) {
+                            $("#value." + tag).text(o.value);
+                        } else {
+                            var payload = '<div class="measurement-widget" id=' + tag + '>';
+                            payload += '<i class="' + ICON_MAP[o.type].join(" ") + '"></i>';
+                            payload += '<div id="value.' + tag + '">';
+                            payload += o.value;
+                            payload += "</div>"; 
+                            $("#" + scrubID(o.sensor)).append(payload);
+                        }
                     }
                 });
             }, 
@@ -34,7 +37,6 @@
             {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
             function(data){
                 ICON_MAP = data;
-                alert(ICON_MAP);
             },
             'json'
         );
