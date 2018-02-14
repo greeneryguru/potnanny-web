@@ -35,7 +35,7 @@
         $.get("/measurement/sensor/" + unEscapeColons(id),
             {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
             function(data){
-                alert("DATA! " + data);
+                JSON.stringify(data);
                 populateMeasurement(data, id);
             },'json'
         );    
