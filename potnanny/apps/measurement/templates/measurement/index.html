@@ -17,7 +17,7 @@
                         $("#" + scrubID(o.sensor)).append(
                             '<div class="measurement-widget" id=' + tag + '>');
                         $("#" + scrubID(o.sensor)).append(
-                            '<i class="' + ICON_MAP.o.type.join(" ") + '"></i>');    
+                            '<i class="' + ICON_MAP[o.type].join(" ") + '"></i>');    
                         $("#" + scrubID(o.sensor)).append(o.value);
                         $("#" + scrubID(o.sensor)).append("</div>");
                     } else {
