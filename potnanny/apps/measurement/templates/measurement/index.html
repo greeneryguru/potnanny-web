@@ -11,8 +11,9 @@
         $.get("/measurement/sensor/" + id,
             {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
             function(data){
-                $.each(data, function(i,o){
+                $.each(data, function(i, o){
                     tag = scrubID([o.type, o.sensor].join("."));
+                    alert(tag);
                     if(! $("#" + tag).length) {
                         $("#" + scrubID(o.sensor)).append(
                             '<div class="measurement-widget" id=' + tag + '>');
