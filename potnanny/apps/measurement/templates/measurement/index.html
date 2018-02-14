@@ -7,7 +7,7 @@
         return id.replace(/:/g, "\\:");
     }
     
-    function populateMeasurement(id, data) {
+    function populateMeasurement(data, id) {
         $.each(data, function(i, o){
             if (o.type == "battery") {
                 var foo = 1;
@@ -31,7 +31,7 @@
     function updateMeasurement(id) {
         $.get("/measurement/sensor/" + id,
             {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
-            populateMeasurement(id, data),
+            populateMeasurement(data, id),
             'json'
         );    
     }
