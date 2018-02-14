@@ -37,7 +37,6 @@
         $.get("/measurement/sensor/" + newid,
             {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
             function(data){
-                JSON.stringify(data);
                 populateMeasurement(data);
             },
             'json'
