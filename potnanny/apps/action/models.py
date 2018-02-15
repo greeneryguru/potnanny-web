@@ -3,6 +3,7 @@ from potnanny.apps.measurement.models import Measurement
 from potnanny.apps.outlet.models import Outlet
 from potnanny.apps.messenger.models import Messenger
 from potnanny.apps.sensor.models import Sensor
+from potnanny.apps.vesync.models import VesyncManager
 import datetime
 import re
 
