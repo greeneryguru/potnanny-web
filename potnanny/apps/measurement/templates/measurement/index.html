@@ -23,45 +23,89 @@
             return "";
         }
     }
+   
+    function formattedValueFromMeasurementObject(o) {
+        var suffix = measurementSuffix(o.type);
+        var myvalue = o.value; 
+         
+        if (o.type == "temperature" && TEMPERATURE == "f") {
+            myvalue = celsiusToFahrenheit(myvalue);
+        }
+            
+        myvalue = myvalue.toString() + suffix;
+        return myvalue;
+    }
+     
+    function buildWidget(o) {
+        widgetId = [o.type, o.sensor].join(".");
+        iconId = ["icon", o.type, o.sensor].join(".");
+        iconClasses = ICON_MAP[o.type].join(" ");
+        valueId = ["value", o.type, o.sensor].join(".");
+        myvalue = formattedValueFromMeasurementObject(o);
+        
+        elements = [
+            '<div class="measurement-widget" id="' + widgetId + '">',
+            '<div class="icon-widget">',
+            '<i class="' + iconClasses + '" style="color: #FFC107;"></i>',
+            '</div>',
+            '<div class="value-widget" id="' + valueId + '">',
+            ' ',
+            myvalue,
+            '</div>',
+            '<div class="type-widget">',
+            o.type,
+            '</div>',
+            '</div>'
+        ];
+        
+        return elements.join("");
+    }
     
     function updateMeasurement(id) {
         $.get("/measurement/sensor/" + id,
             {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
             function(data){
-                populateMeasurement(data);
+                $.each(data, function(i, o){
+                    var tagId = [o.type, o.sensor].join(".");
+                    var valueId =  ["value", o.type, o.sensor].join(".");
+                    
+                    if (o.type == "battery") {
+                        var iconId = ["icon", o.type, o.sensor].join(".");
+                        if (o.value > 85) {
+                            $(document.getElementById(iconId)).removeClass();
+                            $(document.getElementById(iconId)).addClass("fas");
+                            $(document.getElementById(iconId)).addClass("fa-battery-full");
+                        } else if (o.value > 60 && o.value <= 85) {
+                            $(document.getElementById(iconId)).removeClass();
+                            $(document.getElementById(iconId)).addClass("fas");
+                            $(document.getElementById(iconId)).addClass("fa-battery-three-quarters");
+                        } else if (o.value > 35 && o.value <= 60) {
+                            $(document.getElementById(iconId)).removeClass();
+                            $(document.getElementById(iconId)).addClass("fas");
+                            $(document.getElementById(iconId)).addClass("fa-battery-half");
+                        } else if (o.value > 15 && o.value <= 35) {
+                            $(document.getElementById(iconId)).removeClass();
+                            $(document.getElementById(iconId)).addClass("fas");
+                            $(document.getElementById(iconId)).addClass("fa-battery-quarter");
+                        } else {
+                            $(document.getElementById(iconId)).removeClass();
+                            $(document.getElementById(iconId)).addClass("fas");
+                            $(document.getElementById(iconId)).addClass("fa-battery-empty");
+                        }
+                    } else {
+                        if ($(document.getElementById(tagId)).length) {
+                            var myvalue = formattedValueFromMeasurementObject(o);
+                            $(document.getElementById(valueId)).html(" " + myvalue);
+                        } else {
+                            result = buildWidget(o);
+                            html = $.parseHTML(result);
+                            $(document.getElementById(o.sensor)).append(html);
+                        }
+                    }
+                });
             },
             'json'
         );    
-    }
-    
-    function populateMeasurement(data) {
-        $.each(data, function(i, o){
-            var suffix = measurementSuffix(o.type);
-            var myvalue = o.value;
-            
-            if (o.type == "temperature" && TEMPERATURE == "f") {
-                myvalue = celsiusToFahrenheit(myvalue);
-            }
-            
-            myvalue = myvalue.toString() + suffix;
-            
-            if (o.type == "battery") {
-                var foo = 1;
-            } else {
-                var tag = [o.type, o.sensor].join(".");
-                if ($(document.getElementById(tag)).length) {
-                    $(document.getElementById(["value",tag].join("."))).html(" " + myvalue);
-                } else {
-                    var x = '<div class="measurement-widget" id="' + tag + '">';
-                    x += '<i style="color: #777;" class="' + ICON_MAP[o.type].join(" ") + '"></i>';
-                    x += '<div class="measurement-value" id="' + ["value",tag].join(".") + '"> ';
-                    x += myvalue;
-                    x += "</div>";
-                    x += "</div>";
-                    $(document.getElementById(o.sensor)).append(x);
-                }
-            }
-        });
     }
     
     $(document).ready(function() {
@@ -83,7 +127,7 @@
                 var id = this.id;
                 updateMeasurement(id);                
             });
-        }, 15000);
+        }, 20000);
     });
     
     </script>
@@ -94,10 +138,11 @@
     <div class="row white gap">
         <div class="twelve columns">
             <div class="sensor-widget padded" id="{{ s.address }}">
-                <div class="battery measurement" id="battery.{{ s.address }}">
+                <div class="battery-widget" id="battery.{{ s.address }}">
                     <i class="fas fa-battery-full" id="icon.battery.{{ s.address }}"></i>
                 </div>
-                <p>{{ s.name | upper }}</p>
+                <div class="sensor-name">{{ s.name | lower }}</div>
+                
             </div>
         </div>
     </div>
