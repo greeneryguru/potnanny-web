@@ -80,14 +80,13 @@ def action_edit(pk=None):
                         form.sensor_address.data,
                         form.action_type.data)
 
+            o.on_condition = form.on_condition.data
+            o.on_threshold = form.on_threshold.data
+                
             if re.search(r'sms', form.action_type.data, re.IGNORECASE):
                 o.sms_recipient = form.sms_recipient.data
-                o.on_condition = form.on_condition.data
-                o.on_threshold = form.on_threshold.data
                 
             if re.search(r'switch', form.action_type.data, re.IGNORECASE):
-                o.on_condition = form.on_condition.data
-                o.on_threshold = form.on_threshold.data
                 o.off_condition = form.off_condition.data
                 o.off_threshold = form.off_threshold.data
 

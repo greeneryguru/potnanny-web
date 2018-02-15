@@ -141,12 +141,11 @@ class ActionManager(object):
         for action in self.actions:
             # evaluate measurement values against action criteria and skip
             # any pairs that are completely unrelated.
-            if action.sensor_address == 'any':
-                if action.measurement_type != m.type_m:
-                    continue
-            else:
-                if action.sensor_address != m.sensor:
-                    continue
+            if action.measurement_type != m.type_m:
+                continue
+            
+            if action.sensor_address != 'any' and action.sensor_address != m.sensor:
+                continue
             
             self.handle_measurement(action, m) 
             
@@ -325,6 +324,12 @@ class ActionManager(object):
         """
         does this measurement trigger one of the conditions of an action?
         """
+        
+        if action.measurement_type != measurement.type_m and 
+            action.measurement_type != 'any':
+            
+            return None
+        
         
         mvalue = measurement.value
         if measurement.type_m == 'temperature' and not self.celsius:
