@@ -324,13 +324,6 @@ class ActionManager(object):
         """
         does this measurement trigger one of the conditions of an action?
         """
-        
-        if action.measurement_type != measurement.type_m and 
-            action.measurement_type != 'any':
-            
-            return None
-        
-        
         mvalue = measurement.value
         if measurement.type_m == 'temperature' and not self.celsius:
             mvalue = self.c_to_f(mvalue)
