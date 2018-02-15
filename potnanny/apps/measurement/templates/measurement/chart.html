@@ -8,19 +8,19 @@
     $(document).ready(function() {
         $("[id*=chart-]").each(function(){
             var pk = this.id.split("-")[1];
-            $.get("/measurement/chart/sensor/" + sensor + "?legend=1&hours=4&dateson=1",
+            $.get("/measurement/chart/sensor?address={{ sensor.address }}&type={{ measurement }}&legend=1&hours=8&dateson=1",
                 {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
                 function(data){
-                    createChart("chart-" + pk, data, globalChartRefs);
+                    createChart("chart-{{ measurement }}", data, globalChartRefs);
 	            }, 'json');
         });
         setInterval(function(){
             $("[id*=chart-]").each(function(){
                 var pk = this.id.split("-")[1];
-                $.get("/measurement/chart/type/" + pk + "?legend=1&hours=4&dateson=1",
+                $.get("/measurement/chart/sensor?address={{ sensor.address }}&type={{ measurement }}&legend=1&hours=8&dateson=1",
                     {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
                     function(data){
-                        createChart("chart-" + pk, data, globalChartRefs);
+                        createChart("chart-{{ measurement }}", data, globalChartRefs);
 	                }, 'json');
             });
         }, 20000);
@@ -31,8 +31,8 @@
 {% if measurement %}
     <div class="row white gap center">
         <div class="twelve columns">
-        <p class="padded">{{ measurement.name | upper}}</p>
-        <canvas id="chart-{{ measurement.id }}"></canvas>
+        <p class="padded">sensor | {{ sensor.name }}</p>
+        <canvas id="chart-{{ measurement }}"></canvas>
         </div>
     </div>
 {% else %}

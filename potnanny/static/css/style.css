@@ -33,7 +33,7 @@ label {
 }
 
 .gap {
-    margin-bottom: 2px;
+    margin-bottom: 3px;
     box-shadow: 0px 1px 3px #bbb;
 }
 
@@ -94,27 +94,6 @@ a.row-link:hover {
 a.row-link:active {
     color: #212121;
     text-decoration: none;
-}
-
-/* ********************************** */
-.dashboard {
-    color: #212121;
-    font-size: 2.8em;
-    margin: 0;
-    padding: 0;
-}
-
-.dashboard-subtext {
-    font-weight: 300;
-    font-size: .9em;
-    margin: 0;
-    padding: 0;
-}
-
-.dashboard-label {
-    font-weight: 300;
-    margin: 0;
-    padding: 0;
 }
 
 /* ********************************** */
@@ -215,6 +194,11 @@ a.row-link:active {
   border-radius: 12px;
   min-width: 65px;
   margin-right: 10px;
+}
+
+.measurement-widget a {
+    text-decoration: none;
+    color: #000;
 }
 
 .date-widget {

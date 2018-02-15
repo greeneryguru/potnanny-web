@@ -48,10 +48,12 @@
             '<div class="icon-widget">',
             '<i class="' + iconClasses + '" style="color: #FFC107;"></i>',
             '</div>',
+            '<a href="/measurement/chart/' + o.sensor + '?type=' + o.type + '">',
             '<div class="value-widget" id="' + valueId + '">',
             ' ',
             myvalue,
             '</div>',
+            '</a>',
             '<div class="type-widget">',
             o.type,
             '</div>',
@@ -139,9 +141,9 @@
         <div class="twelve columns">
             <div class="sensor-widget padded" id="{{ s.address }}">
                 <div class="battery-widget" id="battery.{{ s.address }}">
-                    <i class="fas fa-battery-full" id="icon.battery.{{ s.address }}"></i>
+                    <i class="fas fa-battery-full" id="icon.battery.{{ s.address }}" style="color: #777;"></i>
                 </div>
-                <div class="sensor-name">{{ s.name | lower }}</div>
+                <div class="sensor-name">{{ s.name }}</div>
                 
             </div>
         </div>

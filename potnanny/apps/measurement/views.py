@@ -62,26 +62,86 @@ def latest_sensor(address):
         Measurement.sensor == address).group_by(
             Measurement.type_m).all()
     
-    # this is a hack, to get around the problems where datetime objects
+    # this is a hack, to get around problem where datetime objects
     # are not json serializable.
     for r in results:
         data.append(r.as_dict())
         
     return jsonify(data)
 
-"""
-@measurement.route('/measurement/type/<int:tid>/sensor/<int:sid>/latest', methods=['GET'])
-def measurement_sensor_latest(tid, sid):
-    result = Measurement.query.filter(
-        Measurement.type_id == tid,
-        Measurement.sensor_id == sid
+
+@measurement.route('/measurement/chart/<address>', methods=['GET'])
+def measurement_chart(address):
+    type_m = request.args.get('type', default="temperature")
+    
+    sensor = Sensor.query.filter(
+        Sensor.address == address
+    ).first()
+    
+    return render_template('measurement/chart.html', 
+                           sensor=sensor,
+                           measurement=type_m)
+    
+    
+@measurement.route('/measurement/chart/sensor', methods=['GET'])
+def sensor_chart():
+    address = request.args.get('address')
+    type_m = request.args.get('type', default="temperature")
+    hours = int(request.args.get('hours', default=8))
+    legend_on = int(request.args.get('legend', default=0))
+    dates_on = int(request.args.get('dateson', default=0))
+    tracker = {}
+    now = datetime.datetime.now()
+    then = now - datetime.timedelta(hours=hours)
+    chart = copy.deepcopy(CHARTBASE)
+    
+    setting = Setting.query.first()
+    
+    s = Sensor.query.filter(
+        Sensor.address == address
+    ).first()
+    
+    if type_m not in tracker:
+        tracker[type_m] = len(tracker)
+    
+    if len(chart['data']['datasets']) <= tracker[type_m]:
+        chart['data']['datasets'].append({})
+                  
+    results = Measurement.query.filter(
+        Measurement.type_m == type_m,
+        Measurement.sensor == address
     ).order_by(
-        Measurement.date_time.desc()
-    ).first()  
+        Measurement.date_time
+    ).all()
 
-    return str(result)
+    for row in results:
+        if datetime.datetime.strftime(row.date_time, "%H:%M") not in chart['data']['labels']:
+            chart['data']['labels'].append(datetime.datetime.strftime(row.date_time, "%H:%M"))
 
+        if 'data' not in chart['data']['datasets'][tracker[type_m]]:
+            chart['data']['datasets'][tracker[type_m]] = {
+                'label': type_m,
+                'data': [],
+                'fill': 'false',
+                'lineTension': 0.3,
+                'borderColor': ChartColor(tracker[type_m]).rgb_color(),
+            }
 
+        if type_m == 'temperature' and setting.temperature == 'f':
+            chart['data']['datasets'][tracker[type_m]]['data'].append(round(9.0/5.0 * row.value + 32, 1))
+        else:
+            chart['data']['datasets'][tracker[type_m]]['data'].append(row.value)
+    
+    if legend_on:
+        chart['options']['legend']['display'] = True
+
+    if dates_on:
+        chart['options']['scales']['xAxes'][0]['display'] = True
+        
+               
+    return jsonify(chart)
+
+"""
 @measurement.route('/measurement/chart/type/<int:pk>', methods=['GET'])
 def measurement_chart_type(pk):
     hours = int(request.args.get('hours', default=1))
