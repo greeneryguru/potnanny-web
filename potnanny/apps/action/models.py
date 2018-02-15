@@ -2,6 +2,7 @@ from potnanny.extensions import db
 from potnanny.apps.measurement.models import Measurement
 from potnanny.apps.outlet.models import Outlet
 from potnanny.apps.messenger.models import Messenger
+from potnanny.apps.sensor.models import Sensor
 import datetime
 import re
 
@@ -161,6 +162,9 @@ class ActionManager(object):
             
         # SMS-MESSAGE action handler
         if re.search('sms', action.action_type, re.IGNORECASE):
+            sensor = Sensor.query.filter(
+                Sensor.address == measurement.sensor).first()
+                
             mvalue = measurement.value
             if measurement.type_m == 'temperature' and not self.celsius:
                 mvalue = self.c_to_f(mvalue)
@@ -172,7 +176,7 @@ class ActionManager(object):
                 action.on_condition, 
                 action.on_threshold)
             db.session.commit()
-            self.action_message(action, measurement)
+            self.action_message(action, sensor.name, measurement.type_m, mvalue)
             
         # SWITCH-OUTLET action handler
         elif re.search('switch', action.action_type, re.IGNORECASE):
@@ -307,12 +311,11 @@ class ActionManager(object):
         return False
 
     
-    def action_message(self, action, measurement):
+    def action_message(self, action, sensor, measurement, value):
         m = Messenger()
 
-        body = "environment alert: %s is %s" % (
-                measurement.measurement_type.name,
-                measurement.text)
+        body = "environment alert: sensor '%s' %s is %d" % (
+                sensor, measurement, value)
 
         try:
             rval = m.message(action.sms_recipient, body)
