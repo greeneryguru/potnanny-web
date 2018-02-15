@@ -202,9 +202,8 @@ class ActionManager(object):
                     rval = mgr.api.turn_on(action.outlet_id) 
                 else:
                     rval = mgr.api.turn_off(action.outlet_id) 
-            except:
-                # need an error log here!
-                pass
+            except Exception as x:
+                raise x
             
             
     def get_process(self, action, trigger):
