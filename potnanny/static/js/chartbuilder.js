@@ -42,35 +42,4 @@ function indexLineColor(i) {
 }
 
 
-/* 
-set the value of the gauge main number. add any formatting needed
-
-params:
-    object id
-    a data object
-*/
-function setMeasurement(id, data) {
-    var m = data['value']
-    if (data['type-name'] == 'temperature') {
-        m += String.fromCharCode(176);
-    } else if (data['type-name'] == 'humidity') {
-        m += "%";
-    } else if (data['type-name'] == 'soil moisture') {
-        m += "%";
-    }
-    $("#" + id).text(m);
-    return false;
-}
-
-/* 
-set the value of the gauge subtext element.
-
-params:
-    object id
-    a data object
-*/
-function setSubtext(id, data) {
-    $("#" + id).text(data['date-time']);
-    return false;
-}
 

@@ -31,8 +31,10 @@
 {% if measurement %}
     <div class="row white gap center">
         <div class="twelve columns">
-        <p class="padded">sensor | {{ sensor.name }}</p>
-        <canvas id="chart-{{ measurement }}"></canvas>
+            <p class="padded">sensor | {{ sensor.name }}</p>
+            <div id="canvas-wrapper" style="position: relative; height: 60vh">
+                <canvas id="chart-{{ measurement }}"></canvas>
+            </div>
         </div>
     </div>
 {% else %}

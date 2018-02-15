@@ -1,6 +1,8 @@
 CHARTBASE = {
     'type': 'line',
     'options': {
+        'responsive': True,
+        'maintainAspectRatio': False,
         'animation': {
             'duration': 0
         },

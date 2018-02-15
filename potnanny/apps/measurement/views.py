@@ -109,14 +109,15 @@ def sensor_chart():
                   
     results = Measurement.query.filter(
         Measurement.type_m == type_m,
-        Measurement.sensor == address
+        Measurement.sensor == address,
+        Measurement.date_time.between(then, now)
     ).order_by(
         Measurement.date_time
     ).all()
 
     for row in results:
-        if datetime.datetime.strftime(row.date_time, "%H:%M") not in chart['data']['labels']:
-            chart['data']['labels'].append(datetime.datetime.strftime(row.date_time, "%H:%M"))
+        if datetime.datetime.strftime(row.date_time, "%m/%d %H:%M") not in chart['data']['labels']:
+            chart['data']['labels'].append(datetime.datetime.strftime(row.date_time, "%m/%d %H:%M"))
 
         if 'data' not in chart['data']['datasets'][tracker[type_m]]:
             chart['data']['datasets'][tracker[type_m]] = {
