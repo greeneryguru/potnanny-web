@@ -97,7 +97,9 @@ def flower_care(address):
                 measurements.append(obj)
     
                 db.session.commit()
-    except:
+    except Exception as x:
+        sys.stdout.write("Error with MiFlora address %s\n" % address)
+        sys.stdout.write(x)
         pass
     
     return measurements
@@ -123,7 +125,9 @@ def ggdht_sensor(address):
             db.session.add(obj)
             measurements.append(obj)
             db.session.commit()
-    except:
+    except Exception as x:
+        sys.stdout.write("Error with GGDHTSensor address %s\n" % address)
+        sys.stdout.write(x)
         pass
     
     return measurements
