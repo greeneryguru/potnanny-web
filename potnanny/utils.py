@@ -142,7 +142,7 @@ class GGDHTSensor(Peripheral):
         self.char_uuid_map = {
             'temperature': "E60A00E9-D6A9-430F-959C-872F07E64FCE",
             'humidity': "4DF3BB88-C7CB-47B5-B213-CEA3770DB9E8",
-            'co2_ppm': "6431AF8C-A5B4-47EB-BA73-B69495327E53",
+            'co2-ppm': "6431AF8C-A5B4-47EB-BA73-B69495327E53",
         }
      
     """
