@@ -21,6 +21,7 @@ from potnanny.apps.measurement.models import Measurement
 from potnanny.apps.settings.models import Setting
 from potnanny.apps.sensor.models import Sensor
 from potnanny.apps.action.models import ActionManager
+from potnanny.utils import GGDHTSensor
 from miflora.backends.bluepy import BluepyBackend
 from miflora.miflora_poller import MiFloraPoller
 from miflora.miflora_poller import MI_CONDUCTIVITY, MI_MOISTURE, MI_LIGHT, \
@@ -50,6 +51,11 @@ def main():
             
         if re.search(r'flower care|mate', name, re.IGNORECASE):
             results = flower_care(addr)
+            if results:
+                measurement_queue += results
+
+        if re.search(r'Greenery DHT', name, re.IGNORECASE):
+            results = ggdht_sensor(addr)
             if results:
                 measurement_queue += results
 
@@ -95,6 +101,34 @@ def flower_care(address):
         pass
     
     return measurements
+
+
+"""
+Poll a custom Greenery DHT sensor for data
+
+params:
+    a device address
+returns:
+    a list of Measurment objects
+    
+"""
+def ggdht_sensor(address):
+    measurements = []
+    try:
+        device = GGDHTSensor(address)
+        results = device.get_measurements()
+        
+        for key, value in results.items():
+            obj = Measurement(address, key, value, now)
+            db.session.add(obj)
+            measurements.append(obj)
+            db.session.commit()
+    except:
+        pass
+    
+    return measurements
+
+
 
 
 def sensor_id(addr, name):

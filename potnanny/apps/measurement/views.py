@@ -73,6 +73,7 @@ def latest_sensor(address):
 @measurement.route('/measurement/chart/<address>', methods=['GET'])
 def measurement_chart(address):
     type_m = request.args.get('type', default="temperature")
+    hours = request.args.get('hours', default=8)
     
     sensor = Sensor.query.filter(
         Sensor.address == address
@@ -80,7 +81,8 @@ def measurement_chart(address):
     
     return render_template('measurement/chart.html', 
                            sensor=sensor,
-                           measurement=type_m)
+                           measurement=type_m,
+                           hours=hours)
     
     
 @measurement.route('/measurement/chart/sensor', methods=['GET'])
