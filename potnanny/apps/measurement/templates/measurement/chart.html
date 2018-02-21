@@ -35,10 +35,10 @@
             <div id="canvas-wrapper" style="position: relative; height: 60vh">
                 <canvas id="chart-{{ measurement }}"></canvas>
             </div>
-            <a href="/measurement/chart/{{ sensor.address }}&type={{ measurement }}&legend=1&hours=8">8hr</a> | 
-            <a href="/measurement/chart/{{ sensor.address }}&type={{ measurement }}&legend=1&hours=12">12hr</a> | 
-            <a href="/measurement/chart/{{ sensor.address }}&type={{ measurement }}&legend=1&hours=24">24hr</a> | 
-            <a href="/measurement/chart/{{ sensor.address }}&type={{ measurement }}&legend=1&hours=48">48hr</a>
+            <a href="/measurement/chart/{{ sensor.address }}?type={{ measurement }}&legend=1&hours=8">8hr</a> | 
+            <a href="/measurement/chart/{{ sensor.address }}?type={{ measurement }}&legend=1&hours=12">12hr</a> | 
+            <a href="/measurement/chart/{{ sensor.address }}?type={{ measurement }}&legend=1&hours=24">24hr</a> | 
+            <a href="/measurement/chart/{{ sensor.address }}?type={{ measurement }}&legend=1&hours=48">48hr</a>
         </div>
     </div>
 {% else %}
