@@ -188,7 +188,7 @@ class GGDHTSensor(Peripheral):
     def get_measurements(self):
         data = {}
         
-        service, = [s for s in dht.getServices() if s.uuid==self.service_uuid]
+        service, = [s for s in self.getServices() if s.uuid==self.service_uuid]
         if not service:
             raise
         
