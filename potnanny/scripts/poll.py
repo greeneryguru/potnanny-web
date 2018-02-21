@@ -99,7 +99,7 @@ def flower_care(address):
                 db.session.commit()
     except Exception as x:
         sys.stdout.write("Error with MiFlora address %s\n" % address)
-        sys.stdout.write(x)
+        print(x)
         pass
     
     return measurements
@@ -127,7 +127,7 @@ def ggdht_sensor(address):
             db.session.commit()
     except Exception as x:
         sys.stdout.write("Error with GGDHTSensor address %s\n" % address)
-        sys.stdout.write(x)
+        print(x)
         pass
     
     return measurements
