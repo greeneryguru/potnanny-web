@@ -44,7 +44,7 @@ def icons(measurement=None):
         'soil-fertility': ['fas', 'fa-flask'],
         'ambient-light': ['fas', 'fa-sun'],
         'battery': ['fas', 'fa-battery-full'],
-        'co2-ppm': ['fas', 'fa-brille'],  
+        'co2-ppm': ['fas', 'fa-braille'],  
     }
     if measurement:
         if measurement in data.keys():
