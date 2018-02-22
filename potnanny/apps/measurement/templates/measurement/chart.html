@@ -37,8 +37,9 @@
             </div>
             <a href="/measurement/chart/{{ sensor.address }}?type={{ measurement }}&legend=1&hours=8">8hr</a> | 
             <a href="/measurement/chart/{{ sensor.address }}?type={{ measurement }}&legend=1&hours=12">12hr</a> | 
-            <a href="/measurement/chart/{{ sensor.address }}?type={{ measurement }}&legend=1&hours=24">24hr</a> | 
-            <a href="/measurement/chart/{{ sensor.address }}?type={{ measurement }}&legend=1&hours=48">48hr</a>
+            <a href="/measurement/chart/{{ sensor.address }}?type={{ measurement }}&legend=1&hours=24">1d</a> | 
+            <a href="/measurement/chart/{{ sensor.address }}?type={{ measurement }}&legend=1&hours=48">2d</a> |
+            <a href="/measurement/chart/{{ sensor.address }}?type={{ measurement }}&legend=1&hours=96">4d</a>
         </div>
     </div>
 {% else %}
