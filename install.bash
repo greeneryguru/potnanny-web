@@ -71,7 +71,11 @@ sudo service nginx restart
 # create directory for bt-le scanner service/daemon
 # sudo mkdir /var/lib/blescan
  
- 
+
+# install sudoers for www-data
+sudo echo "www-data ALL = (root) NOPASSWD: /var/www/potnanny/potnanny/scripts/send" >> /etc/sudoers
+
+
 # install base crontab file for www-data
 sudo ls -l /var/spool/cron/crontabs/www-data
 catch=$?

@@ -65,38 +65,5 @@
                 </div>
             </div>
         </form>
-
-        {% if schedules or pk %}
-        <p></p>
-        <h4>Outlet Schedules</h4>
-        {% endif %}
     </div>
-    
-    {% if schedules %}
-        {% for s in schedules %}
-    <a href="/schedule/{{ s.id }}/edit?next={{ request.url }}" class="row-link">
-    <div class="row white gap">   
-        <div class="twelve columns">
-        <p class="padded">{{ s }}</p>
-        </div>
-    </div>
-    </a>
-        {% endfor %}
-    {% endif %}
-
-    {% if pk %}
-    <div class="row white gap">
-        <div class="twelve rows">
-            <p class="padded">
-            <a href="/schedule/create?next={{ request.url }}&outlet={{ pk }}">
-            <span class="fa-stack fa-spin-hover">
-            <i class="fa fa-circle-thin fa-stack-2x"></i>
-            <i class="fa fa-plus fa-stack-1x"></i>
-            </span>
-            </a>
-            </p>
-        </div>
-    </div>
-    {% endif %}
-
 {% endblock %}
