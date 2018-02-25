@@ -1,7 +1,8 @@
 from flask import render_template, redirect, request, session, Blueprint, \
     jsonify
 from potnanny.extensions import db
-from potnanny.apps.vesync.models import VesyncUser, VesyncApi
+from .models import Outlet
+from .forms import OutletForm
 import time
 
 
@@ -12,14 +13,10 @@ outlet = Blueprint('outlet', __name__,
 @outlet.route('/outlet')
 def index():
     payload = None
-    user = VesyncUser.query.get(1)
-    if user:
-        api = VesyncApi(user.username, user.password)
-        payload = api.get_devices()
-        
+    outlets = Outlet.query.all()
     return render_template('outlet/index.html', 
-                title='Voltson Outlets',
-                payload=payload)
+                title='Outlets',
+                payload=outlets)
 
 
 @outlet.route('/outlet/create', methods=['GET','POST'])
@@ -32,9 +29,6 @@ def edit(pk=None):
     if pk:
         title = 'Edit Outlet'
         obj = Outlet.query.get_or_404(int(pk))
-        schedules = Schedule.query.filter(
-            Schedule.outlet_id == pk
-        ).all()
 
     form = OutletForm(obj=obj)  
     if request.method == 'POST' and form.validate_on_submit():
@@ -53,7 +47,6 @@ def edit(pk=None):
     return render_template('outlet/form.html', 
         form=form,
         title=title,
-        schedules=schedules,
         pk=pk)    
 
 
@@ -68,34 +61,27 @@ def delete(pk):
         return redirect('/outlet')
     
 
-@outlet.route('/outlet/<id>/toggle', methods=['POST'])
+@outlet.route('/outlet/<int:id>/toggle', methods=['POST'])
 def toggle(id):
-    user = VesyncUser.query.get(1)
-    if user:
-        api = VesyncApi(user.username, user.password)
-        devices = api.get_devices()
-        for d in devices:
-            if d['id'] == id:
-                if d['relay'] == 'open':
-                    api.turn_off(d['id'])
-                else:
-                    api.turn_on(d['id'])
+    outlet = Outlet.query.get(id)
+    if outlet.state == 1:
+        rval = self.off()
+        if not rval:
+            outlet.state = 0
+            db.session.commit()
+    else:
+        rval = self.on()
+        if not rval:
+            outlet.state = 1
+            db.session.commit()
+            
+    return jsonify(outlet.as_dict())
 
-                return status(id, api)
 
-
-@outlet.route('/outlet/<id>', methods=['GET'])
-def status(id, api=None):
-    if not api:
-        user = VesyncUser.query.get(1)
-        api = VesyncApi(user.username, user.password)
-    
-    devices = api.get_devices()
-    for d in devices:
-        if d['id'] == id:
-            return jsonify(d)
-
-    return None
+@outlet.route('/outlet/<int:id>', methods=['GET'])
+def status(id):
+    outlet = Outlet.query.get(id)
+    return jsonify(outlet.as_dict())
     
 
 

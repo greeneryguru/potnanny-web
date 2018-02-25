@@ -12,7 +12,7 @@
     });
     
     function setSwitchValid(pk, data) {
-        if (data.relay == 'open') {
+        if (data.state == 1) {
             $("#outletswitch-" + pk).prop("checked", true);
         } else {
             $("#outletswitch-" + pk).prop("checked", false);
@@ -36,7 +36,7 @@
                     setSwitchValid(pk, data);
 		        }, 'json');
             });
-        }, 10000);
+        }, 5000);
         $(".onoffswitch-checkbox").change(function(){
             var pk = this.id.split('-').slice(1,).join('-');
             $.post("/outlet/" + pk + "/toggle",
@@ -60,11 +60,12 @@
 
 {% if payload %}
     {% for o in payload %}
+    <a href="/outlet/{{ o.id }}/edit" class="row-link">
     <div class="row white gap">
         <div class="twelve columns">
             <p class="padded">
             <div style="display: inline-block; padding-left: 10px;">
-            {{ o.deviceName }}
+            {{ o.name }}
             </div>
             <div class="onoffswitch" id="onoffswitch-{{ o.id }}" style="float: right; padding-right: 10px;">
                 <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="outletswitch-{{ o.id }}" style="display: none">
@@ -75,14 +76,24 @@
             </p>
         </div>
     </div>
+    </a>
     {% endfor %}
 {% else %}
     <div class="row white gap">
         <div class="twelve columns">
             <p class="padded">
-            No outlets defined in Vesync app
+            No outlets defined
             </p>
         </div>
     </div>
+    <a href="/outlet/create" class="row-link">
+    <div class="row white gap">
+        <div class="twelve columns">
+            <p class="padded">
+            <i class="fa fa-plus"></i>Add Outlet</a>
+            </p>
+        </div>
+    </div>
+    </a>
 {% endif %}
 {% endblock %}

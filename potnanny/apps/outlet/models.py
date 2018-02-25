@@ -1,5 +1,5 @@
 from potnanny.extensions import db
-from potnanny.apps.vesync.models import VesyncUser, VesyncApi
+from potnanny.rfutils import TXChannelControl
 import json
 
 
@@ -65,7 +65,8 @@ class Outlet(db.Model):
         zero on success, non-zero on fail
     """
     def set_state(self, state):
-        rval = rf_transmit(self.channel, state)
+        tx = TXChannelControl()
+        rval = tx.send_control(self.channel, state)
         if not rval:
             self.state = state
             db.session.commit()
