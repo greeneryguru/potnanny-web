@@ -4,7 +4,7 @@ from potnanny.extensions import db
 from .models import Action, ActionProcess
 from .forms import ActionForm
 from sqlalchemy.orm import load_only
-from potnanny.apps.vesync.models import VesyncManager
+from potnanny.apps.outlet.models import Outlet
 from potnanny.apps.measurement.models import Measurement
 from potnanny.apps.sensor.models import Sensor
 import re
@@ -46,10 +46,10 @@ def action_edit(pk=None):
     # populate options for outlet select fields
     form.outlet_id.choices = []
     try:
-        mgr = VesyncManager()
-        for d in mgr.api.get_devices():
+        outlets = Outlet.query.all()
+        for o in outlets():
             has_outlets = True
-            form.outlet_id.choices.append((d['id'], d['deviceName']))
+            form.outlet_id.choices.append((o['id'], o['name']))
     except:
         pass
     

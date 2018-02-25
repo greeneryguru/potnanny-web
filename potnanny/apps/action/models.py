@@ -3,7 +3,7 @@ from potnanny.apps.measurement.models import Measurement
 from potnanny.apps.outlet.models import Outlet
 from potnanny.apps.messenger.models import Messenger
 from potnanny.apps.sensor.models import Sensor
-from potnanny.apps.vesync.models import VesyncManager
+from potnanny.apps.outlet.models import Outlet
 import datetime
 import re
 
@@ -197,12 +197,11 @@ class ActionManager(object):
             
             # set state of an Outlet
             try:
-                mgr = VesyncManager()
+                outlet = Outlet.query.get(int(action.outlet_id))
                 if trigger == 'on':
-                
-                    rval = mgr.api.turn_on(action.outlet_id) 
+                    rval = outlet.on()
                 else:
-                    rval = mgr.api.turn_off(action.outlet_id) 
+                    rval = outlet.off()
             except Exception as x:
                 raise x
             

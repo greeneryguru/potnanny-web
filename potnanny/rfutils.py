@@ -6,7 +6,7 @@ class TXChannelControl(object):
 
     def __init__(self, **kwargs):
         self.send_command = '/var/www/potnanny/potnanny/scripts/send'
-        self.base_code = 12066304
+        self.base_code = 36002
         self.pulse_width = 170
         self.gpio_pin = 11
         self.sudo = False
