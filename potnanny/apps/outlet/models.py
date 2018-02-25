@@ -65,7 +65,7 @@ class Outlet(db.Model):
         zero on success, non-zero on fail
     """
     def set_state(self, state):
-        tx = TXChannelControl()
+        tx = TXChannelControl(sudo=True)
         rval = tx.send_control(self.channel, state)
         if not rval:
             self.state = state
