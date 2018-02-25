@@ -66,14 +66,8 @@ def toggle(id):
     outlet = Outlet.query.get(id)
     if outlet.state == 1:
         rval = outlet.off()
-        if not rval:
-            outlet.state = 0
-            db.session.commit()
     else:
         rval = outlet.on()
-        if not rval:
-            outlet.state = 1
-            db.session.commit()
             
     return jsonify(outlet.as_dict())
 

@@ -66,7 +66,7 @@ class Outlet(db.Model):
     """
     def set_state(self, state):
         tx = TXChannelControl(sudo=True)
-        rval = tx.send_control(self.channel, state)
+        rval, msg = tx.send_control(self.channel, state)
         if not rval:
             self.state = state
             db.session.commit()

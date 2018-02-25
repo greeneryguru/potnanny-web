@@ -20,7 +20,7 @@
     }
     $(document).ready(function() {
         $(".onoffswitch-checkbox").each(function(){
-            var pk = this.id.split('-').slice(1,).join('-');
+            var pk = this.id.split('-')[1];
             $.get("/outlet/" + pk,
             {'csrfmiddlewaretoken': csrf_token},
             function(data){
@@ -29,7 +29,7 @@
         });
         setInterval(function(){
             $(".onoffswitch-checkbox").each(function(){
-                var pk = this.id.split('-').slice(1,).join('-');
+                var pk = this.id.split('-')[1];
                 $.get("/outlet/" + pk,
                 {'csrfmiddlewaretoken': csrf_token},
                 function(data){
@@ -38,7 +38,7 @@
             });
         }, 5000);
         $(".onoffswitch-checkbox").change(function(){
-            var pk = this.id.split('-').slice(1,).join('-');
+            var pk = this.id.split('-')[1];
             $.post("/outlet/" + pk + "/toggle",
                 {'csrfmiddlewaretoken': csrf_token},
                 function(data){
