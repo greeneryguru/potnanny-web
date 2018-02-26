@@ -46,11 +46,12 @@ def action_edit(pk=None):
     # populate options for outlet select fields
     form.outlet_id.choices = []
     try:
-        outlets = Outlet.query.all()
-        for o in outlets():
+        my_outlets = Outlet.query.all()
+        for o in my_outlets():
             has_outlets = True
             form.outlet_id.choices.append((o['id'], o['name']))
-    except:
+    except Exception as x:
+        raise x
         pass
     
     # populate sensor data choices
