@@ -23,9 +23,9 @@ class ActionForm(FlaskForm):
     active = BooleanField('action is enabled', default="1")
 
     def validate(self):
-        rv = FlaskForm.validate(self)
-        if not rv:
-            return False
+        # rv = FlaskForm.validate(self)
+        # if not rv:
+        #    return False
 
         if re.search(r'switch', self.action_type.data, re.IGNORECASE):
             failures = 0
