@@ -50,8 +50,7 @@ def action_edit(pk=None):
         for o in my_outlets:
             has_outlets = True
             form.outlet_id.choices.append((o['id'], o['name']))
-    except Exception as x:
-        raise x
+    except:
         pass
     
     # populate sensor data choices
