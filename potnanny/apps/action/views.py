@@ -47,7 +47,7 @@ def action_edit(pk=None):
     form.outlet_id.choices = []
     try:
         my_outlets = Outlet.query.all()
-        for o in my_outlets():
+        for o in my_outlets:
             has_outlets = True
             form.outlet_id.choices.append((o['id'], o['name']))
     except Exception as x:
