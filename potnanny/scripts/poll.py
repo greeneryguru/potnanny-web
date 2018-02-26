@@ -21,7 +21,7 @@ from potnanny.apps.measurement.models import Measurement
 from potnanny.apps.settings.models import Setting
 from potnanny.apps.sensor.models import Sensor
 from potnanny.apps.action.models import ActionManager
-from potnanny.utils import GGDHTSensor
+from potnanny.bleutils import GGDHTSensor
 from miflora.backends.bluepy import BluepyBackend
 from miflora.miflora_poller import MiFloraPoller
 from miflora.miflora_poller import MI_CONDUCTIVITY, MI_MOISTURE, MI_LIGHT, \
@@ -31,7 +31,8 @@ from miflora.miflora_poller import MI_CONDUCTIVITY, MI_MOISTURE, MI_LIGHT, \
 
 # global vars
 now = datetime.datetime.now().replace(second=0, microsecond=0)
-sensor_file = '/var/tmp/btle-sensors.json'
+sensor_file = '/var/tmp/ble-sensors.json'
+
 
 def main():
     known_sensors = {}
