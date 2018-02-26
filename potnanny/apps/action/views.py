@@ -49,7 +49,7 @@ def action_edit(pk=None):
         my_outlets = Outlet.query.all()
         for o in my_outlets:
             has_outlets = True
-            form.outlet_id.choices.append((o['id'], o['name']))
+            form.outlet_id.choices.append((o.id, o.name))
     except:
         pass
     
