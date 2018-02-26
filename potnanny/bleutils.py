@@ -1,3 +1,4 @@
+import time
 from bluepy.btle import Peripheral, Characteristic, ADDR_TYPE_RANDOM, \
     AssignedNumbers
 
@@ -61,6 +62,24 @@ class GGDHTSensor(Peripheral):
             raise
         
         uuids = self.char_uuid_map.values()
+        for char in service.getCharacteristics():
+            if char.uuid not in uuids:
+                continue
+            
+            time.sleep(.300)
+            val = char.read()
+            name = self.name_for_uuid(char.uuid)
+            
+            if name == 'temperature':
+                val = int.from_bytes(val, byteorder='little', signed=True)/10
+            elif name == 'humidity':
+                val = int.from_bytes(val, byteorder='little', signed=False)/10
+            else:
+                val = int.from_bytes(val, byteorder='little', signed=False) 
+            
+            data[name] = val
+        
+        """
         chars = [c for c  in service.getCharacteristics() if c.uuid in uuids]
         for ch in chars:
             val = ch.read()
@@ -74,6 +93,7 @@ class GGDHTSensor(Peripheral):
                 val = int.from_bytes(val, byteorder='little', signed=False) 
             
             data[name] = val
+        """
         
         return data
         
