@@ -32,7 +32,8 @@ class Outlet(db.Model):
                              backref=db.backref("children", 
                                                 cascade="all,delete"))
                                                 
-    def __init__(self, name, channel):
+    def __init__(self, typ, name, channel):
+        self.type_id = typ
         self.name = name
         self.channel = channel
         
