@@ -62,7 +62,7 @@ class TXChannelControl(object):
     """
     def tx_code(self, typ, channel, state):
         code = self.base_code
-        code += (channel << 1)
+        
         
         """
         on/off code schemes are different for these brands.
@@ -75,9 +75,11 @@ class TXChannelControl(object):
         
         """
         if re.search(r'Intey', typ, re.IGNORECASE):
+            code += (channel << 1)
             code += state
 
         else:
+            code += (channel << 4)
             if state == 0:
                 code += 12
             else:

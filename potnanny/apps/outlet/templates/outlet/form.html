@@ -36,6 +36,17 @@
             {{ form.hidden_tag() }}
             <div class="row">
                 <div class="six columns">
+                    {{ form.outlet_type.label }}
+                    {{ form.outlet_type(class="u-full-width") }}
+                    {% if form.outlet_type.errors %}
+                    {% for err in form.outlet_type.errors %}
+                    <span style="color: red;">[{{ err }}]</span>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="six columns">
                     {{ form.name.label }}
                     {{ form.name(class="u-full-width") }}
                     {% if form.name.errors %}

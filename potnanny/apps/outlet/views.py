@@ -36,7 +36,7 @@ def edit(pk=None):
     form.outlet_type.choices = []
     types = OutletType.query.all()
     for t in types:
-        form.outlet_type.choices.append((t.id, t.name))        
+        form.outlet_type.choices.append((int(t.id), t.name))        
      
     if request.method == 'POST' and form.validate_on_submit():
         if pk:
