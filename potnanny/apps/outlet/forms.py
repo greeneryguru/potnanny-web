@@ -31,7 +31,7 @@ def unique_channel_check(form, field):
 
 class OutletForm(FlaskForm):
     id = HiddenField('id')
-    outlet_type = SelectField('Brand', coerce=int)
+    type_id = SelectField('Brand', coerce=int)
     name = StringField('name', 
                 validators=[InputRequired(),
                             unique_name_check])

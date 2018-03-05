@@ -42,7 +42,7 @@ def edit(pk=None):
         if pk:
             form.populate_obj(obj)
         else:
-            o = Outlet(form.name.data, int(form.channel.data))
+            o = Outlet(int(form.type_id.data), form.name.data, int(form.channel.data))
             db.session.add(o)
     
         db.session.commit()
