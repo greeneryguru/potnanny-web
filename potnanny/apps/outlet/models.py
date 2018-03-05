@@ -3,15 +3,35 @@ from potnanny.rfutils import TXChannelControl
 import json
 
 
+class OutletType(db.Model):
+    __tablename__ = 'outlet_types'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(24), nullable=False, server_default='', unique=True)
+
+    def __init__(self, name):
+        self.name = name
+        
+    def __repr__(self):
+        return self.name
+
+    def as_dict(self):
+        return {'id': self.id, 
+                'name': self.name}
+
+
 class Outlet(db.Model):
     __tablename__ = 'outlets'
     id = db.Column(db.Integer, primary_key=True)
+    type_id = db.Column(db.Integer, db.ForeignKey('outlet_types.id'))
     name = db.Column(db.String(24), nullable=False, server_default='', unique=True)
     channel = db.Column(db.Integer, nullable=False, server_default='2', unique=True)
     state = db.Column(db.Boolean(), nullable=False, server_default='0')
     active = db.Column(db.Boolean(), nullable=False, server_default='1')
 
-    
+    outlet_type = db.relationship("OutletType", 
+                             backref=db.backref("children", 
+                                                cascade="all,delete"))
+                                                
     def __init__(self, name, channel):
         self.name = name
         self.channel = channel
@@ -24,7 +44,8 @@ class Outlet(db.Model):
                 'name': self.name,
                 'channel': self.channel,
                 'state': self.state, 
-                'active': self.active}
+                'active': self.active,
+                'type': self.outlet_type}
     
     
     """
