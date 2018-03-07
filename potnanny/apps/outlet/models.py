@@ -54,7 +54,8 @@ class Outlet(db.Model):
         if not rval:
             self.state = 1
             db.session.commit()
-    
+        else:
+            print("%d, %s" % (rval,  msg))
     
     """
     same as 'on', but turns outlet 'off'
@@ -74,6 +75,8 @@ class Outlet(db.Model):
         if not rval:
             self.state = 0
             db.session.commit()
+        else:
+            print("%d, %s" % (rval,  msg))
     
     
     """

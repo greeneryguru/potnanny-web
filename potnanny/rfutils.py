@@ -6,13 +6,12 @@ import subprocess
 class TXChannelControl(object):
 
     def __init__(self, **kwargs):
-        self.send_command = '/var/www/potnanny/potnanny/scripts/codesend'
+        self.command = '/var/www/potnanny/potnanny/scripts/codesend'
         self.base_code = 36000
         self.pulse_width = 193
         self.protocol = 1
         self.gpio_pin = 11
         self.sudo = False
-        self.type = 'Intey'
 
         for k, v in kwargs.items():
             setattr(self, k, v)
@@ -30,7 +29,7 @@ class TXChannelControl(object):
     returns:
         a tuple (exit-code, message)
         exit-code = 0 on success, non-zero on failure
-    """
+
     def send_control(self, channel, state):
         cmd = []
         if self.sudo:
@@ -50,7 +49,9 @@ class TXChannelControl(object):
         except:
             return (255, 'unexpected command failure')
 
+    """
     
+          
     """
     send a tx code to a channel
 
@@ -65,10 +66,13 @@ class TXChannelControl(object):
         if self.sudo:
             cmd.append('sudo')
 
-        cmd.append(self.send_command)
-        cmd.append(code)
-        cmd.append(self.protocol)
-        cmd.append(self.pulse_width)
+        cmd.append(self.command)
+        cmd.append(str(code))
+        cmd.append(str(self.protocol))
+        cmd.append(str(self.pulse_width))
+        
+        # print("tx command: %s" % cmd)
+        
         try:
             child = subprocess.Popen(cmd,
                                     stdout=subprocess.PIPE,
@@ -78,7 +82,8 @@ class TXChannelControl(object):
                 return (child.returncode, errors)
             else:
                 return (child.returncode, output)
-        except:
+        except Exception as x:
+            # print(x)
             return (255, 'unexpected command failure')
 
     
