@@ -3,39 +3,19 @@ from potnanny.rfutils import TXChannelControl
 import json
 
 
-class OutletType(db.Model):
-    __tablename__ = 'outlet_types'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(24), nullable=False, server_default='', unique=True)
-
-    def __init__(self, name):
-        self.name = name
-        
-    def __repr__(self):
-        return self.name
-
-    def as_dict(self):
-        return {'id': self.id, 
-                'name': self.name}
-
-
 class Outlet(db.Model):
     __tablename__ = 'outlets'
     id = db.Column(db.Integer, primary_key=True)
-    type_id = db.Column(db.Integer, db.ForeignKey('outlet_types.id'))
     name = db.Column(db.String(24), nullable=False, server_default='', unique=True)
-    channel = db.Column(db.Integer, nullable=False, server_default='2', unique=True)
+    on_code = db.Column(db.Integer, nullable=False, unique=True)
+    off_code = db.Column(db.Integer, nullable=False, unique=True)
     state = db.Column(db.Boolean(), nullable=False, server_default='0')
     active = db.Column(db.Boolean(), nullable=False, server_default='1')
 
-    outlet_type = db.relationship("OutletType", 
-                             backref=db.backref("children", 
-                                                cascade="all,delete"))
-                                                
-    def __init__(self, typ, name, channel):
-        self.type_id = typ
+    def __init__(self, name, on, off):
         self.name = name
-        self.channel = channel
+        self.on_code = on
+        self.off_code = off
         
     def __repr__(self):
         return json.dumps(self.as_dict())
@@ -43,10 +23,10 @@ class Outlet(db.Model):
     def as_dict(self):
         return {'id': self.id, 
                 'name': self.name,
-                'channel': self.channel,
+                'on_code': self.on_code,
+                'off_code': self.off_code,
                 'state': self.state, 
-                'active': self.active,
-                'type': self.outlet_type}
+                'active': self.active }
     
     
     """
@@ -58,7 +38,8 @@ class Outlet(db.Model):
         zero on success. non-zero on failure. 
         Unless 'status' option is set, then the return will be JSON status 
         of the Outlet.
-    """ 
+    
+    -- OLD CODE --
     def on(self, status=False):
         rval = self.set_state(1)
         if status:
@@ -66,16 +47,33 @@ class Outlet(db.Model):
         else:
             return rval
 
-
+    """ 
+    def on(self, status=False):
+        tx = TXChannelControl(sudo=True)
+        rval, msg = tx.send_code(self.on_code)
+        if not rval:
+            self.state = 1
+            db.session.commit()
+    
+    
     """
     same as 'on', but turns outlet 'off'
-    """
+    
+    -- OLD CODE --
     def off(self, status=False):
         rval = self.set_state(0)
         if status:
             return str(self)
         else:
             return rval
+    
+    """
+    def off(self, status=False):
+        tx = TXChannelControl(sudo=True)
+        rval, msg = tx.send_code(self.off_code)
+        if not rval:
+            self.state = 0
+            db.session.commit()
     
     
     """
@@ -85,7 +83,7 @@ class Outlet(db.Model):
         state 0|1
     returns:
         zero on success, non-zero on fail
-    """
+
     def set_state(self, state):
         tx = TXChannelControl(sudo=True)
         rval, msg = tx.send_control(self.channel, state)
@@ -94,4 +92,4 @@ class Outlet(db.Model):
             db.session.commit()
         
         return rval
-
+    """

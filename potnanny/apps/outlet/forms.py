@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, HiddenField, IntegerField, SelectField
 from wtforms.validators import DataRequired, ValidationError, NumberRange, \
             InputRequired
-from .models import Outlet, OutletType
+from .models import Outlet
 
 
 def unique_name_check(form, field):
@@ -31,19 +31,18 @@ def unique_channel_check(form, field):
 
 class OutletForm(FlaskForm):
     id = HiddenField('id')
-    type_id = SelectField('Brand', coerce=int)
     name = StringField('name', 
-                validators=[InputRequired(),
-                            unique_name_check])
-    channel = IntegerField('channel',
                 validators=[
                     InputRequired(),
-                    unique_channel_check,
-                    NumberRange(
-                        min=2, 
-                        max=255, 
-                        message="Must be a number between 2 and 255")])
-
-
-
+                    unique_name_check] )
+                    
+    on_code = IntegerField('on code',
+                validators=[
+                    InputRequired(),] )
+    
+    off_code = IntegerField('off code',
+                validators=[
+                    InputRequired(),] )
+                    
+   
 

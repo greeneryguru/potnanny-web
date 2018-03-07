@@ -1,7 +1,7 @@
 from flask import render_template, redirect, request, session, Blueprint, \
     jsonify
 from potnanny.extensions import db
-from .models import Outlet, OutletType
+from .models import Outlet
 from .forms import OutletForm
 import time
 
@@ -32,17 +32,11 @@ def edit(pk=None):
 
     form = OutletForm(obj=obj)
     
-    # populate options for outlet types
-    form.type_id.choices = []
-    types = OutletType.query.all()
-    for t in types:
-        form.type_id.choices.append((t.id, t.name))        
-     
     if request.method == 'POST' and form.validate_on_submit():
         if pk:
             form.populate_obj(obj)
         else:
-            o = Outlet(int(form.type_id.data), form.name.data, int(form.channel.data))
+            o = Outlet(form.name.data, int(form.on_code.data), int(form.off_code.data))
             db.session.add(o)
     
         db.session.commit()

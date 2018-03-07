@@ -36,17 +36,6 @@
             {{ form.hidden_tag() }}
             <div class="row">
                 <div class="six columns">
-                    {{ form.type_id.label }}
-                    {{ form.type_id(class="u-full-width") }}
-                    {% if form.type_id.errors %}
-                    {% for err in form.type_id.errors %}
-                    <span style="color: red;">[{{ err }}]</span>
-                    {% endfor %}
-                    {% endif %}
-                </div>
-            </div>
-            <div class="row">
-                <div class="six columns">
                     {{ form.name.label }}
                     {{ form.name(class="u-full-width") }}
                     {% if form.name.errors %}
@@ -58,10 +47,21 @@
             </div>
             <div class="row">
                 <div class="six columns">
-                    {{ form.channel.label }}
-                    {{ form.channel(class="u-full-width") }}
-                    {% if form.channel.errors %}
-                    {% for err in form.channel.errors %}
+                    {{ form.on_code.label }}
+                    {{ form.on_code(class="u-full-width") }}
+                    {% if form.on_code.errors %}
+                    {% for err in form.on_code.errors %}
+                    <span style="color: red;">[{{ err }}]</span>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="six columns">
+                    {{ form.off_code.label }}
+                    {{ form.off_code(class="u-full-width") }}
+                    {% if form.off_code.errors %}
+                    {% for err in form.off_code.errors %}
                     <span style="color: red;">[{{ err }}]</span>
                     {% endfor %}
                     {% endif %}
