@@ -72,8 +72,8 @@ sudo service nginx restart
 # sudo mkdir /var/lib/blescan
  
 
-# install sudoers for www-data
-sudo echo "www-data ALL = (root) NOPASSWD: /var/www/potnanny/potnanny/scripts/send" >> /etc/sudoers
+# update sudoers permissions for www-data
+sudo echo "www-data ALL = (root) NOPASSWD: /var/www/potnanny/potnanny/scripts/codesend" >> /etc/sudoers
 
 
 # install base crontab file for www-data
