@@ -93,7 +93,7 @@ def sensor_chart():
     hours = int(request.args.get('hours', default=8))
     legend_on = int(request.args.get('legend', default=0))
     dates_on = int(request.args.get('dateson', default=0))
-    show_actions = int(requests.args.get('actions', default=0))
+    show_actions = int(request.args.get('actions', default=0))
     
     tracker = {}
     now = datetime.datetime.now()
@@ -145,12 +145,13 @@ def sensor_chart():
         chart['options']['scales']['xAxes'][0]['display'] = True
         
     if show_actions:
-        results = get_action_annotations(address, type_m, then, now)
+        results = get_action_annotations(address, type_m, then, now)  
         if results:
-            if 'annotations' not in chart['options']:
-                char['options']['annotations']['annotations'] = results
-
-
+            if 'annotation' not in chart['options']:
+                chart['options']['annotation'] = {}
+            
+            chart['options']['annotation']['annotations'] = results
+    
     return jsonify(chart)
 
 
@@ -159,37 +160,40 @@ def get_action_annotations(address, type_m, then, now):
     data = []
     results = ActionProcess.query.filter(
         (ActionProcess.on_datetime.between(then, now) |  ActionProcess.off_datetime.between(then, now)),
-        (ActionProcess.action.sensor == address | ActionProcess.action.sensor == 'any'),
-        ActionProcess.action.measurement_type == type_m
+        ( ActionProcess.action.has(sensor_address=address) | ActionProcess.action.has(sensor_address='any') ),
+        ActionProcess.action.has(measurement_type=type_m)
     ).all()
     
-    for r in result:
+    for r in results:
         if r.on_datetime is not None:
-            data.append({
-                type: "line",
-                mode: "vertical",
-                scaleID: "x-axis-0",
-                value: datetime.datetime.strftime(r.on_datetime, "%m/%d %H:%M"),
-                borderColor: "green",
-                label: {
-                    content: "%s (%s)" % (r.action.name, r.on_trigger),
-                    enabled: false,
-                    position: "top"
+            node = {
+                "type": "line",
+                "mode": "vertical",
+                "scaleID": "x-axis-0",
+                "value": datetime.datetime.strftime(r.on_datetime, "%m/%d %H:%M"),
+                "borderColor": "green",
+                "label": {
+                    "content": "%s (%s)" % (r.action.name, r.on_trigger),
+                    "enabled": False,
+                    "position": "top"
                 }
-            })
+            }
+            data.append(node)
+            
         if r.off_datetime is not None:
-            data.append({
-                type: "line",
-                mode: "vertical",
-                scaleID: "x-axis-0",
-                value: datetime.datetime.strftime(r.off_datetime, "%m/%d %H:%M"),
-                borderColor: "red",
-                label: {
-                    content: "%s (%s)" % (r.action.name, r.off_trigger),
-                    enabled: true,
-                    position: "top"
+            node = {
+                "type": "line",
+                "mode": "vertical",
+                "scaleID": "x-axis-0",
+                "value": datetime.datetime.strftime(r.off_datetime, "%m/%d %H:%M"),
+                "borderColor": "red",
+                "label": {
+                    "content": "%s (%s)" % (r.action.name, r.off_trigger),
+                    "enabled": False,
+                    "position": "top"
                 }
-            })
+            }
+            data.append(node)
                 
     return data
 

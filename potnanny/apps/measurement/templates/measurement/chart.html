@@ -2,14 +2,14 @@
 {% block headers %}
     <script src="{{ url_for('static',  filename='js/Chart.bundle.js') }}"></script>
     <script src="{{ url_for('static',  filename='js/chartbuilder.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/0.5.7/chartjs-plugin-annotation.min.js"></script>
+    <script src="{{ url_for('static',  filename='js/chartjs-plugin-annotation.js') }}"></script>
     <script>
     var globalChartRefs = {};
 
     $(document).ready(function() {
         $("[id*=chart-]").each(function(){
             var pk = this.id.split("-")[1];
-            $.get("/measurement/chart/sensor?address={{ sensor.address }}&type={{ measurement }}&legend=1&hours={{ hours }}&dateson=1",
+            $.get("/measurement/chart/sensor?address={{ sensor.address }}&type={{ measurement }}&legend=1&hours={{ hours }}&dateson=1&actions=1",
                 {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
                 function(data){
                     createChart("chart-{{ measurement }}", data, globalChartRefs);
@@ -18,7 +18,7 @@
         setInterval(function(){
             $("[id*=chart-]").each(function(){
                 var pk = this.id.split("-")[1];
-                $.get("/measurement/chart/sensor?address={{ sensor.address }}&type={{ measurement }}&legend=1&hours={{ hours }}&dateson=1",
+                $.get("/measurement/chart/sensor?address={{ sensor.address }}&type={{ measurement }}&legend=1&hours={{ hours }}&dateson=1&actions=1",
                     {'csrfmiddlewaretoken': '{{ csrf_token() }}'},
                     function(data){
                         createChart("chart-{{ measurement }}", data, globalChartRefs);
@@ -36,11 +36,11 @@
             <div id="canvas-wrapper" style="position: relative; height: 60vh">
                 <canvas id="chart-{{ measurement }}"></canvas>
             </div>
-            <a href="/measurement/chart/{{ sensor.address }}?type={{ measurement }}&legend=1&hours=8">8hr</a> | 
-            <a href="/measurement/chart/{{ sensor.address }}?type={{ measurement }}&legend=1&hours=12">12hr</a> | 
-            <a href="/measurement/chart/{{ sensor.address }}?type={{ measurement }}&legend=1&hours=24">1d</a> | 
-            <a href="/measurement/chart/{{ sensor.address }}?type={{ measurement }}&legend=1&hours=48">2d</a> |
-            <a href="/measurement/chart/{{ sensor.address }}?type={{ measurement }}&legend=1&hours=96">4d</a>
+            <a href="/measurement/chart/{{ sensor.address }}?type={{ measurement }}&legend=1&hours=8&actions=1">8hr</a> | 
+            <a href="/measurement/chart/{{ sensor.address }}?type={{ measurement }}&legend=1&hours=12&actions=1">12hr</a> | 
+            <a href="/measurement/chart/{{ sensor.address }}?type={{ measurement }}&legend=1&hours=24&actions=1">1d</a> | 
+            <a href="/measurement/chart/{{ sensor.address }}?type={{ measurement }}&legend=1&hours=48&actions=1">2d</a> |
+            <a href="/measurement/chart/{{ sensor.address }}?type={{ measurement }}&legend=1&hours=96&actions=1">4d</a>
         </div>
     </div>
 {% else %}
